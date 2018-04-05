@@ -130,7 +130,7 @@ os_timer_t checkTimer_wifistate;
 bool isConnected = false;
 
 
-
+#if 0
 void Check_WifiState(void) {
 
 	uint8 status = wifi_station_get_connect_status();
@@ -146,7 +146,7 @@ void Check_WifiState(void) {
 		GPIO_OUTPUT_SET(GPIO_ID_PIN(15), 1); //GPIO15 µÍµçÆ½Êä³ö
 	}
 }
-
+#endif
 
 void WIFI_Init() {
 	struct softap_config apConfig;
@@ -227,8 +227,11 @@ void user_init(void)
 {
 
 
-	//uart_init(57600,57600);
 
+	tcp_client_init();
+
+	//uart_init(57600,57600);
+#if 0
     os_printf("SDK version:%s\n", system_get_sdk_version());
 
 
@@ -248,6 +251,10 @@ void user_init(void)
 
 
 	Inter213_InitTCP(22);
+
+#endif
+
+
 
 #if 0
     wifi_set_opmode(STATION_MODE); //config mode  ap and sta
