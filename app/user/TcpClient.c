@@ -11,22 +11,22 @@ struct espconn user_tcp_conn;
 
 void ICACHE_FLASH_ATTR user_tcp_sent_cb(void *arg)  //发送
 {
-	os_printf("发送数据成功！");
+	os_printf("send data success");
 }
 void ICACHE_FLASH_ATTR user_tcp_discon_cb(void *arg)  //断开
 {
-	os_printf("断开连接成功！");
+	os_printf("disconnected success");
 }
 void ICACHE_FLASH_ATTR user_tcp_recv_cb(void *arg,  //接收
 		char *pdata, unsigned short len) {
 
-	os_printf("收到数据：%s\r\n", pdata);
+	os_printf("receive data:%s\r\n", pdata);
 	espconn_sent((struct espconn *) arg, "0", strlen("0"));
 
 }
 void ICACHE_FLASH_ATTR user_tcp_recon_cb(void *arg, sint8 err) //注册 TCP 连接发生异常断开时的回调函数，可以在回调函数中进行重连
 {
-	os_printf("连接错误，错误代码为%d\r\n", err);
+	os_printf("connected error ,error code is %d\r\n", err);
 	espconn_connect((struct espconn *) arg);
 }
 void ICACHE_FLASH_ATTR user_tcp_connect_cb(void *arg)  //注册 TCP 连接成功建立后的回调函数
@@ -36,7 +36,6 @@ void ICACHE_FLASH_ATTR user_tcp_connect_cb(void *arg)  //注册 TCP 连接成功建立后
 	espconn_regist_sentcb(pespconn, user_tcp_sent_cb);  //发送
 	espconn_regist_disconcb(pespconn, user_tcp_discon_cb);  //断开
 	espconn_sent(pespconn, "8226", strlen("8226"));
-
 }
 
 void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
@@ -59,13 +58,13 @@ void Check_WifiState(void) {
 	getState = wifi_station_get_connect_status();
 	//查询 ESP8266 WiFi station 接口连接 AP 的状态
 	if (getState == STATION_GOT_IP) {
-		os_printf("WIFI连接成功！\r\n");
+		os_printf("WIFI connected success\r\n");
 		os_timer_disarm(&checkTimer_wifistate);
 		struct ip_info info;
-		const char remote_ip[4] = { 192, 168, 43, 1 };//目标IP地址,必须要先从手机获取，否则连接失败.
+		const char remote_ip[4] = { 120, 79, 20, 196 };//目标IP地址,必须要先从手机获取，否则连接失败.
 		wifi_get_ip_info(STATION_IF, &info);	//查询 WiFi模块的 IP 地址
-		my_station_init((struct ip_addr *) remote_ip, &info.ip, 6000);//连接到目标服务器的6000端口
- }
+		my_station_init((struct ip_addr *) remote_ip, &info.ip, 22);//连接到目标服务器的6000端口
+	}
 }
 
 void tcp_client_init()	//初始化

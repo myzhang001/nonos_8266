@@ -2536,78 +2536,78 @@ void user_init(void)
 401017e3:	3f          	.byte 0x3f
 401017e4:	fe83c4        	excw
 401017e7:	3f          	.byte 0x3f
-401017e8:	001770        	excw
-401017eb:	2db800        	excw
-401017ee:	904024        	excw
-401017f1:	243c      	movi.n	a4, 50
-401017f3:	4e8c40        	excw
-401017f6:	124024        	excw
+401017e8:	2db8      	l32i.n	a11, a13, 8
+401017ea:	904024        	excw
+401017ed:	243c      	movi.n	a4, 50
+401017ef:	4e8c40        	excw
+401017f2:	124024        	excw
 
-401017f8 <Check_WifiState>:
+401017f4 <Check_WifiState>:
 	espconn_regist_reconcb(&user_tcp_conn, user_tcp_recon_cb);//注册 TCP 连接发生异常断开时的回调函数，可以在回调函数中进行重连
 	//启用连接
 	espconn_connect(&user_tcp_conn);
 }
 
 void Check_WifiState(void) {
-401017f8:	e0c112        	addi	a1, a1, -32
-401017fb:	7109      	s32i.n	a0, a1, 28
+401017f4:	e0c112        	addi	a1, a1, -32
+401017f7:	076102        	s32i	a0, a1, 28
 	uint8 getState;
 	getState = wifi_station_get_connect_status();
-401017fd:	fffb01        	l32r	a0, 401017ec <user_init+0x20>
-40101800:	0000c0        	callx0	a0
+401017fa:	fffb01        	l32r	a0, 401017e8 <user_init+0x1c>
+401017fd:	0000c0        	callx0	a0
 	//查询 ESP8266 WiFi station 接口连接 AP 的状态
 	if (getState == STATION_GOT_IP) {
-40101803:	3e5266        	bnei	a2, 5, 40101845 <Check_WifiState+0x4d>
-		os_printf("WIFI连接成功！\r\n");
-40101806:	fff521        	l32r	a2, 401017dc <user_init+0x10>
-40101809:	ffc045        	call0	40101410 <os_printf_plus>
+40101800:	3e5266        	bnei	a2, 5, 40101842 <Check_WifiState+0x4e>
+		os_printf("WIFI connected success\r\n");
+40101803:	fff621        	l32r	a2, 401017dc <user_init+0x10>
+40101806:	ffc085        	call0	40101410 <os_printf_plus>
 		os_timer_disarm(&checkTimer_wifistate);
-4010180c:	fff521        	l32r	a2, 401017e0 <user_init+0x14>
-4010180f:	ff1185        	call0	40100928 <ets_timer_disarm>
+40101809:	fff521        	l32r	a2, 401017e0 <user_init+0x14>
+4010180c:	ff1185        	call0	40100928 <ets_timer_disarm>
 		struct ip_info info;
-		const char remote_ip[4] = { 192, 168, 43, 1 };//目标IP地址,必须要先从手机获取，否则连接失败.
-40101812:	fff421        	l32r	a2, 401017e4 <user_init+0x18>
-40101815:	000232        	l8ui	a3, a2, 0
-40101818:	010242        	l8ui	a4, a2, 1
-4010181b:	0c4132        	s8i	a3, a1, 12
-4010181e:	020232        	l8ui	a3, a2, 2
-40101821:	030222        	l8ui	a2, a2, 3
-40101824:	0e4132        	s8i	a3, a1, 14
-40101827:	0f4122        	s8i	a2, a1, 15
+		const char remote_ip[4] = { 120, 79, 20, 196 };//目标IP地址,必须要先从手机获取，否则连接失败.
+4010180f:	fff521        	l32r	a2, 401017e4 <user_init+0x18>
+40101812:	000232        	l8ui	a3, a2, 0
+40101815:	010242        	l8ui	a4, a2, 1
+40101818:	0c4132        	s8i	a3, a1, 12
+4010181b:	020232        	l8ui	a3, a2, 2
+4010181e:	030222        	l8ui	a2, a2, 3
+40101821:	0e4132        	s8i	a3, a1, 14
+40101824:	0f4122        	s8i	a2, a1, 15
 		wifi_get_ip_info(STATION_IF, &info);	//查询 WiFi模块的 IP 地址
-4010182a:	013d      	mov.n	a3, a1
-4010182c:	00a022        	movi	a2, 0
+40101827:	203110        	or	a3, a1, a1
+4010182a:	00a022        	movi	a2, 0
 	//查询 ESP8266 WiFi station 接口连接 AP 的状态
 	if (getState == STATION_GOT_IP) {
-		os_printf("WIFI连接成功！\r\n");
+		os_printf("WIFI connected success\r\n");
 		os_timer_disarm(&checkTimer_wifistate);
 		struct ip_info info;
-		const char remote_ip[4] = { 192, 168, 43, 1 };//目标IP地址,必须要先从手机获取，否则连接失败.
-4010182f:	0d4142        	s8i	a4, a1, 13
+		const char remote_ip[4] = { 120, 79, 20, 196 };//目标IP地址,必须要先从手机获取，否则连接失败.
+4010182d:	0d4142        	s8i	a4, a1, 13
 		wifi_get_ip_info(STATION_IF, &info);	//查询 WiFi模块的 IP 地址
-40101832:	ffef01        	l32r	a0, 401017f0 <user_init+0x24>
-40101835:	0000c0        	callx0	a0
-		my_station_init((struct ip_addr *) remote_ip, &info.ip, 6000);//连接到目标服务器的6000端口
-40101838:	ffec41        	l32r	a4, 401017e8 <user_init+0x1c>
-4010183b:	21cb      	addi.n	a2, a1, 12
-4010183d:	013d      	mov.n	a3, a1
-4010183f:	ffed01        	l32r	a0, 401017f4 <user_init+0x28>
-40101842:	0000c0        	callx0	a0
+40101830:	ffef01        	l32r	a0, 401017ec <user_init+0x20>
+40101833:	0000c0        	callx0	a0
+		my_station_init((struct ip_addr *) remote_ip, &info.ip, 22);//连接到目标服务器的6000端口
+40101836:	21cb      	addi.n	a2, a1, 12
+40101838:	013d      	mov.n	a3, a1
+4010183a:	641c      	movi.n	a4, 22
+4010183c:	ffed01        	l32r	a0, 401017f0 <user_init+0x24>
+4010183f:	0000c0        	callx0	a0
  }
 }
-40101845:	7108      	l32i.n	a0, a1, 28
-40101847:	20c112        	addi	a1, a1, 32
-4010184a:	f00d      	ret.n
+40101842:	7108      	l32i.n	a0, a1, 28
+40101844:	20c112        	addi	a1, a1, 32
+40101847:	f00d      	ret.n
+40101849:	000000        	ill
 4010184c:	fe8432        	excw
 4010184f:	3f          	.byte 0x3f
 40101850:	3e          	.byte 0x3e
 40101851:	3ffe84        	excw
-40101854:	17f8      	l32i.n	a15, a7, 4
-40101856:	304010        	xor	a4, a0, a1
-40101859:	2429      	s32i.n	a2, a4, 8
-4010185b:	2c6440        	excw
-4010185e:	124024        	excw
+40101854:	1017f4        	excw
+40101857:	293040        	excw
+4010185a:	644024        	excw
+4010185d:	242c      	movi.n	a4, 34
+4010185f:	c11240        	mul16u	a1, a2, a4
 
 40101860 <tcp_client_init>:
 
@@ -2617,7 +2617,7 @@ void tcp_client_init()	//初始化
 
 	wifi_set_opmode(0x01);	//设置为STATION模式
 40101863:	01a022        	movi	a2, 1
-		my_station_init((struct ip_addr *) remote_ip, &info.ip, 6000);//连接到目标服务器的6000端口
+		my_station_init((struct ip_addr *) remote_ip, &info.ip, 22);//连接到目标服务器的6000端口
  }
 }
 
@@ -2632,21 +2632,21 @@ void tcp_client_init()	//初始化
 
 	struct station_config stationConf;
 	os_strcpy(stationConf.ssid, "@PHICOMM_78");	  //改成你自己的   路由器的用户名
-40101872:	fff631        	l32r	a3, 4010184c <Check_WifiState+0x54>
+40101872:	fff631        	l32r	a3, 4010184c <Check_WifiState+0x58>
 40101875:	012d      	mov.n	a2, a1
 40101877:	ff9e01        	l32r	a0, 401016f0 <system_rtc_mem_read+0x64>
 4010187a:	0000c0        	callx0	a0
 	os_strcpy(stationConf.password, "12345678"); //改成你自己的   路由器的密码
-4010187d:	fff431        	l32r	a3, 40101850 <Check_WifiState+0x58>
+4010187d:	fff431        	l32r	a3, 40101850 <Check_WifiState+0x5c>
 40101880:	20c122        	addi	a2, a1, 32
 40101883:	ff9b01        	l32r	a0, 401016f0 <system_rtc_mem_read+0x64>
 40101886:	0000c0        	callx0	a0
 	wifi_station_set_config(&stationConf);	//设置WiFi station接口配置，并保存到 flash
 40101889:	012d      	mov.n	a2, a1
-4010188b:	fff301        	l32r	a0, 40101858 <Check_WifiState+0x60>
+4010188b:	fff301        	l32r	a0, 40101858 <Check_WifiState+0x64>
 4010188e:	0000c0        	callx0	a0
 	wifi_station_connect();	//连接路由器
-40101891:	fff201        	l32r	a0, 4010185c <Check_WifiState+0x64>
+40101891:	fff201        	l32r	a0, 4010185c <Check_WifiState+0x68>
 40101894:	0000c0        	callx0	a0
 
 	os_timer_disarm(&checkTimer_wifistate);	//取消定时器定时
@@ -2654,7 +2654,7 @@ void tcp_client_init()	//初始化
 4010189a:	0c2d      	mov.n	a2, a12
 4010189c:	ff0885        	call0	40100928 <ets_timer_disarm>
 	os_timer_setfn(&checkTimer_wifistate, (os_timer_func_t *) Check_WifiState,
-4010189f:	ffed31        	l32r	a3, 40101854 <Check_WifiState+0x5c>
+4010189f:	ffed31        	l32r	a3, 40101854 <Check_WifiState+0x60>
 401018a2:	0c2d      	mov.n	a2, a12
 401018a4:	040c      	movi.n	a4, 0
 401018a6:	fefa45        	call0	4010084c <ets_timer_setfn>
@@ -2960,7 +2960,7 @@ void tcp_client_init()	//初始化
 40101b84:	8b0a      	add.n	a8, a11, a0
 40101b86:	fe          	.byte 0xfe
 40101b87:	3f          	.byte 0x3f
-40101b88:	271ae0        	excw
+40101b88:	271b00        	excw
 40101b8b:	7c9840        	excw
 40101b8e:	124024        	excw
 
@@ -5057,7 +5057,7 @@ void tcp_client_init()	//初始化
 40103088:	fb3b31        	l32r	a3, 40101d74 <clockgate_watchdog+0x2c>
 4010308b:	004322        	s8i	a2, a3, 0
 4010308e:	f00d      	ret.n
-40103090:	271d50        	excw
+40103090:	271d70        	excw
 40103093:	c11240        	mul16u	a1, a2, a4
 
 40103094 <lmacProcessTxRtsError>:
@@ -5118,7 +5118,7 @@ void tcp_client_init()	//初始化
 40103128:	030c      	movi.n	a3, 0
 4010312a:	ff5905        	call0	401026bc <lmacRecycleMPDU+0x178>
 4010312d:	fff786        	j	4010310f <lmacProcessTxRtsError+0x7b>
-40103130:	271d70        	excw
+40103130:	271d90        	excw
 40103133:	c11240        	mul16u	a1, a2, a4
 
 40103134 <lmacProcessTxError>:
@@ -6656,7 +6656,7 @@ void tcp_client_init()	//初始化
 4010401d:	3ffe81        	l32r	a8, 400d4018 <__floatsidf+0xc5d28>
 40104020:	fe81c4        	excw
 40104023:	3f          	.byte 0x3f
-40104024:	271ff0        	excw
+40104024:	272010        	excw
 40104027:	822440        	mull	a2, a4, a4
 4010402a:	fe          	.byte 0xfe
 4010402b:	3f          	.byte 0x3f
@@ -8484,7 +8484,7 @@ void tcp_client_init()	//初始化
 401052d1:	445a      	add.n	a4, a4, a5
 401052d3:	0439      	s32i.n	a3, a4, 0
 401052d5:	f00d      	ret.n
-401052d7:	202800        	or	a2, a8, a0
+401052d7:	204800        	or	a4, a8, a0
 401052da:	124027        	ball	a0, a2, 401052f0 <wDevDisableRx+0x54>
 401052dd:	c9f0c1        	l32r	a12, 400f7aa0 <__floatsidf+0xe97b0>
 401052e0:	21d911        	l32r	a1, 400cda44 <__floatsidf+0xbf754>
@@ -8973,7 +8973,7 @@ void tcp_client_init()	//初始化
 401057c8:	ffff21        	l32r	a2, 401057c4 <esf_rx_buf_alloc+0x6c>
 401057cb:	d228      	l32i.n	a2, a2, 52
 401057cd:	f00d      	ret.n
-401057cf:	280000        	excw
+401057cf:	282000        	excw
 401057d2:	cc4027        	ball	a0, a2, 401057a2 <esf_rx_buf_alloc+0x4a>
 401057d5:	262c      	movi.n	a6, 34
 401057d7:	c11240        	mul16u	a1, a2, a4
@@ -9003,7 +9003,7 @@ void tcp_client_init()	//初始化
 40105813:	e43800        	extui	a3, a0, 8, 15
 40105816:	fe          	.byte 0xfe
 40105817:	3f          	.byte 0x3f
-40105818:	272b30        	excw
+40105818:	272b50        	excw
 4010581b:	e44c40        	extui	a4, a4, 12, 15
 4010581e:	fe          	.byte 0xfe
 4010581f:	3f          	.byte 0x3f
@@ -9164,8 +9164,8 @@ void tcp_client_init()	//初始化
 401059a3:	ffcfc6        	j	401058e6 <chm_get_current_channel+0x11e>
 401059a6:	7c0000        	excw
 401059a9:	f00d82        	l8ui	a8, a13, 240
-401059ac:	272b50        	excw
-401059af:	2b4040        	excw
+401059ac:	272b70        	excw
+401059af:	2b6040        	excw
 401059b2:	6c4027        	ball	a0, a2, 40105a22 <chm_get_current_channel+0x25a>
 401059b5:	3ffe83        	excw
 401059b8:	2672a4        	excw
@@ -9207,7 +9207,7 @@ void tcp_client_init()	//初始化
 40105a1b:	040200        	extui	a0, a0, 2, 1
 40105a1e:	50b405        	call0	40156560 <_etext+0x505ac>
 40105a21:	3ffee4        	excw
-40105a24:	272890        	excw
+40105a24:	2728b0        	excw
 40105a27:	27a440        	excw
 40105a2a:	5c4026        	beqi	a0, 4, 40105a8a <chm_get_current_channel+0x2c2>
 40105a2d:	402622        	l32i	a2, a6, 0x100
@@ -17962,7 +17962,7 @@ STA_init(void)
 40244d99:	119a      	add.n	a1, a1, a9
 40244d9b:	f00d      	ret.n
 40244d9d:	000000        	ill
-40244da0:	271924        	excw
+40244da0:	271940        	excw
 40244da3:	ff2140        	excw
 
 40244da4 <user_tcp_sent_cb>:
@@ -17971,7 +17971,7 @@ struct espconn user_tcp_conn;
 
 void ICACHE_FLASH_ATTR user_tcp_sent_cb(void *arg)  //发送
 {
-	os_printf("发送数据成功！");
+	os_printf("send data success");
 40244da4:	ffff21        	l32r	a2, 40244da0 <STA_init+0x80>
 
 os_timer_t checkTimer_wifistate;
@@ -17981,7 +17981,7 @@ void ICACHE_FLASH_ATTR user_tcp_sent_cb(void *arg)  //发送
 {
 40244da7:	f0c112        	addi	a1, a1, -16
 40244daa:	3109      	s32i.n	a0, a1, 12
-	os_printf("发送数据成功！");
+	os_printf("send data success");
 40244dac:	ed6801        	l32r	a0, 4024034c <user_uart_wait_tx_fifo_empty+0xbc>
 40244daf:	0000c0        	callx0	a0
 }
@@ -17989,23 +17989,23 @@ void ICACHE_FLASH_ATTR user_tcp_sent_cb(void *arg)  //发送
 40244db4:	10c112        	addi	a1, a1, 16
 40244db7:	f00d      	ret.n
 40244db9:	000000        	ill
-40244dbc:	271914        	excw
-40244dbf:	ff2140        	excw
+40244dbc:	1928      	l32i.n	a2, a9, 4
+40244dbe:	214027        	ball	a0, a2, 40244de3 <user_tcp_recv_cb+0x3>
 
 40244dc0 <user_tcp_discon_cb>:
 void ICACHE_FLASH_ATTR user_tcp_discon_cb(void *arg)  //断开
 {
-	os_printf("断开连接成功！");
+	os_printf("disconnected success");
 40244dc0:	ffff21        	l32r	a2, 40244dbc <user_tcp_sent_cb+0x18>
 void ICACHE_FLASH_ATTR user_tcp_sent_cb(void *arg)  //发送
 {
-	os_printf("发送数据成功！");
+	os_printf("send data success");
 }
 void ICACHE_FLASH_ATTR user_tcp_discon_cb(void *arg)  //断开
 {
 40244dc3:	f0c112        	addi	a1, a1, -16
 40244dc6:	3109      	s32i.n	a0, a1, 12
-	os_printf("断开连接成功！");
+	os_printf("disconnected success");
 40244dc8:	ed6101        	l32r	a0, 4024034c <user_uart_wait_tx_fifo_empty+0xbc>
 40244dcb:	0000c0        	callx0	a0
 }
@@ -18013,7 +18013,7 @@ void ICACHE_FLASH_ATTR user_tcp_discon_cb(void *arg)  //断开
 40244dd0:	10c112        	addi	a1, a1, 16
 40244dd3:	f00d      	ret.n
 40244dd5:	000000        	ill
-40244dd8:	271904        	excw
+40244dd8:	271914        	excw
 40244ddb:	845040        	extui	a5, a4, 0, 9
 40244dde:	fe          	.byte 0xfe
 40244ddf:	3f          	.byte 0x3f
@@ -18025,17 +18025,17 @@ void ICACHE_FLASH_ATTR user_tcp_recv_cb(void *arg,  //接收
 40244de3:	21c9      	s32i.n	a12, a1, 8
 40244de5:	02cd      	mov.n	a12, a2
 
-	os_printf("收到数据：%s\r\n", pdata);
+	os_printf("receive data:%s\r\n", pdata);
 40244de7:	fffc21        	l32r	a2, 40244dd8 <user_tcp_discon_cb+0x18>
 void ICACHE_FLASH_ATTR user_tcp_discon_cb(void *arg)  //断开
 {
-	os_printf("断开连接成功！");
+	os_printf("disconnected success");
 }
 void ICACHE_FLASH_ATTR user_tcp_recv_cb(void *arg,  //接收
 		char *pdata, unsigned short len) {
 40244dea:	036102        	s32i	a0, a1, 12
 
-	os_printf("收到数据：%s\r\n", pdata);
+	os_printf("receive data:%s\r\n", pdata);
 40244ded:	ed5701        	l32r	a0, 4024034c <user_uart_wait_tx_fifo_empty+0xbc>
 40244df0:	0000c0        	callx0	a0
 	espconn_sent((struct espconn *) arg, "0", strlen("0"));
@@ -18049,7 +18049,7 @@ void ICACHE_FLASH_ATTR user_tcp_recv_cb(void *arg,  //接收
 40244dff:	21c8      	l32i.n	a12, a1, 8
 40244e01:	10c112        	addi	a1, a1, 16
 40244e04:	f00d      	ret.n
-40244e06:	e80000        	excw
+40244e06:	f00000        	subx8	a0, a0, a0
 40244e09:	2718      	l32i.n	a1, a7, 8
 40244e0b:	c11240        	mul16u	a1, a2, a4
 
@@ -18058,26 +18058,26 @@ void ICACHE_FLASH_ATTR user_tcp_recon_cb(void *arg, sint8 err) //注册 TCP 连接发
 {
 40244e0c:	f0c112        	addi	a1, a1, -16
 40244e0f:	0261c2        	s32i	a12, a1, 8
-	os_printf("连接错误，错误代码为%d\r\n", err);
+	os_printf("connected error ,error code is %d\r\n", err);
 40244e12:	013380        	slli	a3, a3, 24
-	os_printf("收到数据：%s\r\n", pdata);
+	os_printf("receive data:%s\r\n", pdata);
 	espconn_sent((struct espconn *) arg, "0", strlen("0"));
 
 }
 void ICACHE_FLASH_ATTR user_tcp_recon_cb(void *arg, sint8 err) //注册 TCP 连接发生异常断开时的回调函数，可以在回调函数中进行重连
 {
 40244e15:	20c220        	or	a12, a2, a2
-	os_printf("连接错误，错误代码为%d\r\n", err);
+	os_printf("connected error ,error code is %d\r\n", err);
 40244e18:	fffc21        	l32r	a2, 40244e08 <user_tcp_recv_cb+0x28>
 40244e1b:	313830        	srai	a3, a3, 24
-	os_printf("收到数据：%s\r\n", pdata);
+	os_printf("receive data:%s\r\n", pdata);
 	espconn_sent((struct espconn *) arg, "0", strlen("0"));
 
 }
 void ICACHE_FLASH_ATTR user_tcp_recon_cb(void *arg, sint8 err) //注册 TCP 连接发生异常断开时的回调函数，可以在回调函数中进行重连
 {
 40244e1e:	036102        	s32i	a0, a1, 12
-	os_printf("连接错误，错误代码为%d\r\n", err);
+	os_printf("connected error ,error code is %d\r\n", err);
 40244e21:	ed4a01        	l32r	a0, 4024034c <user_uart_wait_tx_fifo_empty+0xbc>
 40244e24:	0000c0        	callx0	a0
 	espconn_connect((struct espconn *) arg);
@@ -18104,7 +18104,7 @@ void ICACHE_FLASH_ATTR user_tcp_connect_cb(void *arg)  //注册 TCP 连接成功建立后
 	espconn_regist_recvcb(pespconn, user_tcp_recv_cb);  //接收
 40244e48:	fffc31        	l32r	a3, 40244e38 <user_tcp_recon_cb+0x2c>
 {
-	os_printf("连接错误，错误代码为%d\r\n", err);
+	os_printf("connected error ,error code is %d\r\n", err);
 	espconn_connect((struct espconn *) arg);
 }
 void ICACHE_FLASH_ATTR user_tcp_connect_cb(void *arg)  //注册 TCP 连接成功建立后的回调函数
@@ -18129,7 +18129,6 @@ void ICACHE_FLASH_ATTR user_tcp_connect_cb(void *arg)  //注册 TCP 连接成功建立后
 40244e6a:	0c2d      	mov.n	a2, a12
 40244e6c:	440c      	movi.n	a4, 4
 40244e6e:	1a5305        	call0	4025f3a0 <espconn_send>
-
 }
 40244e71:	3108      	l32i.n	a0, a1, 12
 40244e73:	21c8      	l32i.n	a12, a1, 8
@@ -18153,8 +18152,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40244e91:	03fd      	mov.n	a15, a3
 	user_tcp_conn.proto.tcp = (esp_tcp *) os_zalloc(sizeof(esp_tcp));  //分配空间
 40244e93:	fffa31        	l32r	a3, 40244e7c <user_tcp_connect_cb+0x34>
+	espconn_regist_disconcb(pespconn, user_tcp_discon_cb);  //断开
 	espconn_sent(pespconn, "8226", strlen("8226"));
-
 }
 
 void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
@@ -18166,8 +18165,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 	user_tcp_conn.proto.tcp = (esp_tcp *) os_zalloc(sizeof(esp_tcp));  //分配空间
 40244e9e:	040c      	movi.n	a4, 0
 40244ea0:	022c      	movi.n	a2, 32
+	espconn_regist_disconcb(pespconn, user_tcp_discon_cb);  //断开
 	espconn_sent(pespconn, "8226", strlen("8226"));
-
 }
 
 void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
@@ -18180,7 +18179,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40244ead:	fff4c1        	l32r	a12, 40244e80 <user_tcp_connect_cb+0x38>
 	user_tcp_conn.type = ESPCONN_TCP;  //设置类型为TCP协议
 40244eb0:	031c      	movi.n	a3, 16
-
+	espconn_sent(pespconn, "8226", strlen("8226"));
 }
 
 void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
@@ -19354,7 +19353,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40245968:	0108      	l32i.n	a0, a1, 0
 4024596a:	10c112        	addi	a1, a1, 16
 4024596d:	f00d      	ret.n
-4024596f:	194000        	excw
+4024596f:	196000        	excw
 40245972:	124027        	ball	a0, a2, 40245988 <wait_rfpll_cal_end+0x14>
 
 40245974 <wait_rfpll_cal_end>:
@@ -20854,11 +20853,11 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40246874:	3108      	l32i.n	a0, a1, 12
 40246876:	20c112        	addi	a1, a1, 32
 40246879:	f00d      	ret.n
-4024687b:	1a1000        	excw
-4024687e:	e04027        	ball	a0, a2, 40246862 <set_cal_rxdc+0x8a>
-40246881:	2719      	s32i.n	a1, a7, 8
-40246883:	1a0040        	excw
-40246886:	b04027        	ball	a0, a2, 4024683a <set_cal_rxdc+0x62>
+4024687b:	1a3000        	excw
+4024687e:	004027        	ball	a0, a2, 40246882 <set_cal_rxdc+0xaa>
+40246881:	271a      	add.n	a2, a7, a1
+40246883:	1a2040        	excw
+40246886:	d04027        	ball	a0, a2, 4024685a <set_cal_rxdc+0x82>
 40246889:	2719      	s32i.n	a1, a7, 8
 4024688b:	05ad40        	extui	a10, a4, 29, 1
 
@@ -21191,7 +21190,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40246bd3:	174c      	movi.n	a7, 65
 40246bd5:	106172        	s32i	a7, a1, 64
 40246bd8:	ff5286        	j	40246926 <set_rx_gain_cal_iq+0x9a>
-40246bdb:	1a7000        	excw
+40246bdb:	1a9000        	excw
 40246bde:	204027        	ball	a0, a2, 40246c02 <gen_rx_gain_table+0x1a>
 40246be1:	3ffe80        	excw
 40246be4:	105f50        	and	a5, a15, a5
@@ -23259,7 +23258,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40248068:	2108      	l32i.n	a0, a1, 8
 4024806a:	10c112        	addi	a1, a1, 16
 4024806d:	f00d      	ret.n
-4024806f:	1aa000        	excw
+4024806f:	1ac000        	excw
 40248072:	7d4027        	ball	a0, a2, 402480f3 <sdt_on_noise_start+0x7f>
 
 40248074 <sdt_on_noise_start>:
@@ -27812,7 +27811,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024ae68:	fe89b4        	excw
 4024ae6b:	3f          	.byte 0x3f
 4024ae6c:	002000        	isync
-4024ae6f:	1b0000        	excw
+4024ae6f:	1b2000        	excw
 4024ae72:	9d4027        	ball	a0, a2, 4024ae13 <txiq_get_mis_pwr+0x47>
 
 4024ae74 <txiq_cover>:
@@ -28023,7 +28022,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024b07b:	41d8      	l32i.n	a13, a1, 16
 4024b07d:	50c112        	addi	a1, a1, 80
 4024b080:	f00d      	ret.n
-4024b082:	100000        	and	a0, a0, a0
+4024b082:	300000        	xor	a0, a0, a0
 4024b085:	271b      	addi.n	a2, a7, 1
 4024b087:	ffff40        	excw
 4024b08a:	00e000        	excw
@@ -28587,9 +28586,9 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024b60d:	fff946        	j	4024b5f6 <get_pwctrl_correct+0x2e>
 4024b610:	fe8b04        	excw
 4024b613:	3f          	.byte 0x3f
-4024b614:	271b30        	excw
+4024b614:	271b50        	excw
 4024b617:	0ff340        	excw
-4024b61a:	c00000        	sub	a0, a0, a0
+4024b61a:	e00000        	subx4	a0, a0, a0
 4024b61d:	271b      	addi.n	a2, a7, 1
 4024b61f:	c11240        	mul16u	a1, a2, a4
 
@@ -29287,9 +29286,9 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024bd42:	012280        	slli	a2, a2, 24
 4024bd45:	312820        	srai	a2, a2, 24
 4024bd48:	f00d      	ret.n
-4024bd4a:	500000        	excw
+4024bd4a:	700000        	excw
 4024bd4d:	271c      	movi.n	a7, 18
-4024bd4f:	1c7040        	excw
+4024bd4f:	1c9040        	excw
 4024bd52:	0c4027        	ball	a0, a2, 4024bd62 <ram_rfcal_txcap+0xe>
 
 4024bd54 <ram_rfcal_txcap>:
@@ -29478,7 +29477,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024bf09:	000772        	l8ui	a7, a7, 0
 4024bf0c:	0000c0        	callx0	a0
 4024bf0f:	ffedc6        	j	4024beca <ram_rfcal_txcap+0x176>
-4024bf12:	900000        	addx2	a0, a0, a0
+4024bf12:	b00000        	addx8	a0, a0, a0
 4024bf15:	271c      	movi.n	a7, 18
 4024bf17:	c11240        	mul16u	a1, a2, a4
 
@@ -29694,7 +29693,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024c131:	8108      	l32i.n	a0, a1, 32
 4024c133:	60c112        	addi	a1, a1, 96
 4024c136:	f00d      	ret.n
-4024c138:	271cd0        	excw
+4024c138:	271cf0        	excw
 4024c13b:	ce6040        	excw
 4024c13e:	824000        	mull	a4, a0, a0
 
@@ -31858,7 +31857,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024d6ab:	0108      	l32i.n	a0, a1, 0
 4024d6ad:	10c112        	addi	a1, a1, 16
 4024d6b0:	f00d      	ret.n
-4024d6b2:	000000        	ill
+4024d6b2:	200000        	or	a0, a0, a0
 4024d6b5:	271d      	excw
 4024d6b7:	c11240        	mul16u	a1, a2, a4
 4024d6ba:	61c2f0        	xsr.eps2	a15
@@ -31882,8 +31881,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024d6e9:	0108      	l32i.n	a0, a1, 0
 4024d6eb:	10c112        	addi	a1, a1, 16
 4024d6ee:	f00d      	ret.n
-4024d6f0:	271d10        	excw
-4024d6f3:	1d2040        	excw
+4024d6f0:	271d30        	excw
+4024d6f3:	1d4040        	excw
 4024d6f6:	244027        	ball	a0, a2, 4024d71e <ic_set_vif+0x1e>
 4024d6f9:	fe8b      	addi.n	a15, a14, 8
 4024d6fb:	3f          	.byte 0x3f
@@ -31961,7 +31960,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024d7af:	0000c0        	callx0	a0
 4024d7b2:	00bc05        	call0	4024e374 <pm_shutdown>
 4024d7b5:	fff9c6        	j	4024d7a0 <ic_set_vif+0xa0>
-4024d7b8:	271d30        	excw
+4024d7b8:	271d50        	excw
 4024d7bb:	271040        	excw
 	...
 
@@ -32044,10 +32043,10 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024d882:	0000c0        	callx0	a0
 4024d885:	00aec5        	call0	4024e374 <pm_shutdown>
 4024d888:	fff846        	j	4024d86d <ic_set_sta+0xad>
-4024d88b:	1d4000        	excw
-4024d88e:	484027        	ball	a0, a2, 4024d8da <ic_bss_info_update+0x42>
+4024d88b:	1d6000        	excw
+4024d88e:	684027        	ball	a0, a2, 4024d8fa <ic_set_key+0x6>
 4024d891:	271d      	excw
-4024d893:	1d3840        	excw
+4024d893:	1d5840        	excw
 4024d896:	124027        	ball	a0, a2, 4024d8ac <ic_bss_info_update+0x14>
 
 4024d898 <ic_bss_info_update>:
@@ -32338,7 +32337,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024db44:	0108      	l32i.n	a0, a1, 0
 4024db46:	10c112        	addi	a1, a1, 16
 4024db49:	f00d      	ret.n
-4024db4b:	1d8000        	excw
+4024db4b:	1da000        	excw
 4024db4e:	7c4027        	ball	a0, a2, 4024dbce <pm_set_sleep_time+0xde>
 4024db51:	3ffe80        	excw
 4024db54:	fe8e20        	excw
@@ -32649,13 +32648,13 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024de88:	86b8      	l32i.n	a11, a6, 32
 4024de8a:	fe          	.byte 0xfe
 4024de8b:	3f          	.byte 0x3f
-4024de8c:	271d90        	excw
+4024de8c:	271db0        	excw
 4024de8f:	8e3840        	excw
 4024de92:	fe          	.byte 0xfe
 4024de93:	3f          	.byte 0x3f
-4024de94:	271da0        	excw
-4024de97:	1db040        	excw
-4024de9a:	c04027        	ball	a0, a2, 4024de5e <pm_set_sleep_time+0x36e>
+4024de94:	271dc0        	excw
+4024de97:	1dd040        	excw
+4024de9a:	e04027        	ball	a0, a2, 4024de7e <pm_rf_is_closed+0xa>
 4024de9d:	271d      	excw
 4024de9f:	0bb840        	excw
 	...
@@ -32830,7 +32829,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024e063:	020c      	movi.n	a2, 0
 4024e065:	c439      	s32i.n	a3, a4, 48
 4024e067:	fff786        	j	4024e049 <pm_get_sleep_type+0xb5>
-4024e06a:	d00000        	subx2	a0, a0, a0
+4024e06a:	f00000        	subx8	a0, a0, a0
 4024e06d:	271d      	excw
 4024e06f:	0a0040        	excw
 4024e072:	120000        	excw
@@ -33035,7 +33034,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024e26c:	10c112        	addi	a1, a1, 16
 4024e26f:	f00d      	ret.n
 4024e271:	000000        	ill
-4024e274:	271df0        	excw
+4024e274:	271e10        	excw
 4024e277:	c11240        	mul16u	a1, a2, a4
 4024e27a:	0109f0        	slli	a0, a9, 17
 4024e27d:	ffbf45        	call0	4024de74 <pm_rf_is_closed>
@@ -33058,7 +33057,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024e2ab:	f00d      	ret.n
 4024e2ad:	000000        	ill
 4024e2b0:	000c00        	excw
-4024e2b3:	1e1000        	excw
+4024e2b3:	1e3000        	excw
 4024e2b6:	124027        	ball	a0, a2, 4024e2cc <pm_suspend+0x178>
 4024e2b9:	09f0c1        	l32r	a12, 40210a7c <_lit4_end+0x10aac8>
 4024e2bc:	bb4501        	l32r	a0, 4023cfd0 <_lit4_end+0x13701c>
@@ -33127,7 +33126,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024e365:	ef          	.byte 0xef
 4024e366:	ff          	.byte 0xff
 4024e367:	ff          	.byte 0xff
-4024e368:	271e30        	excw
+4024e368:	271e50        	excw
 4024e36b:	232840        	excw
 4024e36e:	ff0000        	excw
 4024e371:	df          	.byte 0xdf
@@ -33240,7 +33239,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 
 4024e47c <pm_idle_sleep>:
 4024e47c:	f00d      	ret.n
-4024e47e:	400000        	ssr	a0
+4024e47e:	600000        	neg	a0, a0
 4024e481:	1e          	.byte 0x1e
 4024e482:	ed4027        	ball	a0, a2, 4024e473 <pm_reset_idle_sleep+0x37>
 4024e485:	fe8c      	beqz.n	a14, 4024e498 <pm_open+0x10>
@@ -33320,7 +33319,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024e546:	c6b301        	l32r	a0, 40240014 <_irom0_text_start+0x14>
 4024e549:	0000c0        	callx0	a0
 4024e54c:	ffff06        	j	4024e54c <pm_open+0xc4>
-4024e54f:	1e6000        	excw
+4024e54f:	1e8000        	excw
 4024e552:	004027        	ball	a0, a2, 4024e556 <pm_open+0xce>
 4024e555:	fe8d      	excw
 4024e557:	3f          	.byte 0x3f
@@ -33698,7 +33697,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024e917:	86e400        	excw
 4024e91a:	fe          	.byte 0xfe
 4024e91b:	3f          	.byte 0x3f
-4024e91c:	271e70        	excw
+4024e91c:	271e90        	excw
 4024e91f:	c11240        	mul16u	a1, a2, a4
 4024e922:	21c9e0        	srai	a12, a14, 9
 4024e925:	31d9      	s32i.n	a13, a1, 12
@@ -34542,7 +34541,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024f1b8:	440b      	addi.n	a4, a4, -1
 4024f1ba:	832340        	moveqz	a2, a3, a4
 4024f1bd:	f00d      	ret.n
-4024f1bf:	1e8000        	excw
+4024f1bf:	1ea000        	excw
 4024f1c2:	214027        	ball	a0, a2, 4024f1e7 <pm_scan_lock+0x23>
 
 4024f1c4 <pm_scan_lock>:
@@ -34570,7 +34569,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024f1f8:	10c112        	addi	a1, a1, 16
 4024f1fb:	f00d      	ret.n
 4024f1fd:	000000        	ill
-4024f200:	1e88      	l32i.n	a8, a14, 4
+4024f200:	1ea8      	l32i.n	a10, a14, 4
 4024f202:	214027        	ball	a0, a2, 4024f227 <pm_force_scan_unlock+0x23>
 
 4024f204 <pm_force_scan_unlock>:
@@ -34835,11 +34834,11 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024f488:	8dcc      	bnez.n	a13, 4024f494 <pm_get_idle_wait_time+0x50>
 4024f48a:	fe          	.byte 0xfe
 4024f48b:	3f          	.byte 0x3f
-4024f48c:	271eb0        	excw
-4024f48f:	1ed040        	excw
-4024f492:	f04027        	ball	a0, a2, 4024f486 <pm_get_idle_wait_time+0x42>
-4024f495:	1e          	.byte 0x1e
-4024f496:	004027        	ball	a0, a2, 4024f49a <pm_get_idle_wait_time+0x56>
+4024f48c:	271ed0        	excw
+4024f48f:	1ef040        	excw
+4024f492:	104027        	ball	a0, a2, 4024f4a6 <fpm_set_type_from_upper+0xa>
+4024f495:	1f          	.byte 0x1f
+4024f496:	204027        	ball	a0, a2, 4024f4ba <fpm_set_type_from_upper+0x1e>
 4024f499:	1f          	.byte 0x1f
 4024f49a:	124027        	ball	a0, a2, 4024f4b0 <fpm_set_type_from_upper+0x14>
 
@@ -34950,7 +34949,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024f59b:	3f          	.byte 0x3f
 4024f59c:	fe8de4        	excw
 4024f59f:	3f          	.byte 0x3f
-4024f5a0:	271f10        	excw
+4024f5a0:	271f30        	excw
 4024f5a3:	c11240        	mul16u	a1, a2, a4
 
 4024f5a4 <fpm_close>:
@@ -34999,7 +34998,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024f614:	10c112        	addi	a1, a1, 16
 4024f617:	f00d      	ret.n
 4024f619:	000000        	ill
-4024f61c:	271f20        	excw
+4024f61c:	271f40        	excw
 4024f61f:	c11240        	mul16u	a1, a2, a4
 
 4024f620 <fpm_open>:
@@ -35081,7 +35080,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024f6de:	900000        	addx2	a0, a0, a0
 4024f6e1:	fe8d      	excw
 4024f6e3:	3f          	.byte 0x3f
-4024f6e4:	271e90        	excw
+4024f6e4:	271eb0        	excw
 4024f6e7:	c11240        	mul16u	a1, a2, a4
 4024f6ea:	31c9f0        	srai	a12, a15, 25
 4024f6ed:	fffcc1        	l32r	a12, 4024f6e0 <fpm_attach+0x58>
@@ -35627,7 +35626,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024fc9a:	ff          	.byte 0xff
 4024fc9b:	0f          	.byte 0xf
 4024fc9c:	002d50        	excw
-4024fc9f:	1f4000        	excw
+4024fc9f:	1f6000        	excw
 4024fca2:	124027        	ball	a0, a2, 4024fcb8 <fpm_do_wakeup+0x308>
 4024fca5:	c9f0c1        	l32r	a12, 40242468 <system_param_load+0xf0>
 4024fca8:	110921        	l32r	a2, 402140cc <_lit4_end+0x10e118>
@@ -35894,11 +35893,11 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4024ff73:	4879      	s32i.n	a7, a8, 16
 4024ff75:	020c      	movi.n	a2, 0
 4024ff77:	ffefc6        	j	4024ff3a <fpm_do_sleep+0x52>
-4024ff7a:	500000        	excw
+4024ff7a:	700000        	excw
 4024ff7d:	1f          	.byte 0x1f
-4024ff7e:	704027        	ball	a0, a2, 4024fff2 <PPWdtReset+0x16>
+4024ff7e:	904027        	ball	a0, a2, 4024ff12 <fpm_do_sleep+0x2a>
 4024ff81:	1f          	.byte 0x1f
-4024ff82:	804027        	ball	a0, a2, 4024ff06 <fpm_do_sleep+0x1e>
+4024ff82:	a04027        	ball	a0, a2, 4024ff26 <fpm_do_sleep+0x3e>
 4024ff85:	1f          	.byte 0x1f
 4024ff86:	124027        	ball	a0, a2, 4024ff9c <fpm_auto_sleep_set_in_null_mode+0x14>
 
@@ -36068,8 +36067,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402500fc:	10c112        	addi	a1, a1, 16
 402500ff:	f00d      	ret.n
 40250101:	000000        	ill
-40250104:	271fa0        	excw
-40250107:	1fb040        	excw
+40250104:	271fc0        	excw
+40250107:	1fd040        	excw
 4025010a:	214027        	ball	a0, a2, 4025012f <pp_enable_noise_timer+0x23>
 
 4025010c <pp_enable_noise_timer>:
@@ -36266,7 +36265,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402502e3:	887800        	excw
 402502e6:	fe          	.byte 0xfe
 402502e7:	3f          	.byte 0x3f
-402502e8:	271f90        	excw
+402502e8:	271fb0        	excw
 402502eb:	c11240        	mul16u	a1, a2, a4
 
 402502ec <ppPeocessRxPktHdr>:
@@ -36621,7 +36620,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40250693:	3f          	.byte 0x3f
 40250694:	fe8464        	excw
 40250697:	3f          	.byte 0x3f
-40250698:	271fc0        	excw
+40250698:	271fe0        	excw
 4025069b:	403440        	excw
 4025069e:	ec4010        	excw
 402506a1:	103b      	addi.n	a1, a0, 3
@@ -37294,12 +37293,10 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40250d36:	900000        	addx2	a0, a0, a0
 40250d39:	3ffed7        	bbsi	a14, 29, 40250d7c <DefFreqCalTimerCB+0x50>
 40250d3c:	0249f0        	excw
-40250d3f:	1fd000        	excw
-40250d42:	e04027        	ball	a0, a2, 40250d26 <pp_tx_idle_timeout+0x1be>
-40250d45:	1f          	.byte 0x1f
-40250d46:	444027        	ball	a0, a2, 40250d8e <DefFreqCalTimerCB+0x62>
-40250d49:	8e          	.byte 0x8e
-40250d4a:	fe          	.byte 0xfe
+40250d3f:	1ff000        	excw
+40250d42:	004027        	ball	a0, a2, 40250d46 <DefFreqCalTimerCB+0x1a>
+40250d45:	402720        	excw
+40250d48:	fe8e44        	excw
 40250d4b:	3f          	.byte 0x3f
 40250d4c:	0d2c      	movi.n	a13, 32
 40250d4e:	914025        	excw
@@ -37849,7 +37846,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402512ec:	103810        	and	a3, a8, a1
 402512ef:	c11240        	mul16u	a1, a2, a4
 402512f2:	61c2e0        	xsr.eps2	a14
-402512f5:	610205        	call0	402b2318 <_irom0_text_end+0x3e848>
+402512f5:	610205        	call0	402b2318 <_irom0_text_end+0x3e828>
 402512f8:	02cd04        	excw
 402512fb:	4208      	l32i.n	a0, a2, 16
 402512fd:	3109      	s32i.n	a0, a1, 12
@@ -38694,9 +38691,9 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40251b9f:	103340        	and	a3, a3, a4
 40251ba2:	5239      	s32i.n	a3, a2, 20
 40251ba4:	f00d      	ret.n
-40251ba6:	100000        	and	a0, a0, a0
+40251ba6:	300000        	xor	a0, a0, a0
 40251ba9:	402720        	excw
-40251bac:	272000        	excw
+40251bac:	272020        	excw
 40251baf:	180c40        	excw
 
 40251bb0 <rc_enable_trc>:
@@ -38791,8 +38788,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40251c8e:	f00d      	ret.n
 40251c90:	fe9236        	excw
 40251c93:	3f          	.byte 0x3f
-40251c94:	2018      	l32i.n	a1, a0, 8
-40251c96:	204027        	ball	a0, a2, 40251cba <rc_disable_trc+0x1e>
+40251c94:	2038      	l32i.n	a3, a0, 8
+40251c96:	404027        	ball	a0, a2, 40251cda <rc_disable_trc+0x3e>
 40251c99:	402720        	excw
 
 40251c9c <rc_disable_trc>:
@@ -40024,7 +40021,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40252907:	c63000        	excw
 4025290a:	fe          	.byte 0xfe
 4025290b:	3f          	.byte 0x3f
-4025290c:	272030        	excw
+4025290c:	272050        	excw
 4025290f:	046d40        	extui	a6, a4, 13, 1
 
 40252910 <esf_buf_alloc>:
@@ -40700,18 +40697,18 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40252f6c:	84c222        	addi	a2, a2, -124
 40252f6f:	f00d      	ret.n
 40252f71:	000000        	ill
-40252f74:	2058      	l32i.n	a5, a0, 8
-40252f76:	404027        	ball	a0, a2, 40252fba <wifi_mode_set+0x22>
+40252f74:	2078      	l32i.n	a7, a0, 8
+40252f76:	604027        	ball	a0, a2, 40252fda <wifi_mode_set+0x42>
 40252f79:	402720        	excw
-40252f7c:	2068      	l32i.n	a6, a0, 8
-40252f7e:	704027        	ball	a0, a2, 40252ff2 <wifi_mode_set+0x5a>
+40252f7c:	2088      	l32i.n	a8, a0, 8
+40252f7e:	904027        	ball	a0, a2, 40252f12 <ieee80211_ieee2mhz+0x36>
 40252f81:	402720        	excw
-40252f84:	272060        	excw
-40252f87:	20c040        	or	a12, a0, a4
-40252f8a:	984027        	ball	a0, a2, 40252f26 <ieee80211_find_channel+0xa>
+40252f84:	272080        	excw
+40252f87:	20e040        	or	a14, a0, a4
+40252f8a:	b84027        	ball	a0, a2, 40252f46 <ieee80211_find_channel+0x2a>
 40252f8d:	402720        	excw
-40252f90:	2720a0        	excw
-40252f93:	209040        	or	a9, a0, a4
+40252f90:	2720c0        	excw
+40252f93:	20b040        	or	a11, a0, a4
 40252f96:	124027        	ball	a0, a2, 40252fac <wifi_mode_set+0x14>
 
 40252f98 <wifi_mode_set>:
@@ -41392,7 +41389,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40253671:	0108      	l32i.n	a0, a1, 0
 40253673:	10c112        	addi	a1, a1, 16
 40253676:	f00d      	ret.n
-40253678:	2720d0        	excw
+40253678:	2720f0        	excw
 4025367b:	c21c40        	excw
 4025367e:	5da142        	movi	a4, 0x15d
 40253681:	e0c112        	addi	a1, a1, -32
@@ -42976,15 +42973,15 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402546dc:	8098      	l32i.n	a9, a0, 32
 402546de:	fe          	.byte 0xfe
 402546df:	3f          	.byte 0x3f
-402546e0:	2720f0        	excw
-402546e3:	211040        	srai	a1, a4, 0
+402546e0:	272110        	excw
+402546e3:	213040        	srai	a3, a4, 0
 402546e6:	a44027        	ball	a0, a2, 4025468e <hostap_input+0xc4a>
 402546e9:	3ffed7        	bbsi	a14, 29, 4025472c <hostap_input+0xce8>
 402546ec:	8e58      	l32i.n	a5, a14, 32
 402546ee:	fe          	.byte 0xfe
 402546ef:	3f          	.byte 0x3f
-402546f0:	272100        	excw
-402546f3:	212040        	srai	a2, a4, 0
+402546f0:	272120        	excw
+402546f3:	214040        	srai	a4, a4, 0
 402546f6:	214027        	ball	a0, a2, 4025471b <hostap_input+0xcd7>
 402546f9:	12fff6        	bgeui	a15, 0x100, 4025470f <hostap_input+0xccb>
 402546fc:	d9e0c1        	l32r	a12, 4024ae7c <txiq_cover+0x8>
@@ -44415,7 +44412,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025558b:	f00d      	ret.n
 4025558d:	120c      	movi.n	a2, 1
 4025558f:	fffcc6        	j	40255586 <ieee80211_add_htinfo_vendor+0xaa>
-40255592:	300000        	xor	a0, a0, a0
+40255592:	500000        	excw
 40255595:	402721        	l32r	a2, 40225634 <_lit4_end+0x11f680>
 40255598:	e0c112        	addi	a1, a1, -32
 4025559b:	036102        	s32i	a0, a1, 12
@@ -44753,7 +44750,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402558d3:	0108      	l32i.n	a0, a1, 0
 402558d5:	10c112        	addi	a1, a1, 16
 402558d8:	f00d      	ret.n
-402558da:	500000        	excw
+402558da:	700000        	excw
 402558dd:	402721        	l32r	a2, 4022597c <_lit4_end+0x11f9c8>
 
 402558e0 <ieee80211_alloc_challenge>:
@@ -45546,7 +45543,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402560f8:	fff1c6        	j	402560c3 <ieee80211_parse_rsn+0xbf>
 402560fb:	020c      	movi.n	a2, 0
 402560fd:	ffd046        	j	40256042 <ieee80211_parse_rsn+0x3e>
-40256100:	2726a4        	excw
+40256100:	2726c4        	excw
 40256103:	c11240        	mul16u	a1, a2, a4
 
 40256104 <ieee80211_parse_action>:
@@ -45616,8 +45613,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402561a2:	f00d      	ret.n
 402561a4:	fe8474        	excw
 402561a7:	3f          	.byte 0x3f
-402561a8:	272170        	excw
-402561ab:	219040        	srai	a9, a4, 0
+402561a8:	272190        	excw
+402561ab:	21b040        	srai	a11, a4, 0
 402561ae:	124027        	ball	a0, a2, 402561c4 <ieee80211_mesh_quick_init+0x14>
 
 402561b0 <ieee80211_mesh_quick_init>:
@@ -46916,7 +46913,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40256e5d:	21d8      	l32i.n	a13, a1, 8
 40256e5f:	10c112        	addi	a1, a1, 16
 40256e62:	f00d      	ret.n
-40256e64:	2721c0        	excw
+40256e64:	2721e0        	excw
 40256e67:	d10040        	mul16s	a0, a0, a4
 40256e6a:	fe          	.byte 0xfe
 40256e6b:	3f          	.byte 0x3f
@@ -47730,7 +47727,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025766a:	220000        	excw
 4025766d:	8c1802        	l16ui	a0, a8, 0x118
 40257670:	126632        	s32i	a3, a6, 72
-40257673:	238c05        	call0	4027af34 <_irom0_text_end+0x7464>
+40257673:	238c05        	call0	4027af34 <_irom0_text_end+0x7444>
 40257676:	120c      	movi.n	a2, 1
 40257678:	f00d      	ret.n
 4025767a:	020c      	movi.n	a2, 0
@@ -48807,10 +48804,10 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402580e0:	220b      	addi.n	a2, a2, -1
 402580e2:	932320        	movnez	a2, a3, a2
 402580e5:	f00d      	ret.n
-402580e7:	21e000        	srai	a14, a0, 0
-402580ea:	f04027        	ball	a0, a2, 402580de <ieee80211_phy_type_get+0x6>
-402580ed:	402721        	l32r	a2, 4022818c <_lit4_end+0x1221d8>
-402580f0:	2722c4        	excw
+402580e7:	220000        	excw
+402580ea:	104027        	ball	a0, a2, 402580fe <ieee80211_setup_ratetable+0xa>
+402580ed:	402722        	l32i	a2, a7, 0x100
+402580f0:	2722e4        	excw
 402580f3:	fd3140        	excw
 
 402580f4 <ieee80211_setup_ratetable>:
@@ -49085,7 +49082,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40258379:	7259      	s32i.n	a5, a2, 28
 4025837b:	f00d      	ret.n
 4025837d:	000000        	ill
-40258380:	2723a0        	excw
+40258380:	2723c0        	excw
 40258383:	028240        	excw
 
 40258384 <ieee80211_iserp_rateset>:
@@ -49306,12 +49303,12 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40258570:	854c      	movi.n	a5, 72
 40258572:	e44025        	excw
 40258575:	25aa      	add.n	a2, a5, a10
-40258577:	23e040        	excw
-4025857a:	f84027        	ball	a0, a2, 40258576 <ieee80211_scan_attach+0x7e>
-4025857d:	402723        	excw
+40258577:	240040        	extui	a0, a4, 0, 3
+4025857a:	184027        	ball	a0, a2, 40258596 <scan_start+0xa>
+4025857d:	402724        	excw
 40258580:	258924        	excw
-40258583:	23f040        	excw
-40258586:	004027        	ball	a0, a2, 4025858a <ieee80211_scan_attach+0x92>
+40258583:	241040        	extui	a1, a4, 0, 3
+40258586:	204027        	ball	a0, a2, 402585aa <scan_start+0x1e>
 40258589:	402724        	excw
 
 4025858c <scan_start>:
@@ -49663,7 +49660,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40258916:	002102        	l32i	a0, a1, 0
 40258919:	10c112        	addi	a1, a1, 16
 4025891c:	f00d      	ret.n
-4025891e:	100000        	and	a0, a0, a0
+4025891e:	300000        	xor	a0, a0, a0
 40258921:	402724        	excw
 40258924:	ffff21        	l32r	a2, 40258920 <scan_cancel+0x34>
 40258927:	e0c112        	addi	a1, a1, -32
@@ -50032,7 +50029,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40258ca3:	102320        	and	a2, a3, a2
 40258ca6:	7429      	s32i.n	a2, a4, 28
 40258ca8:	f00d      	ret.n
-40258caa:	200000        	or	a0, a0, a0
+40258caa:	400000        	ssr	a0
 40258cad:	402724        	excw
 
 40258cb0 <scan_connect_state>:
@@ -50079,11 +50076,11 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40258d10:	f00d      	ret.n
 40258d12:	020c      	movi.n	a2, 0
 40258d14:	f00d      	ret.n
-40258d16:	300000        	xor	a0, a0, a0
+40258d16:	500000        	excw
 40258d19:	402724        	excw
 40258d1c:	fed365        	excw
 40258d1f:	3f          	.byte 0x3f
-40258d20:	2723c0        	excw
+40258d20:	2723e0        	excw
 40258d23:	c11240        	mul16u	a1, a2, a4
 
 40258d24 <scan_profile_check>:
@@ -50442,7 +50439,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402590c0:	000c      	movi.n	a0, 0
 402590c2:	ffeb06        	j	40259072 <scan_profile_check+0x34e>
 402590c5:	000000        	ill
-402590c8:	272450        	excw
+402590c8:	272470        	excw
 402590cb:	c11240        	mul16u	a1, a2, a4
 
 402590cc <scan_parse_beacon>:
@@ -50846,8 +50843,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402594f1:	4788      	l32i.n	a8, a7, 16
 402594f3:	d04822        	s8i	a2, a8, 208
 402594f6:	f00d      	ret.n
-402594f8:	272470        	excw
-402594fb:	246040        	extui	a6, a4, 0, 3
+402594f8:	272490        	excw
+402594fb:	248040        	extui	a8, a4, 0, 3
 402594fe:	554027        	ball	a0, a2, 40259557 <ieee80211_sta_new_state+0x4f>
 40259501:	fed8      	l32i.n	a13, a14, 60
 40259503:	3f          	.byte 0x3f
@@ -53017,7 +53014,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025aad5:	1108      	l32i.n	a0, a1, 4
 4025aad7:	10c112        	addi	a1, a1, 16
 4025aada:	f00d      	ret.n
-4025aadc:	2724a0        	excw
+4025aadc:	2724c0        	excw
 4025aadf:	dbbc40        	excw
 4025aae2:	fe          	.byte 0xfe
 4025aae3:	3f          	.byte 0x3f
@@ -53136,8 +53133,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025abf9:	000000        	ill
 4025abfc:	fedbc0        	excw
 4025abff:	3f          	.byte 0x3f
-4025ac00:	272490        	excw
-4025ac03:	24b040        	extui	a11, a4, 0, 3
+4025ac00:	2724b0        	excw
+4025ac03:	24d040        	extui	a13, a4, 0, 3
 4025ac06:	324027        	ball	a0, a2, 4025ac3c <cnx_start_handoff_cb+0x54>
 4025ac09:	4110a0        	srli	a1, a10, 0
 4025ac0c:	219500        	srai	a9, a0, 5
@@ -54311,7 +54308,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025b7a8:	4108      	l32i.n	a0, a1, 16
 4025b7aa:	20c112        	addi	a1, a1, 32
 4025b7ad:	f00d      	ret.n
-4025b7af:	24e000        	extui	a14, a0, 0, 3
+4025b7af:	250000        	extui	a0, a0, 16, 3
 4025b7b2:	f04027        	ball	a0, a2, 4025b7a6 <cnx_sta_leave+0x17e>
 4025b7b5:	4025b7        	blt	a5, a11, 4025b7f9 <cnx_sta_leave+0x1d1>
 4025b7b8:	fffe21        	l32r	a2, 4025b7b0 <cnx_sta_leave+0x188>
@@ -54333,7 +54330,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025b7e3:	10c112        	addi	a1, a1, 16
 4025b7e6:	f00d      	ret.n
 4025b7e8:	b7b8      	l32i.n	a11, a7, 44
-4025b7ea:	004025        	excw
+4025b7ea:	204025        	excw
 4025b7ed:	402725        	excw
 4025b7f0:	f0c112        	addi	a1, a1, -16
 4025b7f3:	11c9      	s32i.n	a12, a1, 4
@@ -54668,8 +54665,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025bb2f:	262ff2        	l32i	a15, a15, 152
 4025bb32:	fff986        	j	4025bb1c <cnx_node_search+0x58>
 4025bb35:	000000        	ill
-4025bb38:	272540        	excw
-4025bb3b:	258040        	extui	a8, a4, 16, 3
+4025bb38:	272560        	excw
+4025bb3b:	25a040        	extui	a10, a4, 16, 3
 4025bb3e:	124027        	ball	a0, a2, 4025bb54 <cnx_node_leave+0x14>
 
 4025bb40 <cnx_node_leave>:
@@ -54808,10 +54805,10 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025bc90:	f00d      	ret.n
 4025bc92:	020c      	movi.n	a2, 0
 4025bc94:	fffcc6        	j	4025bc8b <wifi_softap_toomany_deny+0x23>
-4025bc97:	25a000        	extui	a10, a0, 16, 3
-4025bc9a:	c04027        	ball	a0, a2, 4025bc5e <wifi_softap_staconnected_event_policy+0x1e>
+4025bc97:	25c000        	extui	a12, a0, 16, 3
+4025bc9a:	e04027        	ball	a0, a2, 4025bc7e <wifi_softap_toomany_deny+0x16>
 4025bc9d:	402725        	excw
-4025bca0:	2725e0        	excw
+4025bca0:	272600        	excw
 4025bca3:	c11240        	mul16u	a1, a2, a4
 
 4025bca4 <cnx_node_join>:
@@ -55524,8 +55521,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025c36d:	7108      	l32i.n	a0, a1, 28
 4025c36f:	30c112        	addi	a1, a1, 48
 4025c372:	f00d      	ret.n
-4025c374:	272620        	excw
-4025c377:	264040        	excw
+4025c374:	272640        	excw
+4025c377:	266040        	excw
 4025c37a:	4c4027        	ball	a0, a2, 4025c3ca <ieee80211_recv_action_vendor_spec+0x4a>
 4025c37d:	fedc      	bnez.n	a14, 4025c3a0 <ieee80211_recv_action_vendor_spec+0x20>
 4025c37f:	3f          	.byte 0x3f
@@ -55631,7 +55628,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025c47b:	ffd9c6        	j	4025c3e6 <ieee80211_recv_action_vendor_spec+0x66>
 4025c47e:	800000        	add	a0, a0, a0
 4025c481:	4025c3        	excw
-4025c484:	272660        	excw
+4025c484:	272680        	excw
 4025c487:	a02240        	addx4	a2, a2, a4
 
 4025c488 <ieee80211_action_vendor_spec_attach>:
@@ -56069,7 +56066,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025c880:	20c112        	addi	a1, a1, 32
 4025c883:	f00d      	ret.n
 4025c885:	000000        	ill
-4025c888:	272ab0        	excw
+4025c888:	272ad0        	excw
 4025c88b:	c11240        	mul16u	a1, a2, a4
 4025c88e:	21c9f0        	srai	a12, a15, 9
 4025c891:	1109      	s32i.n	a0, a1, 4
@@ -56156,7 +56153,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025c963:	0108      	l32i.n	a0, a1, 0
 4025c965:	10c112        	addi	a1, a1, 16
 4025c968:	f00d      	ret.n
-4025c96a:	b40000        	extui	a0, a0, 0, 12
+4025c96a:	d40000        	extui	a0, a0, 0, 14
 4025c96d:	272a      	add.n	a2, a7, a2
 4025c96f:	130c40        	excw
 4025c972:	e0c112        	addi	a1, a1, -32
@@ -56351,7 +56348,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025cb44:	0108      	l32i.n	a0, a1, 0
 4025cb46:	10c112        	addi	a1, a1, 16
 4025cb49:	f00d      	ret.n
-4025cb4b:	26d000        	excw
+4025cb4b:	26f000        	excw
 4025cb4e:	124027        	ball	a0, a2, 4025cb64 <dhcp_fine_tmr+0x14>
 
 4025cb50 <dhcp_fine_tmr>:
@@ -56600,7 +56597,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025cdc5:	1108      	l32i.n	a0, a1, 4
 4025cdc7:	10c112        	addi	a1, a1, 16
 4025cdca:	f00d      	ret.n
-4025cdcc:	2726c0        	excw
+4025cdcc:	2726e0        	excw
 4025cdcf:	c11240        	mul16u	a1, a2, a4
 
 4025cdd0 <dhcp_cleanup>:
@@ -57526,7 +57523,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025d6c5:	f00d      	ret.n
 4025d6c7:	024200        	excw
 4025d6ca:	0c0c      	movi.n	a12, 0
-4025d6cc:	143705        	call0	40271a40 <flash_str$2790+0x11c>
+4025d6cc:	143705        	call0	40271a40 <flash_str$2790+0x100>
 4025d6cf:	3208      	l32i.n	a0, a2, 12
 4025d6d1:	520c42        	l8ui	a4, a12, 82
 4025d6d4:	520d42        	l8ui	a4, a13, 82
@@ -58608,7 +58605,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025e194:	100c      	movi.n	a0, 1
 4025e196:	fffac6        	j	4025e185 <node_remove_from_list+0x459>
 4025e199:	000000        	ill
-4025e19c:	2726e0        	excw
+4025e19c:	272700        	excw
 4025e19f:	440c40        	extui	a0, a4, 12, 5
 4025e1a2:	e0c112        	addi	a1, a1, -32
 4025e1a5:	3109      	s32i.n	a0, a1, 12
@@ -58657,8 +58654,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025e20f:	3108      	l32i.n	a0, a1, 12
 4025e211:	20c112        	addi	a1, a1, 32
 4025e214:	f00d      	ret.n
-4025e216:	f00000        	subx8	a0, a0, a0
-4025e219:	402726        	beqi	a7, 2, 4025e25d <node_remove_from_list+0x531>
+4025e216:	100000        	and	a0, a0, a0
+4025e219:	402727        	blt	a7, a2, 4025e25d <node_remove_from_list+0x531>
 4025e21c:	f0c112        	addi	a1, a1, -16
 4025e21f:	0261d2        	s32i	a13, a1, 8
 4025e222:	0161c2        	s32i	a12, a1, 4
@@ -58854,7 +58851,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025e425:	1108      	l32i.n	a0, a1, 4
 4025e427:	10c112        	addi	a1, a1, 16
 4025e42a:	f00d      	ret.n
-4025e42c:	272700        	excw
+4025e42c:	272720        	excw
 4025e42f:	e21c40        	excw
 4025e432:	124025        	excw
 
@@ -59668,7 +59665,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025ebb9:	f00d      	ret.n
 4025ebbb:	c11200        	mul16u	a1, a2, a0
 4025ebbe:	61d2e0        	xsr.excsave2	a14
-4025ebc1:	612206        	j	4027704d <_irom0_text_end+0x357d>
+4025ebc1:	612206        	j	4027704d <_irom0_text_end+0x355d>
 4025ebc4:	213903        	excw
 4025ebc7:	51c9      	s32i.n	a12, a1, 20
 4025ebc9:	4109      	s32i.n	a0, a1, 16
@@ -59861,7 +59858,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025eda0:	0108      	l32i.n	a0, a1, 0
 4025eda2:	10c112        	addi	a1, a1, 16
 4025eda5:	f00d      	ret.n
-4025eda7:	272800        	excw
+4025eda7:	274800        	excw
 4025edaa:	804027        	ball	a0, a2, 4025ed2e <dns_tmr+0x1e2>
 4025edad:	093a      	add.n	a0, a9, a3
 4025edaf:	a22200        	excw
@@ -60482,7 +60479,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025f394:	fffc06        	j	4025f388 <espconn_create+0x30>
 4025f397:	127c      	movi.n	a2, -15
 4025f399:	fffac6        	j	4025f388 <espconn_create+0x30>
-4025f39c:	272730        	excw
+4025f39c:	272750        	excw
 4025f39f:	c11240        	mul16u	a1, a2, a4
 
 4025f3a0 <espconn_send>:
@@ -61337,7 +61334,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025fb20:	e43c      	movi.n	a4, 62
 4025fb22:	fe          	.byte 0xfe
 4025fb23:	3f          	.byte 0x3f
-4025fb24:	272740        	excw
+4025fb24:	272760        	excw
 4025fb27:	fc2140        	excw
 4025fb2a:	ff          	.byte 0xff
 4025fb2b:	f0c112        	addi	a1, a1, -16
@@ -61424,7 +61421,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4025fbf4:	10c112        	addi	a1, a1, 16
 4025fbf7:	f00d      	ret.n
 4025fbf9:	000000        	ill
-4025fbfc:	272b40        	excw
+4025fbfc:	272b60        	excw
 4025fbff:	070c40        	excw
 
 4025fc00 <espconn_kill_oldest_pcb>:
@@ -61985,7 +61982,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40260150:	10c112        	addi	a1, a1, 16
 40260153:	f00d      	ret.n
 40260155:	000000        	ill
-40260158:	272750        	excw
+40260158:	272770        	excw
 4026015b:	c11240        	mul16u	a1, a2, a4
 
 4026015c <espconn_recv_hold>:
@@ -62014,7 +62011,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40260195:	1108      	l32i.n	a0, a1, 4
 40260197:	10c112        	addi	a1, a1, 16
 4026019a:	f00d      	ret.n
-4026019c:	272780        	excw
+4026019c:	2727a0        	excw
 4026019f:	c11240        	mul16u	a1, a2, a4
 
 402601a0 <espconn_recv_unhold>:
@@ -62274,7 +62271,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40260413:	ffeb86        	j	402603c5 <espconn_tcp_write+0x119>
 40260416:	780000        	excw
 40260419:	402603        	excw
-4026041c:	2727b0        	excw
+4026041c:	2727d0        	excw
 4026041f:	848040        	extui	a8, a4, 0, 9
 40260422:	fe          	.byte 0xfe
 40260423:	3f          	.byte 0x3f
@@ -62905,7 +62902,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40260a3b:	048005        	call0	4026523c <tcp_accept>
 40260a3e:	020c      	movi.n	a2, 0
 40260a40:	ffe886        	j	402609e6 <espconn_tcp_server+0x5a>
-40260a43:	27d000        	excw
+40260a43:	27f000        	excw
 40260a46:	424027        	ball	a0, a2, 40260a8c <espconn_tcp_delete+0x44>
 
 40260a48 <espconn_tcp_delete>:
@@ -63302,7 +63299,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40260e0b:	01ec05        	call0	40262ccc <pbuf_free>
 40260e0e:	c27c      	movi.n	a2, -4
 40260e10:	ffe146        	j	40260d99 <espconn_udp_sendto+0xf1>
-40260e13:	27f000        	excw
+40260e13:	281000        	excw
 40260e16:	124027        	ball	a0, a2, 40260e2c <espconn_udp_sendto+0x184>
 40260e19:	02d0c1        	l32r	a12, 4022195c <_lit4_end+0x11b9a8>
 40260e1c:	390361        	l32r	a6, 4022f228 <_lit4_end+0x129274>
@@ -63668,11 +63665,11 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40261184:	20c112        	addi	a1, a1, 32
 40261187:	f00d      	ret.n
 40261189:	000000        	ill
-4026118c:	272800        	excw
+4026118c:	272820        	excw
 4026118f:	c11240        	mul16u	a1, a2, a4
 40261192:	6102e0        	excw
 40261195:	61e203        	excw
-40261198:	61c206        	j	402798a4 <_irom0_text_end+0x5dd4>
+40261198:	61c206        	j	402798a4 <_irom0_text_end+0x5db4>
 4026119b:	51d904        	excw
 4026119e:	03cd      	mov.n	a12, a3
 402611a0:	02dd      	mov.n	a13, a2
@@ -64103,7 +64100,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402615d3:	e2c000        	excw
 402615d6:	fe          	.byte 0xfe
 402615d7:	3f          	.byte 0x3f
-402615d8:	272ae0        	excw
+402615d8:	272b00        	excw
 402615db:	c11240        	mul16u	a1, a2, a4
 
 402615dc <etharp_query>:
@@ -64437,7 +64434,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402618fc:	10c112        	addi	a1, a1, 16
 402618ff:	f00d      	ret.n
 40261901:	000000        	ill
-40261904:	272810        	excw
+40261904:	272830        	excw
 40261907:	c11240        	mul16u	a1, a2, a4
 
 40261908 <igmp_stop>:
@@ -64618,7 +64615,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40261a9d:	1083b6        	bltui	a3, 8, 40261ab1 <igmp_input+0x4d>
 40261aa0:	1cd8      	l32i.n	a13, a12, 4
 40261aa2:	0d2d      	mov.n	a2, a13
-40261aa4:	10f845        	call0	40272a2c <inet_chksum>
+40261aa4:	10fa45        	call0	40272a4c <inet_chksum>
 40261aa7:	62ac      	beqz.n	a2, 40261ad1 <igmp_input+0x6d>
 40261aa9:	0c2d      	mov.n	a2, a12
 40261aab:	012205        	call0	40262ccc <pbuf_free>
@@ -65011,7 +65008,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40261e6c:	014202        	s8i	a0, a2, 1
 40261e6f:	024202        	s8i	a0, a2, 2
 40261e72:	034202        	s8i	a0, a2, 3
-40261e75:	10bb45        	call0	40272a2c <inet_chksum>
+40261e75:	10bd45        	call0	40272a4c <inet_chksum>
 40261e78:	2148      	l32i.n	a4, a1, 8
 40261e7a:	3138      	l32i.n	a3, a1, 12
 40261e7c:	1d58      	l32i.n	a5, a13, 4
@@ -65468,7 +65465,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402622cc:	10c112        	addi	a1, a1, 16
 402622cf:	f00d      	ret.n
 402622d1:	000000        	ill
-402622d4:	272ac0        	excw
+402622d4:	272ae0        	excw
 402622d7:	c11240        	mul16u	a1, a2, a4
 
 402622d8 <ip_router>:
@@ -65566,7 +65563,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402623bd:	1132f7        	bltu	a2, a15, 402623d2 <ip_input+0x7e>
 402623c0:	202ee0        	or	a2, a14, a14
 402623c3:	003d      	mov.n	a3, a0
-402623c5:	106645        	call0	40272a2c <inet_chksum>
+402623c5:	106845        	call0	40272a4c <inet_chksum>
 402623c8:	129c      	beqz.n	a2, 402623dd <ip_input+0x89>
 402623ca:	0c2d      	mov.n	a2, a12
 402623cc:	008fc5        	call0	40262ccc <pbuf_free>
@@ -66294,7 +66291,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40262aaa:	0049      	s32i.n	a4, a0, 0
 40262aac:	025445        	call0	40264ff4 <tcp_seg_free>
 40262aaf:	fffc86        	j	40262aa5 <pbuf_free_ooseq_new+0x45>
-40262ab2:	080000        	excw
+40262ab2:	280000        	excw
 40262ab5:	272b      	addi.n	a2, a7, 2
 40262ab7:	c11240        	mul16u	a1, a2, a4
 
@@ -67143,7 +67140,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40263250:	10c112        	addi	a1, a1, 16
 40263253:	f00d      	ret.n
 40263255:	000000        	ill
-40263258:	272b10        	excw
+40263258:	272b30        	excw
 4026325b:	c11240        	mul16u	a1, a2, a4
 
 4026325c <raw_remove>:
@@ -67206,7 +67203,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402632e1:	000000        	ill
 402632e4:	fee404        	excw
 402632e7:	3f          	.byte 0x3f
-402632e8:	272b20        	excw
+402632e8:	272b40        	excw
 402632eb:	c11240        	mul16u	a1, a2, a4
 
 402632ec <tcp_input>:
@@ -67252,7 +67249,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40263351:	650c      	movi.n	a5, 6
 40263353:	ff6831        	l32r	a3, 402630f4 <pbuf_strstr+0x50>
 40263356:	041d62        	l16ui	a6, a13, 8
-40263359:	0f5345        	call0	40272890 <inet_chksum_pseudo>
+40263359:	0f5545        	call0	402728b0 <inet_chksum_pseudo>
 4026335c:	62ac      	beqz.n	a2, 40263386 <tcp_input+0x9a>
 4026335e:	0d2d      	mov.n	a2, a13
 40263360:	ff9685        	call0	40262ccc <pbuf_free>
@@ -67781,7 +67778,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402638dd:	61f0c1        	l32r	a12, 4023c0a0 <_lit4_end+0x1360ec>
 402638e0:	02fe81        	l32r	a8, 402244d8 <_lit4_end+0x11e524>
 402638e3:	020061        	l32r	a6, 402240e4 <_lit4_end+0x11e130>
-402638e6:	521006        	j	4027812a <_irom0_text_end+0x465a>
+402638e6:	521006        	j	4027812a <_irom0_text_end+0x463a>
 402638e9:	2702a0        	excw
 402638ec:	1742e0        	excw
 402638ef:	424460        	excw
@@ -69295,7 +69292,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402648ff:	0000c0        	callx0	a0
 40264902:	fffa46        	j	402648ef <tcp_shutdown+0x43>
 40264905:	000000        	ill
-40264908:	272b30        	excw
+40264908:	272b50        	excw
 4026490b:	c11240        	mul16u	a1, a2, a4
 
 4026490c <tcp_abandon>:
@@ -69681,9 +69678,9 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40264ca3:	3c98      	l32i.n	a9, a12, 12
 40264ca5:	3099      	s32i.n	a9, a0, 12
 40264ca7:	fff846        	j	40264c8c <tcp_connect+0xe4>
-40264caa:	500000        	excw
+40264caa:	700000        	excw
 40264cad:	272b      	addi.n	a2, a7, 2
-40264caf:	2b6040        	excw
+40264caf:	2b8040        	excw
 40264cb2:	124027        	ball	a0, a2, 40264cc8 <tcp_slowtmr+0x14>
 
 40264cb4 <tcp_slowtmr>:
@@ -70499,12 +70496,12 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40265485:	0108      	l32i.n	a0, a1, 0
 40265487:	10c112        	addi	a1, a1, 16
 4026548a:	f00d      	ret.n
-4026548c:	272b70        	excw
+4026548c:	272b90        	excw
 4026548f:	c11240        	mul16u	a1, a2, a4
 40265492:	6152e0        	excw
 40265495:	616202        	s32i	a0, a2, 0x184
 40265498:	610201        	l32r	a0, 4023d8a0 <_lit4_end+0x1378ec>
-4026549b:	61c905        	call0	402c712c <_irom0_text_end+0x5365c>
+4026549b:	61c905        	call0	402c712c <_irom0_text_end+0x5363c>
 4026549e:	4129      	s32i.n	a2, a1, 16
 402654a0:	71d9      	s32i.n	a13, a1, 28
 402654a2:	f04d21        	l32r	a2, 402615d8 <etharp_output+0x110>
@@ -71108,7 +71105,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40265a9c:	1149      	s32i.n	a4, a1, 4
 40265a9e:	10aab0        	and	a10, a10, a11
 40265aa1:	244ca2        	s8i	a10, a12, 36
-40265aa4:	0cde85        	call0	40272890 <inet_chksum_pseudo>
+40265aa4:	0ce085        	call0	402728b0 <inet_chksum_pseudo>
 40265aa7:	1148      	l32i.n	a4, a1, 4
 40265aa9:	0a0c52        	l8ui	a5, a12, 10
 40265aac:	090c62        	l8ui	a6, a12, 9
@@ -71520,7 +71517,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40265ef7:	004022        	s8i	a2, a0, 0
 40265efa:	0140b2        	s8i	a11, a0, 1
 40265efd:	0c2d      	mov.n	a2, a12
-40265eff:	0c9905        	call0	40272890 <inet_chksum_pseudo>
+40265eff:	0c9b05        	call0	402728b0 <inet_chksum_pseudo>
 40265f02:	0e3d      	mov.n	a3, a14
 40265f04:	060c      	movi.n	a6, 0
 40265f06:	670c      	movi.n	a7, 6
@@ -71697,7 +71694,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402660b2:	0169      	s32i.n	a6, a1, 0
 402660b4:	1149      	s32i.n	a4, a1, 4
 402660b6:	041262        	l16ui	a6, a2, 8
-402660b9:	0c7d45        	call0	40272890 <inet_chksum_pseudo>
+402660b9:	0c7f45        	call0	402728b0 <inet_chksum_pseudo>
 402660bc:	1148      	l32i.n	a4, a1, 4
 402660be:	0c3d      	mov.n	a3, a12
 402660c0:	0a0c52        	l8ui	a5, a12, 10
@@ -71807,7 +71804,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402661d0:	041e62        	l16ui	a6, a14, 8
 402661d3:	dc4b      	addi.n	a13, a12, 4
 402661d5:	0d4d      	mov.n	a4, a13
-402661d7:	0c6b85        	call0	40272890 <inet_chksum_pseudo>
+402661d7:	0c6d85        	call0	402728b0 <inet_chksum_pseudo>
 402661da:	0d4d      	mov.n	a4, a13
 402661dc:	0c3d      	mov.n	a3, a12
 402661de:	0a0c52        	l8ui	a5, a12, 10
@@ -71960,7 +71957,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40266359:	1329      	s32i.n	a2, a3, 4
 4026635b:	10c112        	addi	a1, a1, 16
 4026635e:	f00d      	ret.n
-40266360:	272b80        	excw
+40266360:	272ba0        	excw
 40266363:	c11240        	mul16u	a1, a2, a4
 
 40266364 <sys_timeout>:
@@ -72323,7 +72320,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402666d1:	ef1e41        	l32r	a4, 4026234c <ip_router+0x74>
 402666d4:	151c      	movi.n	a5, 17
 402666d6:	041d62        	l16ui	a6, a13, 8
-402666d9:	0c1b45        	call0	40272890 <inet_chksum_pseudo>
+402666d9:	0c1d45        	call0	402728b0 <inet_chksum_pseudo>
 402666dc:	628c      	beqz.n	a2, 402666e6 <udp_input+0x1e6>
 402666de:	0d2d      	mov.n	a2, a13
 402666e0:	fc5e85        	call0	40262ccc <pbuf_free>
@@ -72511,7 +72508,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402668a5:	203ff0        	or	a3, a15, a15
 402668a8:	5148      	l32i.n	a4, a1, 20
 402668aa:	151c      	movi.n	a5, 17
-402668ac:	0bfe05        	call0	40272890 <inet_chksum_pseudo>
+402668ac:	0c0005        	call0	402728b0 <inet_chksum_pseudo>
 402668af:	699251        	l32r	a5, 40240ef8 <system_pp_recycle_rx_pkt+0x14>
 402668b2:	4148      	l32i.n	a4, a1, 16
 402668b4:	832520        	moveqz	a2, a5, a2
@@ -72658,7 +72655,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402669f0:	7239      	s32i.n	a3, a2, 28
 402669f2:	8249      	s32i.n	a4, a2, 32
 402669f4:	f00d      	ret.n
-402669f6:	900000        	addx2	a0, a0, a0
+402669f6:	b00000        	addx8	a0, a0, a0
 402669f9:	272b      	addi.n	a2, a7, 2
 402669fb:	c11240        	mul16u	a1, a2, a4
 
@@ -72834,7 +72831,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40266bab:	084d92        	s8i	a9, a13, 8
 40266bae:	0d2d      	mov.n	a2, a13
 40266bb0:	0a4d02        	s8i	a0, a13, 10
-40266bb3:	0be785        	call0	40272a2c <inet_chksum>
+40266bb3:	0be985        	call0	40272a4c <inet_chksum>
 40266bb6:	7138      	l32i.n	a3, a1, 28
 40266bb8:	0a4d22        	s8i	a2, a13, 10
 40266bbb:	410820        	srli	a0, a2, 8
@@ -72858,7 +72855,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40266be8:	0283f6        	bgeui	a3, 8, 40266bee <icmp_input+0x17a>
 40266beb:	ffc0c6        	j	40266af2 <icmp_input+0x7e>
 40266bee:	202cc0        	or	a2, a12, a12
-40266bf1:	0be505        	call0	40272a44 <inet_chksum_pbuf>
+40266bf1:	0be705        	call0	40272a64 <inet_chksum_pbuf>
 40266bf4:	f0d216        	beqz	a2, 40266b05 <icmp_input+0x91>
 40266bf7:	202cc0        	or	a2, a12, a12
 40266bfa:	fc0d05        	call0	40262ccc <pbuf_free>
@@ -72925,7 +72922,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40266c88:	024242        	s8i	a4, a2, 2
 40266c8b:	040c      	movi.n	a4, 0
 40266c8d:	034242        	s8i	a4, a2, 3
-40266c90:	0bd985        	call0	40272a2c <inet_chksum>
+40266c90:	0bdb85        	call0	40272a4c <inet_chksum>
 40266c93:	030c      	movi.n	a3, 0
 40266c95:	014d      	mov.n	a4, a1
 40266c97:	5178      	l32i.n	a7, a1, 20
@@ -72986,7 +72983,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40266d24:	f37c      	movi.n	a3, -1
 40266d26:	2f6232        	s32i	a3, a2, 188
 40266d29:	f00d      	ret.n
-40266d2b:	2ba000        	excw
+40266d2b:	2bc000        	excw
 40266d2e:	224027        	ball	a0, a2, 40266d54 <hostapd_config_defaults+0x24>
 
 40266d30 <hostapd_config_defaults>:
@@ -73411,7 +73408,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402670ec:	20c112        	addi	a1, a1, 32
 402670ef:	f00d      	ret.n
 402670f1:	000000        	ill
-402670f4:	272bb0        	excw
+402670f4:	272bd0        	excw
 402670f7:	c11240        	mul16u	a1, a2, a4
 
 402670f8 <wpa_config_parse_string>:
@@ -73551,7 +73548,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026723b:	1108      	l32i.n	a0, a1, 4
 4026723d:	10c112        	addi	a1, a1, 16
 40267240:	f00d      	ret.n
-40267242:	c00000        	sub	a0, a0, a0
+40267242:	e00000        	subx4	a0, a0, a0
 40267245:	272b      	addi.n	a2, a7, 2
 40267247:	c11240        	mul16u	a1, a2, a4
 
@@ -73650,9 +73647,9 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40267309:	0108      	l32i.n	a0, a1, 0
 4026730b:	20c112        	addi	a1, a1, 32
 4026730e:	f00d      	ret.n
-40267310:	272bd0        	excw
-40267313:	3aa040        	excw
-40267316:	b84027        	ball	a0, a2, 402672d2 <os_get_random+0x1e>
+40267310:	272bf0        	excw
+40267313:	3ac040        	excw
+40267316:	d84027        	ball	a0, a2, 402672f2 <os_get_random+0x3e>
 40267319:	273a      	add.n	a2, a7, a3
 4026731b:	c11240        	mul16u	a1, a2, a4
 4026731e:	61e2b0        	excw
@@ -73825,7 +73822,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402674d1:	0108      	l32i.n	a0, a1, 0
 402674d3:	10c112        	addi	a1, a1, 16
 402674d6:	f00d      	ret.n
-402674d8:	272c00        	excw
+402674d8:	272c20        	excw
 402674db:	ba4840        	excw
 402674de:	5d4000        	excw
 402674e1:	c11203        	excw
@@ -75479,7 +75476,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026855b:	c108      	l32i.n	a0, a1, 48
 4026855d:	40c112        	addi	a1, a1, 64
 40268560:	f00d      	ret.n
-40268562:	100000        	and	a0, a0, a0
+40268562:	300000        	xor	a0, a0, a0
 40268565:	272c      	movi.n	a7, 34
 40268567:	a05240        	addx4	a5, a2, a4
 4026856a:	633030        	excw
@@ -76264,7 +76261,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40268d34:	030c      	movi.n	a3, 0
 40268d36:	ffdc45        	call0	40268afc <wpa_auth_sm_event+0x8dc>
 40268d39:	ffe5c6        	j	40268cd4 <wpa_auth_sm_event+0xab4>
-40268d3c:	272c30        	excw
+40268d3c:	272c50        	excw
 40268d3f:	a04240        	addx4	a4, a2, a4
 40268d42:	c11220        	mul16u	a1, a2, a2
 40268d45:	6102c0        	excw
@@ -76687,7 +76684,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026915b:	f00d      	ret.n
 4026915d:	f27c      	movi.n	a2, -1
 4026915f:	fffb46        	j	40269150 <wpa_write_rsn_ie+0xf4>
-40269162:	500000        	excw
+40269162:	700000        	excw
 40269165:	272c      	movi.n	a7, 34
 40269167:	a03240        	addx4	a3, a2, a4
 
@@ -76930,7 +76927,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402693a2:	0f          	.byte 0xf
 402693a3:	027200        	excw
 402693a6:	025201        	l32r	a0, 40229cf0 <_lit4_end+0x123d3c>
-402693a9:	27cc05        	call0	4029106c <_irom0_text_end+0x1d59c>
+402693a9:	27cc05        	call0	4029106c <_irom0_text_end+0x1d57c>
 402693ac:	120c      	movi.n	a2, 1
 402693ae:	f00d      	ret.n
 402693b0:	3767b6        	bltui	a7, 6, 402693eb <wpa_validate_wpa_ie+0x187>
@@ -77396,7 +77393,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026982f:	044762        	s8i	a6, a7, 4
 40269832:	ffd686        	j	40269790 <wpa_auth_uses_mfp+0x284>
 40269835:	000000        	ill
-40269838:	272c60        	excw
+40269838:	272c80        	excw
 4026983b:	a06240        	addx4	a6, a2, a4
 4026983e:	744030        	extui	a4, a3, 0, 8
 40269841:	c11220        	mul16u	a1, a2, a2
@@ -79777,8 +79774,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026af9c:	1b2102        	l32i	a0, a1, 108
 4026af9f:	112a      	add.n	a1, a1, a2
 4026afa1:	f00d      	ret.n
-4026afa3:	2c8000        	excw
-4026afa6:	904027        	ball	a0, a2, 4026af3a <wpa_pmk_to_ptk+0x7a>
+4026afa3:	2ca000        	excw
+4026afa6:	b04027        	ball	a0, a2, 4026af5a <wpa_pmk_to_ptk+0x9a>
 4026afa9:	272c      	movi.n	a7, 34
 4026afab:	b8b440        	excw
 4026afae:	124000        	excw
@@ -80345,7 +80342,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026b520:	20c112        	addi	a1, a1, 32
 4026b523:	f00d      	ret.n
 4026b525:	000000        	ill
-4026b528:	272ca0        	excw
+4026b528:	272cc0        	excw
 4026b52b:	035d40        	excw
 
 4026b52c <ppInstallKey>:
@@ -80562,13 +80559,13 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026b747:	250c      	movi.n	a5, 2
 4026b749:	d24452        	s8i	a5, a4, 210
 4026b74c:	f00d      	ret.n
-4026b74e:	b00000        	addx8	a0, a0, a0
+4026b74e:	d00000        	subx2	a0, a0, a0
 4026b751:	272c      	movi.n	a7, 34
 4026b753:	b73040        	excw
 4026b756:	0b4026        	beqi	a0, 4, 4026b765 <eagle_auth_done+0x1>
 4026b759:	3ffe80        	excw
-4026b75c:	272cd0        	excw
-4026b75f:	2cf040        	excw
+4026b75c:	272cf0        	excw
+4026b75f:	2d1040        	excw
 4026b762:	124027        	ball	a0, a2, 4026b778 <eagle_auth_done+0x14>
 
 4026b764 <eagle_auth_done>:
@@ -81332,7 +81329,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026bf0a:	0e4ba2        	s8i	a10, a11, 14
 4026bf0d:	20c112        	addi	a1, a1, 32
 4026bf10:	f00d      	ret.n
-4026bf12:	100000        	and	a0, a0, a0
+4026bf12:	300000        	xor	a0, a0, a0
 4026bf15:	272d      	excw
 4026bf17:	a04240        	addx4	a4, a2, a4
 
@@ -81693,8 +81690,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026c2b4:	e6dc      	bnez.n	a6, 4026c2d6 <sc_init_snif_glob+0x12>
 4026c2b6:	fe          	.byte 0xfe
 4026c2b7:	3f          	.byte 0x3f
-4026c2b8:	272d30        	excw
-4026c2bb:	2d4040        	excw
+4026c2b8:	272d50        	excw
+4026c2bb:	2d6040        	excw
 4026c2be:	8c4027        	ball	a0, a2, 4026c24e <rijndaelKeySetupEnc+0x29a>
 4026c2c1:	3ffe84        	excw
 
@@ -81755,7 +81752,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026c33f:	11c8      	l32i.n	a12, a1, 4
 4026c341:	10c112        	addi	a1, a1, 16
 4026c344:	f00d      	ret.n
-4026c346:	600000        	neg	a0, a0
+4026c346:	800000        	add	a0, a0, a0
 4026c349:	272d      	excw
 4026c34b:	c11240        	mul16u	a1, a2, a4
 
@@ -81883,7 +81880,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026c481:	ffdc06        	j	4026c3f5 <sc_channel_timer_cb+0x75>
 4026c484:	ff          	.byte 0xff
 4026c485:	ff0000        	excw
-4026c488:	272d80        	excw
+4026c488:	272da0        	excw
 4026c48b:	c11240        	mul16u	a1, a2, a4
 
 4026c48c <sc_PackCallback>:
@@ -81957,16 +81954,16 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026c544:	0c2d      	mov.n	a2, a12
 4026c546:	0374c5        	call0	4026fc94 <TOUCH_Find_sync_ht40>
 4026c549:	ffe686        	j	4026c4e7 <sc_PackCallback+0x5b>
-4026c54c:	272de0        	excw
+4026c54c:	272e00        	excw
 4026c54f:	838040        	moveqz	a8, a0, a4
 4026c552:	fe          	.byte 0xfe
 4026c553:	3f          	.byte 0x3f
 4026c554:	c48c      	beqz.n	a4, 4026c564 <sc_PackCallback+0xd8>
 4026c556:	804026        	beqi	a0, 4, 4026c4da <sc_PackCallback+0x4e>
 4026c559:	4026c3        	excw
-4026c55c:	272e00        	excw
-4026c55f:	2dc040        	excw
-4026c562:	a04027        	ball	a0, a2, 4026c506 <sc_PackCallback+0x7a>
+4026c55c:	272e20        	excw
+4026c55f:	2de040        	excw
+4026c562:	c04027        	ball	a0, a2, 4026c526 <sc_PackCallback+0x9a>
 4026c565:	272d      	excw
 4026c567:	c11240        	mul16u	a1, a2, a4
 
@@ -82225,11 +82222,11 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026c7fd:	3108      	l32i.n	a0, a1, 12
 4026c7ff:	10c112        	addi	a1, a1, 16
 4026c802:	f00d      	ret.n
-4026c804:	272e20        	excw
-4026c807:	2e5040        	excw
-4026c80a:	704027        	ball	a0, a2, 4026c87e <smartconfig_start+0x62>
+4026c804:	272e40        	excw
+4026c807:	2e7040        	excw
+4026c80a:	904027        	ball	a0, a2, 4026c79e <sc_wifi_scan_done+0x236>
 4026c80d:	2e          	.byte 0x2e
-4026c80e:	904027        	ball	a0, a2, 4026c7a2 <sc_wifi_scan_done+0x23a>
+4026c80e:	b04027        	ball	a0, a2, 4026c7c2 <sc_wifi_scan_done+0x25a>
 4026c811:	2e          	.byte 0x2e
 4026c812:	f84027        	ball	a0, a2, 4026c80e <sc_system_init_done+0x3a>
 4026c815:	3ffe83        	excw
@@ -82338,7 +82335,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026c91c:	e718      	l32i.n	a1, a7, 56
 4026c91e:	fe          	.byte 0xfe
 4026c91f:	3f          	.byte 0x3f
-4026c920:	272eb0        	excw
+4026c920:	272ed0        	excw
 4026c923:	949140        	extui	a9, a4, 1, 10
 
 4026c924 <smartconfig_stop>:
@@ -82489,7 +82486,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026cabc:	10c112        	addi	a1, a1, 16
 4026cabf:	f00d      	ret.n
 4026cac1:	000000        	ill
-4026cac4:	272ec0        	excw
+4026cac4:	272ee0        	excw
 4026cac7:	c11240        	mul16u	a1, a2, a4
 
 4026cac8 <smartconfig_get_status>:
@@ -82565,7 +82562,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026cb78:	ff2721        	l32r	a2, 4026c814 <sc_system_init_done+0x40>
 4026cb7b:	f00d      	ret.n
 4026cb7d:	000000        	ill
-4026cb80:	272ee0        	excw
+4026cb80:	272f00        	excw
 4026cb83:	839040        	moveqz	a9, a0, a4
 4026cb86:	fe          	.byte 0xfe
 4026cb87:	3f          	.byte 0x3f
@@ -82592,8 +82589,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026cbb5:	0108      	l32i.n	a0, a1, 0
 4026cbb7:	10c112        	addi	a1, a1, 16
 4026cbba:	f00d      	ret.n
-4026cbbc:	272f00        	excw
-4026cbbf:	2f2040        	excw
+4026cbbc:	272f20        	excw
+4026cbbf:	2f4040        	excw
 4026cbc2:	124027        	ball	a0, a2, 4026cbd8 <smartconfig_set_type+0x14>
 
 4026cbc4 <smartconfig_set_type>:
@@ -82622,9 +82619,9 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026cbfc:	fdde01        	l32r	a0, 4026c374 <sc_smartconfig_restart+0x28>
 4026cbff:	00c9      	s32i.n	a12, a0, 0
 4026cc01:	fffb06        	j	4026cbf1 <smartconfig_set_type+0x2d>
-4026cc04:	272f40        	excw
-4026cc07:	2f5040        	excw
-4026cc0a:	704027        	ball	a0, a2, 4026cc7e <KISS_Free_guide_glob+0x1a>
+4026cc04:	272f60        	excw
+4026cc07:	2f7040        	excw
+4026cc0a:	904027        	ball	a0, a2, 4026cb9e <esptouch_set_timeout+0x16>
 4026cc0d:	2f          	.byte 0x2f
 4026cc0e:	9c4027        	ball	a0, a2, 4026cbae <esptouch_set_timeout+0x26>
 4026cc11:	3ffe84        	excw
@@ -82678,8 +82675,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026cc84:	10c112        	addi	a1, a1, 16
 4026cc87:	f00d      	ret.n
 4026cc89:	000000        	ill
-4026cc8c:	272fa0        	excw
-4026cc8f:	2fc040        	excw
+4026cc8c:	272fc0        	excw
+4026cc8f:	2fe040        	excw
 4026cc92:	124027        	ball	a0, a2, 4026cca8 <KISS_Init_Glob_Trans+0x14>
 
 4026cc94 <KISS_Init_Glob_Trans>:
@@ -82714,8 +82711,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026cce0:	10c112        	addi	a1, a1, 16
 4026cce3:	f00d      	ret.n
 4026cce5:	000000        	ill
-4026cce8:	272ff0        	excw
-4026cceb:	301040        	xor	a1, a0, a4
+4026cce8:	273010        	excw
+4026cceb:	303040        	xor	a3, a0, a4
 4026ccee:	124027        	ball	a0, a2, 4026cd04 <KISS_Init_Glob_Diret+0x14>
 
 4026ccf0 <KISS_Init_Glob_Diret>:
@@ -82815,26 +82812,26 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026cddb:	e6e800        	excw
 4026cdde:	fe          	.byte 0xfe
 4026cddf:	3f          	.byte 0x3f
-4026cde0:	273040        	excw
-4026cde3:	305040        	xor	a5, a0, a4
-4026cde6:	584027        	ball	a0, a2, 4026ce42 <KISS_Find_channel_end+0x22>
+4026cde0:	273060        	excw
+4026cde3:	307040        	xor	a7, a0, a4
+4026cde6:	784027        	ball	a0, a2, 4026ce62 <KISS_Find_channel_end+0x42>
 4026cde9:	402730        	excw
-4026cdec:	273060        	excw
+4026cdec:	273080        	excw
 4026cdef:	838840        	moveqz	a8, a8, a4
 4026cdf2:	fe          	.byte 0xfe
 4026cdf3:	3f          	.byte 0x3f
-4026cdf4:	273070        	excw
-4026cdf7:	309040        	xor	a9, a0, a4
-4026cdfa:	a04027        	ball	a0, a2, 4026cd9e <KISS_Free_Glob_Diret+0x32>
+4026cdf4:	273090        	excw
+4026cdf7:	30b040        	xor	a11, a0, a4
+4026cdfa:	c04027        	ball	a0, a2, 4026cdbe <KISS_Free_Glob_Diret+0x52>
 4026cdfd:	402730        	excw
-4026ce00:	2730b0        	excw
-4026ce03:	30b840        	xor	a11, a8, a4
-4026ce06:	c04027        	ball	a0, a2, 4026cdca <KISS_Free_Glob_Diret+0x5e>
+4026ce00:	2730d0        	excw
+4026ce03:	30d840        	xor	a13, a8, a4
+4026ce06:	e04027        	ball	a0, a2, 4026cdea <KISS_Free_Glob_Diret+0x7e>
 4026ce09:	402730        	excw
 4026ce0c:	c34c      	movi.n	a3, 76
 4026ce0e:	184026        	beqi	a0, 4, 4026ce2a <KISS_Find_channel_end+0xa>
 4026ce11:	0079      	s32i.n	a7, a0, 0
-4026ce13:	30e000        	xor	a14, a0, a0
+4026ce13:	310000        	srai	a0, a0, 16
 4026ce16:	e44027        	ball	a0, a2, 4026cdfe <KISS_Free_Glob_Diret+0x92>
 4026ce19:	3ffee6        	bgei	a14, 0x100, 4026ce5c <KISS_Find_channel_end+0x3c>
 4026ce1c:	fee6f0        	excw
@@ -83002,21 +82999,21 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026cfbf:	4f0c32        	l8ui	a3, a12, 79
 4026cfc2:	9139      	s32i.n	a3, a1, 36
 4026cfc4:	ffe2c6        	j	4026cf53 <KISS_Find_channel_end+0x133>
-4026cfc7:	315000        	srai	a5, a0, 16
-4026cfca:	584027        	ball	a0, a2, 4026d026 <KISS_Find_channel_trans+0x32>
+4026cfc7:	317000        	srai	a7, a0, 16
+4026cfca:	784027        	ball	a0, a2, 4026d046 <KISS_Find_channel_trans+0x52>
 4026cfcd:	402731        	l32r	a3, 4023d06c <_lit4_end+0x1370b8>
-4026cfd0:	273160        	excw
-4026cfd3:	316840        	srai	a6, a4, 24
-4026cfd6:	704027        	ball	a0, a2, 4026d04a <KISS_Find_channel_trans+0x56>
+4026cfd0:	273180        	excw
+4026cfd3:	318840        	srai	a8, a4, 24
+4026cfd6:	904027        	ball	a0, a2, 4026cf6a <KISS_Find_channel_end+0x14a>
 4026cfd9:	402731        	l32r	a3, 4023d078 <_lit4_end+0x1370c4>
-4026cfdc:	3178      	l32i.n	a7, a1, 12
-4026cfde:	804027        	ball	a0, a2, 4026cf62 <KISS_Find_channel_end+0x142>
+4026cfdc:	3198      	l32i.n	a9, a1, 12
+4026cfde:	a04027        	ball	a0, a2, 4026cf82 <KISS_Find_channel_end+0x162>
 4026cfe1:	402731        	l32r	a3, 4023d080 <_lit4_end+0x1370cc>
-4026cfe4:	273110        	excw
-4026cfe7:	313040        	srai	a3, a4, 16
-4026cfea:	404027        	ball	a0, a2, 4026d02e <KISS_Find_channel_trans+0x3a>
+4026cfe4:	273130        	excw
+4026cfe7:	315040        	srai	a5, a4, 16
+4026cfea:	604027        	ball	a0, a2, 4026d04e <KISS_Find_channel_trans+0x5a>
 4026cfed:	402731        	l32r	a3, 4023d08c <_lit4_end+0x1370d8>
-4026cff0:	273100        	excw
+4026cff0:	273120        	excw
 4026cff3:	c11240        	mul16u	a1, a2, a4
 
 4026cff4 <KISS_Find_channel_trans>:
@@ -83371,21 +83368,21 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026d3aa:	0d2d      	mov.n	a2, a13
 4026d3ac:	ffa705        	call0	4026ce20 <KISS_Find_channel_end>
 4026d3af:	ff2706        	j	4026d04f <KISS_Find_channel_trans+0x5b>
-4026d3b2:	a00000        	addx4	a0, a0, a0
+4026d3b2:	c00000        	sub	a0, a0, a0
 4026d3b5:	402731        	l32r	a3, 4023d454 <_lit4_end+0x1374a0>
-4026d3b8:	2731d0        	excw
-4026d3bb:	31e040        	srai	a14, a4, 16
-4026d3be:	f04027        	ball	a0, a2, 4026d3b2 <KISS_Find_channel_trans+0x3be>
-4026d3c1:	402731        	l32r	a3, 4023d460 <_lit4_end+0x1374ac>
-4026d3c4:	273200        	excw
-4026d3c7:	321040        	excw
-4026d3ca:	184027        	ball	a0, a2, 4026d3e6 <KISS_Find_channel_direct+0x6>
+4026d3b8:	2731f0        	excw
+4026d3bb:	320040        	excw
+4026d3be:	104027        	ball	a0, a2, 4026d3d2 <KISS_Find_channel_trans+0x3de>
+4026d3c1:	402732        	l32i	a3, a7, 0x100
+4026d3c4:	273220        	excw
+4026d3c7:	323040        	excw
+4026d3ca:	384027        	ball	a0, a2, 4026d406 <KISS_Find_channel_direct+0x26>
 4026d3cd:	402732        	l32i	a3, a7, 0x100
-4026d3d0:	273220        	excw
-4026d3d3:	324040        	excw
-4026d3d6:	b04027        	ball	a0, a2, 4026d38a <KISS_Find_channel_trans+0x396>
+4026d3d0:	273240        	excw
+4026d3d3:	326040        	excw
+4026d3d6:	d04027        	ball	a0, a2, 4026d3aa <KISS_Find_channel_trans+0x3b6>
 4026d3d9:	402731        	l32r	a3, 4023d478 <_lit4_end+0x1374c4>
-4026d3dc:	273190        	excw
+4026d3dc:	2731b0        	excw
 4026d3df:	c11240        	mul16u	a1, a2, a4
 
 4026d3e0 <KISS_Find_channel_direct>:
@@ -83747,8 +83744,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026d79c:	0108      	l32i.n	a0, a1, 0
 4026d79e:	10c112        	addi	a1, a1, 16
 4026d7a1:	f00d      	ret.n
-4026d7a3:	326000        	excw
-4026d7a6:	804027        	ball	a0, a2, 4026d72a <KISS_Find_channel_direct+0x34a>
+4026d7a3:	328000        	excw
+4026d7a6:	a04027        	ball	a0, a2, 4026d74a <KISS_Find_channel_direct+0x36a>
 4026d7a9:	402732        	l32i	a3, a7, 0x100
 4026d7ac:	e0c112        	addi	a1, a1, -32
 4026d7af:	31d9      	s32i.n	a13, a1, 12
@@ -83914,15 +83911,15 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026d96e:	105c72        	s16i	a7, a12, 32
 4026d971:	0c69      	s32i.n	a6, a12, 0
 4026d973:	ffd906        	j	4026d8db <KISS_Find_channel+0x167>
-4026d976:	000000        	ill
+4026d976:	200000        	or	a0, a0, a0
 4026d979:	402733        	excw
-4026d97c:	273320        	excw
-4026d97f:	32a040        	excw
-4026d982:	d04027        	ball	a0, a2, 4026d956 <KISS_Find_channel+0x1e2>
+4026d97c:	273340        	excw
+4026d97f:	32c040        	excw
+4026d982:	f04027        	ball	a0, a2, 4026d976 <KISS_Find_channel+0x202>
 4026d985:	402732        	l32i	a3, a7, 0x100
-4026d988:	2732e0        	excw
-4026d98b:	32b040        	excw
-4026d98e:	c04027        	ball	a0, a2, 4026d952 <KISS_Find_channel+0x1de>
+4026d988:	273300        	excw
+4026d98b:	32d040        	excw
+4026d98e:	e04027        	ball	a0, a2, 4026d972 <KISS_Find_channel+0x1fe>
 4026d991:	402732        	l32i	a3, a7, 0x100
 4026d994:	e0c112        	addi	a1, a1, -32
 4026d997:	71f9      	s32i.n	a15, a1, 28
@@ -84232,20 +84229,20 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026dcd3:	499e01        	l32r	a0, 4024034c <user_uart_wait_tx_fifo_empty+0xbc>
 4026dcd6:	0000c0        	callx0	a0
 4026dcd9:	fff806        	j	4026dcbd <KISS_Find_channel+0x549>
-4026dcdc:	273340        	excw
-4026dcdf:	335040        	excw
-4026dce2:	c04027        	ball	a0, a2, 4026dca6 <KISS_Find_channel+0x532>
+4026dcdc:	273360        	excw
+4026dcdf:	337040        	excw
+4026dce2:	e04027        	ball	a0, a2, 4026dcc6 <KISS_Find_channel+0x552>
 4026dce5:	402733        	excw
-4026dce8:	273360        	excw
-4026dceb:	339040        	excw
-4026dcee:	804027        	ball	a0, a2, 4026dc72 <KISS_Find_channel+0x4fe>
+4026dce8:	273380        	excw
+4026dceb:	33b040        	excw
+4026dcee:	a04027        	ball	a0, a2, 4026dc92 <KISS_Find_channel+0x51e>
 4026dcf1:	402733        	excw
-4026dcf4:	2733b0        	excw
-4026dcf7:	337040        	excw
-4026dcfa:	e04027        	ball	a0, a2, 4026dcde <KISS_Find_channel+0x56a>
-4026dcfd:	402733        	excw
-4026dd00:	2733a0        	excw
-4026dd03:	33d040        	excw
+4026dcf4:	2733d0        	excw
+4026dcf7:	339040        	excw
+4026dcfa:	004027        	ball	a0, a2, 4026dcfe <KISS_Find_channel+0x58a>
+4026dcfd:	402734        	excw
+4026dd00:	2733c0        	excw
+4026dd03:	33f040        	excw
 4026dd06:	124027        	ball	a0, a2, 4026dd1c <KISS_Find_channel+0x5a8>
 4026dd09:	e9c0c1        	l32r	a12, 4026840c <wpa_auth_sm_event+0x1ec>
 4026dd0c:	d1f9c1        	l32r	a12, 402624f0 <ip_input+0x19c>
@@ -84778,15 +84775,15 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026e2cb:	3f          	.byte 0x3f
 4026e2cc:	fee6c0        	excw
 4026e2cf:	3f          	.byte 0x3f
-4026e2d0:	2733f0        	excw
-4026e2d3:	340040        	extui	a0, a4, 0, 4
-4026e2d6:	104027        	ball	a0, a2, 4026e2ea <KISS_Find_channel+0xb76>
+4026e2d0:	273410        	excw
+4026e2d3:	342040        	extui	a2, a4, 0, 4
+4026e2d6:	304027        	ball	a0, a2, 4026e30a <KISS_Find_channel+0xb96>
 4026e2d9:	402734        	excw
-4026e2dc:	273420        	excw
+4026e2dc:	273440        	excw
 4026e2df:	e78d40        	excw
 4026e2e2:	fe          	.byte 0xfe
 4026e2e3:	3f          	.byte 0x3f
-4026e2e4:	273424        	excw
+4026e2e4:	273444        	excw
 4026e2e7:	c11240        	mul16u	a1, a2, a4
 4026e2ea:	41e9e0        	srli	a14, a14, 9
 4026e2ed:	1109      	s32i.n	a0, a1, 4
@@ -84991,7 +84988,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026e4f7:	e75400        	excw
 4026e4fa:	fe          	.byte 0xfe
 4026e4fb:	3f          	.byte 0x3f
-4026e4fc:	273430        	excw
+4026e4fc:	273450        	excw
 4026e4ff:	c11240        	mul16u	a1, a2, a4
 4026e502:	6109e0        	excw
 4026e505:	fa3501        	l32r	a0, 4026cddc <KISS_Free_Glob_Diret+0x70>
@@ -85088,7 +85085,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026e5fd:	0108      	l32i.n	a0, a1, 0
 4026e5ff:	10c112        	addi	a1, a1, 16
 4026e602:	f00d      	ret.n
-4026e604:	273440        	excw
+4026e604:	273460        	excw
 4026e607:	e76440        	excw
 4026e60a:	fe          	.byte 0xfe
 4026e60b:	3f          	.byte 0x3f
@@ -85198,14 +85195,14 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026e718:	0108      	l32i.n	a0, a1, 0
 4026e71a:	10c112        	addi	a1, a1, 16
 4026e71d:	f00d      	ret.n
-4026e71f:	345000        	extui	a5, a0, 0, 4
-4026e722:	804027        	ball	a0, a2, 4026e6a6 <KISS_Deal_with+0x202>
+4026e71f:	347000        	extui	a7, a0, 0, 4
+4026e722:	a04027        	ball	a0, a2, 4026e6c6 <KISS_Deal_with+0x222>
 4026e725:	402734        	excw
 4026e728:	84ac      	beqz.n	a4, 4026e754 <TOUCH_Init_guide_glob+0x20>
 4026e72a:	fe          	.byte 0xfe
 4026e72b:	3f          	.byte 0x3f
-4026e72c:	2734b0        	excw
-4026e72f:	34d040        	extui	a13, a4, 0, 4
+4026e72c:	2734d0        	excw
+4026e72f:	34f040        	extui	a15, a4, 0, 4
 4026e732:	124027        	ball	a0, a2, 4026e748 <TOUCH_Init_guide_glob+0x14>
 
 4026e734 <TOUCH_Init_guide_glob>:
@@ -85301,8 +85298,8 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026e814:	10c112        	addi	a1, a1, 16
 4026e817:	f00d      	ret.n
 4026e819:	000000        	ill
-4026e81c:	273520        	excw
-4026e81f:	350040        	extui	a0, a4, 16, 4
+4026e81c:	273540        	excw
+4026e81f:	352040        	extui	a2, a4, 16, 4
 4026e822:	124027        	ball	a0, a2, 4026e838 <TOUCH_Init_glob+0x14>
 
 4026e824 <TOUCH_Init_glob>:
@@ -85357,20 +85354,20 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026e8a3:	0108      	l32i.n	a0, a1, 0
 4026e8a5:	10c112        	addi	a1, a1, 16
 4026e8a8:	f00d      	ret.n
-4026e8aa:	500000        	excw
+4026e8aa:	700000        	excw
 4026e8ad:	402735        	excw
-4026e8b0:	273560        	excw
-4026e8b3:	356840        	extui	a6, a4, 24, 4
-4026e8b6:	704027        	ball	a0, a2, 4026e92a <TOUCH_Free_glob+0xa6>
+4026e8b0:	273580        	excw
+4026e8b3:	358840        	extui	a8, a4, 24, 4
+4026e8b6:	904027        	ball	a0, a2, 4026e84a <TOUCH_Init_glob+0x26>
 4026e8b9:	402735        	excw
-4026e8bc:	273590        	excw
-4026e8bf:	35b040        	extui	a11, a4, 16, 4
-4026e8c2:	c04027        	ball	a0, a2, 4026e886 <TOUCH_Free_glob+0x2>
+4026e8bc:	2735b0        	excw
+4026e8bf:	35d040        	extui	a13, a4, 16, 4
+4026e8c2:	e04027        	ball	a0, a2, 4026e8a6 <TOUCH_Free_glob+0x22>
 4026e8c5:	402735        	excw
-4026e8c8:	35c8      	l32i.n	a12, a5, 12
-4026e8ca:	d04027        	ball	a0, a2, 4026e89e <TOUCH_Free_glob+0x1a>
+4026e8c8:	35e8      	l32i.n	a14, a5, 12
+4026e8ca:	f04027        	ball	a0, a2, 4026e8be <TOUCH_Free_glob+0x3a>
 4026e8cd:	402735        	excw
-4026e8d0:	2735f0        	excw
+4026e8d0:	273610        	excw
 4026e8d3:	c11240        	mul16u	a1, a2, a4
 4026e8d6:	41d9e0        	srli	a13, a14, 9
 4026e8d9:	61f9      	s32i.n	a15, a1, 24
@@ -85542,44 +85539,44 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026ea90:	f00d      	ret.n
 4026ea92:	4f0cc2        	l8ui	a12, a12, 79
 4026ea95:	ffc1c6        	j	4026e9a0 <TOUCH_Free_glob+0x11c>
-4026ea98:	273600        	excw
-4026ea9b:	360840        	excw
-4026ea9e:	704027        	ball	a0, a2, 4026eb12 <TOUCH_Find_sync_ht20+0xa>
+4026ea98:	273620        	excw
+4026ea9b:	362840        	excw
+4026ea9e:	904027        	ball	a0, a2, 4026ea32 <TOUCH_Free_glob+0x1ae>
 4026eaa1:	402736        	excw
-4026eaa4:	3678      	l32i.n	a7, a6, 12
-4026eaa6:	804027        	ball	a0, a2, 4026ea2a <TOUCH_Free_glob+0x1a6>
+4026eaa4:	3698      	l32i.n	a9, a6, 12
+4026eaa6:	a04027        	ball	a0, a2, 4026ea4a <TOUCH_Free_glob+0x1c6>
 4026eaa9:	402736        	excw
-4026eaac:	3688      	l32i.n	a8, a6, 12
-4026eaae:	904027        	ball	a0, a2, 4026ea42 <TOUCH_Free_glob+0x1be>
+4026eaac:	36a8      	l32i.n	a10, a6, 12
+4026eaae:	b04027        	ball	a0, a2, 4026ea62 <TOUCH_Free_glob+0x1de>
 4026eab1:	402736        	excw
-4026eab4:	3698      	l32i.n	a9, a6, 12
-4026eab6:	c04027        	ball	a0, a2, 4026ea7a <TOUCH_Free_glob+0x1f6>
+4026eab4:	36b8      	l32i.n	a11, a6, 12
+4026eab6:	e04027        	ball	a0, a2, 4026ea9a <TOUCH_Free_glob+0x216>
 4026eab9:	402736        	excw
-4026eabc:	2736d0        	excw
-4026eabf:	36d840        	excw
-4026eac2:	e04027        	ball	a0, a2, 4026eaa6 <TOUCH_Free_glob+0x222>
-4026eac5:	402736        	excw
-4026eac8:	273700        	excw
-4026eacb:	372040        	excw
-4026eace:	404027        	ball	a0, a2, 4026eb12 <TOUCH_Find_sync_ht20+0xa>
+4026eabc:	2736f0        	excw
+4026eabf:	36f840        	excw
+4026eac2:	004027        	ball	a0, a2, 4026eac6 <TOUCH_Free_glob+0x242>
+4026eac5:	402737        	blt	a7, a3, 4026eb09 <TOUCH_Find_sync_ht20+0x1>
+4026eac8:	273720        	excw
+4026eacb:	374040        	excw
+4026eace:	604027        	ball	a0, a2, 4026eb32 <TOUCH_Find_sync_ht20+0x2a>
 4026ead1:	402737        	blt	a7, a3, 4026eb15 <TOUCH_Find_sync_ht20+0xd>
-4026ead4:	273750        	excw
-4026ead7:	376040        	excw
-4026eada:	704027        	ball	a0, a2, 4026eb4e <TOUCH_Find_sync_ht20+0x46>
+4026ead4:	273770        	excw
+4026ead7:	378040        	excw
+4026eada:	904027        	ball	a0, a2, 4026ea6e <TOUCH_Free_glob+0x1ea>
 4026eadd:	402737        	blt	a7, a3, 4026eb21 <TOUCH_Find_sync_ht20+0x19>
-4026eae0:	3778      	l32i.n	a7, a7, 12
-4026eae2:	804027        	ball	a0, a2, 4026ea66 <TOUCH_Free_glob+0x1e2>
+4026eae0:	3798      	l32i.n	a9, a7, 12
+4026eae2:	a04027        	ball	a0, a2, 4026ea86 <TOUCH_Free_glob+0x202>
 4026eae5:	402737        	blt	a7, a3, 4026eb29 <TOUCH_Find_sync_ht20+0x21>
-4026eae8:	2737a0        	excw
-4026eaeb:	36f040        	excw
-4026eaee:	104027        	ball	a0, a2, 4026eb02 <TOUCH_Free_glob+0x27e>
+4026eae8:	2737c0        	excw
+4026eaeb:	371040        	excw
+4026eaee:	304027        	ball	a0, a2, 4026eb22 <TOUCH_Find_sync_ht20+0x1a>
 4026eaf1:	402736        	excw
-4026eaf4:	273630        	excw
-4026eaf7:	365040        	excw
-4026eafa:	604027        	ball	a0, a2, 4026eb5e <TOUCH_Find_sync_ht20+0x56>
+4026eaf4:	273650        	excw
+4026eaf7:	367040        	excw
+4026eafa:	804027        	ball	a0, a2, 4026ea7e <TOUCH_Free_glob+0x1fa>
 4026eafd:	402736        	excw
-4026eb00:	273620        	excw
-4026eb03:	36a040        	excw
+4026eb00:	273640        	excw
+4026eb03:	36c040        	excw
 4026eb06:	124027        	ball	a0, a2, 4026eb1c <TOUCH_Find_sync_ht20+0x14>
 
 4026eb08 <TOUCH_Find_sync_ht20>:
@@ -86378,14 +86375,14 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026f36e:	020c      	movi.n	a2, 0
 4026f370:	fcfd85        	call0	4026c34c <sc_smartconfig_restart>
 4026f373:	fe02c6        	j	4026eb82 <TOUCH_Find_sync_ht20+0x7a>
-4026f376:	b00000        	addx8	a0, a0, a0
+4026f376:	d00000        	subx2	a0, a0, a0
 4026f379:	402737        	blt	a7, a3, 4026f3bd <TOUCH_Find_sync_ht20+0x8b5>
-4026f37c:	2737c0        	excw
-4026f37f:	381040        	excw
-4026f382:	404027        	ball	a0, a2, 4026f3c6 <TOUCH_Find_sync_ht20+0x8be>
+4026f37c:	2737e0        	excw
+4026f37f:	383040        	excw
+4026f382:	604027        	ball	a0, a2, 4026f3e6 <TOUCH_Find_sync_ht20+0x8de>
 4026f385:	2738      	l32i.n	a3, a7, 8
-4026f387:	386040        	excw
-4026f38a:	804027        	ball	a0, a2, 4026f30e <TOUCH_Find_sync_ht20+0x806>
+4026f387:	388040        	excw
+4026f38a:	a04027        	ball	a0, a2, 4026f32e <TOUCH_Find_sync_ht20+0x826>
 4026f38d:	2738      	l32i.n	a3, a7, 8
 4026f38f:	e7e840        	excw
 4026f392:	fe          	.byte 0xfe
@@ -86395,21 +86392,21 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026f397:	3f          	.byte 0x3f
 4026f398:	fee7f4        	excw
 4026f39b:	3f          	.byte 0x3f
-4026f39c:	273890        	excw
+4026f39c:	2738b0        	excw
 4026f39f:	e80840        	excw
 4026f3a2:	fe          	.byte 0xfe
 4026f3a3:	3f          	.byte 0x3f
-4026f3a4:	2738a0        	excw
-4026f3a7:	38b040        	excw
-4026f3aa:	c04027        	ball	a0, a2, 4026f36e <TOUCH_Find_sync_ht20+0x866>
+4026f3a4:	2738c0        	excw
+4026f3a7:	38d040        	excw
+4026f3aa:	e04027        	ball	a0, a2, 4026f38e <TOUCH_Find_sync_ht20+0x886>
 4026f3ad:	2738      	l32i.n	a3, a7, 8
-4026f3af:	38c840        	excw
-4026f3b2:	f04027        	ball	a0, a2, 4026f3a6 <TOUCH_Find_sync_ht20+0x89e>
-4026f3b5:	402737        	blt	a7, a3, 4026f3f9 <TOUCH_Find_sync_ht20+0x8f1>
-4026f3b8:	2737d0        	excw
-4026f3bb:	c11240        	mul16u	a1, a2, a4
-4026f3be:	51c9d0        	excw
-4026f3c1:	61d9      	s32i.n	a13, a1, 24
+4026f3af:	38e840        	excw
+4026f3b2:	104027        	ball	a0, a2, 4026f3c6 <TOUCH_Find_sync_ht20+0x8be>
+4026f3b5:	2738      	l32i.n	a3, a7, 8
+4026f3b7:	37f040        	excw
+4026f3ba:	124027        	ball	a0, a2, 4026f3d0 <TOUCH_Find_sync_ht20+0x8c8>
+4026f3bd:	c9d0c1        	l32r	a12, 40261b00 <igmp_input+0x9c>
+4026f3c0:	61d951        	l32r	a5, 40247b24 <tx_pwctrl_init+0xa4>
 4026f3c3:	1812b2        	l16ui	a11, a2, 48
 4026f3c6:	4109      	s32i.n	a0, a1, 16
 4026f3c8:	81f9      	s32i.n	a15, a1, 32
@@ -87237,11 +87234,11 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026fc7b:	0000c0        	callx0	a0
 4026fc7e:	fe6c46        	j	4026f633 <TOUCH_Find_sync_ht20+0xb2b>
 4026fc81:	000000        	ill
-4026fc84:	2738d0        	excw
-4026fc87:	38e040        	excw
-4026fc8a:	004027        	ball	a0, a2, 4026fc8e <TOUCH_Find_sync_ht20+0x1186>
+4026fc84:	2738f0        	excw
+4026fc87:	390040        	excw
+4026fc8a:	204027        	ball	a0, a2, 4026fcae <TOUCH_Find_sync_ht40+0x1a>
 4026fc8d:	2739      	s32i.n	a3, a7, 8
-4026fc8f:	392040        	excw
+4026fc8f:	394040        	excw
 4026fc92:	124027        	ball	a0, a2, 4026fca8 <TOUCH_Find_sync_ht40+0x14>
 
 4026fc94 <TOUCH_Find_sync_ht40>:
@@ -87566,28 +87563,28 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4026fff2:	0b0c      	movi.n	a11, 0
 4026fff4:	2a5db2        	s16i	a11, a13, 84
 4026fff7:	ff6ec6        	j	4026fdb6 <TOUCH_Find_sync_ht40+0x122>
-4026fffa:	400000        	ssr	a0
+4026fffa:	600000        	neg	a0, a0
 4026fffd:	2739      	s32i.n	a3, a7, 8
-4026ffff:	395040        	excw
-40270002:	604027        	ball	a0, a2, 40270066 <TOUCH_Find_sync_ht40+0x3d2>
+4026ffff:	397040        	excw
+40270002:	804027        	ball	a0, a2, 4026ff86 <TOUCH_Find_sync_ht40+0x2f2>
 40270005:	2739      	s32i.n	a3, a7, 8
-40270007:	397040        	excw
-4027000a:	904027        	ball	a0, a2, 4026ff9e <TOUCH_Find_sync_ht40+0x30a>
+40270007:	399040        	excw
+4027000a:	b04027        	ball	a0, a2, 4026ffbe <TOUCH_Find_sync_ht40+0x32a>
 4027000d:	2739      	s32i.n	a3, a7, 8
-4027000f:	39b040        	excw
-40270012:	e04027        	ball	a0, a2, 4026fff6 <TOUCH_Find_sync_ht40+0x362>
-40270015:	2739      	s32i.n	a3, a7, 8
-40270017:	3a0040        	excw
-4027001a:	104027        	ball	a0, a2, 4027002e <TOUCH_Find_sync_ht40+0x39a>
+4027000f:	39d040        	excw
+40270012:	004027        	ball	a0, a2, 40270016 <TOUCH_Find_sync_ht40+0x382>
+40270015:	273a      	add.n	a2, a7, a3
+40270017:	3a2040        	excw
+4027001a:	304027        	ball	a0, a2, 4027004e <TOUCH_Find_sync_ht40+0x3ba>
 4027001d:	273a      	add.n	a2, a7, a3
-4027001f:	3a3040        	excw
-40270022:	504027        	ball	a0, a2, 40270076 <TOUCH_Find_sync_ht40+0x3e2>
+4027001f:	3a5040        	excw
+40270022:	704027        	ball	a0, a2, 40270096 <TOUCH_Find_sync_ht40+0x402>
 40270025:	273a      	add.n	a2, a7, a3
-40270027:	3a6040        	excw
-4027002a:	704027        	ball	a0, a2, 4027009e <TOUCH_Find_sync_ht40+0x40a>
+40270027:	3a8040        	excw
+4027002a:	904027        	ball	a0, a2, 4026ffbe <TOUCH_Find_sync_ht40+0x32a>
 4027002d:	273a      	add.n	a2, a7, a3
-4027002f:	3a8040        	excw
-40270032:	884027        	ball	a0, a2, 4026ffbe <TOUCH_Find_sync_ht40+0x32a>
+4027002f:	3aa040        	excw
+40270032:	a84027        	ball	a0, a2, 4026ffde <TOUCH_Find_sync_ht40+0x34a>
 40270035:	273a      	add.n	a2, a7, a3
 40270037:	9f3140        	excw
 4027003a:	c112f0        	mul16u	a1, a2, a15
@@ -88451,7 +88448,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4027093e:	0c2d      	mov.n	a2, a12
 40270940:	fea785        	call0	4026f3bc <TOUCH_Find_sync_ht20+0x8b4>
 40270943:	ffe8c6        	j	402708ea <TOUCH_Deal_with+0x66>
-40270946:	900000        	addx2	a0, a0, a0
+40270946:	b00000        	addx8	a0, a0, a0
 40270949:	273a      	add.n	a2, a7, a3
 4027094b:	c11240        	mul16u	a1, a2, a4
 4027094e:	6109e0        	excw
@@ -88856,10 +88853,10 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40270d6c:	000000        	ill
 40270d6f:	000500        	excw
 40270d72:	050204        	excw
-40270d75:	020505        	call0	40272dc8 <tcp_backoff+0x268>
-40270d78:	040005        	call0	40274d7c <_irom0_text_end+0x12ac>
-40270d7b:	040505        	call0	40274dcc <_irom0_text_end+0x12fc>
-40270d7e:	040505        	call0	40274dd0 <_irom0_text_end+0x1300>
+40270d75:	020505        	call0	40272dc8 <tcp_backoff+0x248>
+40270d78:	040005        	call0	40274d7c <_irom0_text_end+0x128c>
+40270d7b:	040505        	call0	40274dcc <_irom0_text_end+0x12dc>
+40270d7e:	040505        	call0	40274dd0 <_irom0_text_end+0x12e0>
 40270d81:	fe          	.byte 0xfe
 40270d82:	fffd      	excw
 40270d84:	f0f0f0        	subx8	a15, a0, a15
@@ -88903,7 +88900,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40270e27:	0a7074        	excw
 40270e2a:	000000        	ill
 40270e2d:	000000        	ill
-40270e30:	746146        	j	4028dfb9 <_irom0_text_end+0x1a4e9>
+40270e30:	746146        	j	4028dfb9 <_irom0_text_end+0x1a4c9>
 40270e33:	206c61        	l32r	a6, 40238fe4 <_lit4_end+0x133030>
 40270e36:	637865        	excw
 40270e39:	747065        	excw
@@ -89028,7 +89025,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40270f83:	536461        	l32r	a6, 40245d14 <ram_set_channel_freq+0x200>
 40270f86:	726f74        	excw
 40270f89:	495065        	excw
-40270f8c:	614446        	j	402894a1 <_irom0_text_end+0x159d1>
+40270f8c:	614446        	j	402894a1 <_irom0_text_end+0x159b1>
 40270f8f:	456174        	excw
 40270f92:	6f7272        	excw
 40270f95:	614372        	s8i	a7, a3, 97
@@ -89052,7 +89049,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 40270fc3:	536461        	l32r	a6, 40245d54 <ram_set_channel_freq+0x240>
 40270fc6:	726f74        	excw
 40270fc9:	495065        	excw
-40270fcc:	644146        	j	4028a0d5 <_irom0_text_end+0x16605>
+40270fcc:	644146        	j	4028a0d5 <_irom0_text_end+0x165e5>
 40270fcf:	457264        	excw
 40270fd2:	6f7272        	excw
 40270fd5:	614372        	s8i	a7, a3, 97
@@ -89394,7 +89391,7 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 4027137e:	000a75        	excw
 	...
 4027138d:	000000        	ill
-40271390:	616c46        	j	40289945 <_irom0_text_end+0x15e75>
+40271390:	616c46        	j	40289945 <_irom0_text_end+0x15e55>
 40271393:	206873        	excw
 40271396:	7369      	s32i.n	a6, a3, 28
 40271398:	6c6120        	excw
@@ -89553,1004 +89550,1007 @@ void ICACHE_FLASH_ATTR my_station_init(struct ip_addr *remote_ip,
 402718c4:	5f4353 415453 535554 41575f 0a5449 495700     SC_STATUS_WAIT..
 
 402718d4 <flash_str$2828>:
-402718d4:	464957 acc149 b3d3bd a6b9c9 0da1a3 00000a     WIFI............
-402718e4:	000000 acc100                                 ....
+402718d4:	464957 632049 6e6e6f 746365 206465 637573     WIFI connected s
+402718e4:	636375 737365 000a0d 000000                   uccess......
 
-402718e8 <flash_str$2809>:
-402718e8:	bdacc1 edb4d3 a3f3ce edb4ac b4f3ce ebc2fa     ................
-402718f8:	ceebc2 6425aa 000a0d 000000                   ....%d......
+402718f0 <flash_str$2809>:
+402718f0:	6e6f63 63656e 646574 726520 726f72 652c20     connected error 
+40271900:	72652c 726f72 6f6320 206564 207369 0d6425     ,error code is %
+40271910:	0a0d64 657200                                 d...
 
-40271904 <flash_str$2803>:
-40271904:	b5d5ca fdcabd a3ddbe 7325ba 000a0d cfb600     ..........%s....
+40271914 <flash_str$2803>:
+40271914:	636572 766965 642065 617461 73253a 000a0d     receive data:%s.
+40271924:	00000a 696400                                 ....
 
-40271914 <flash_str$2796>:
-40271914:	bfcfb6 acc1aa b3d3bd a6b9c9 00a1a3 a2b700     ................
+40271928 <flash_str$2796>:
+40271928:	736964 6e6f63 63656e 646574 757320 656363     disconnected suc
+40271938:	736563 000073 730000                          cess....
 
-40271924 <flash_str$2790>:
-40271924:	cba2b7 fdcacd b3ddbe a6b9c9 00a1a3 000000     ................
-	...
-40271940:	727265 3a726f 6c7020 635f6c 206c61 637865     error: pll_cal e
-40271950:	656378 736465 6d3220 212173 000a21 642500     xceeds 2ms!!!...
-40271960:	2c6425 000020 250000 202c64 000000 642500     %d, ....%d, ....
-40271970:	2c6425 642520 00202c 000000 000000 642500     %d, %d, ........
-40271980:	2c6425 642520 00202c 000000 000000 642500     %d, %d, ........
+40271940 <flash_str$2790>:
+40271940:	6e6573 642064 617461 757320 656363 007373     send data succes
+40271950:	000073 000000 000000 000000 000000 726500     s...............
+40271960:	727265 3a726f 6c7020 635f6c 206c61 637865     error: pll_cal e
+40271970:	656378 736465 6d3220 212173 000a21 642500     xceeds 2ms!!!...
+40271980:	2c6425 000020 250000 202c64 000000 642500     %d, ....%d, ....
 40271990:	2c6425 642520 00202c 000000 000000 642500     %d, %d, ........
-402719a0:	2c6425 000020 000000 000000 000000 787200     %d, ............
-402719b0:	697872 725f71 3a6765 3d6920 2c6425 5f6120     rxiq_reg: i=%d, 
-402719c0:	6d5f61 3d7369 2c6425 5f7020 73696d 64253d     a_mis=%d, p_mis=
-402719d0:	0a6425 000000 000000 000000 000000 6f7400     %d..............
-402719e0:	746f74 5f6c61 727770 6c253d 202c64 78616d     total_pwr=%ld, m
-402719f0:	3d7861 646c25 0a202c 000000 000000 642500     ax=%ld, ........
-40271a00:	5f6425 5f6425 0a6425 000000 000000 657300     %d_%d_%d........
-40271a10:	746573 78725f 61675f 3a6e69 667220 3d7874     set_rx_gain: rft
-40271a20:	253d78 202c78 726672 783d78 2c7825 746120     x=%x, rfrx=x%x, 
-40271a30:	747461 64253d 74202c 626278 78303d 2c7825     att=%d, txbb=0x%
-40271a40:	202c78 726262 3d3178 257830 202c78 726262     x, bbrx1=0x%x, b
-40271a50:	787262 303d32 782578 74202c 3a6364 2c6425     brx2=0x%x, tdc:%
-40271a60:	252c64 000a64 000000 000000 000000 6e6900     d,%d............
-40271a70:	646e69 3a7865 642520 617620 65756c 30203a     index: %d value:
-40271a80:	783020 207825 257830 302078 782578 783020      0x%x 0x%x 0x%x 
-40271a90:	257830 000a78 000000 000000 000000 000a00     0x%x............
-40271aa0:	00000a 000000 000000 000000 000000 4b4200     ................
-40271ab0:	3a4b42 2c6425 2c6425 2c6425 2c6425 257830     BK:%d,%d,%d,%d,0
-40271ac0:	782578 00000a 000000 000000 000000 787400     x%x.............
-40271ad0:	647874 253a63 252c64 000a64 000000 626400     txdc:%d,%d......
-40271ae0:	706264 64253a 25202c 202c78 2c6425 642520     dbp:%d, %x, %d, 
-40271af0:	2c6425 642520 25202c 000a64 000000 332500     %d, %d, %d......
-40271b00:	643325 33252c 203b64 000000 000000 787400     %3d,%3d; .......
-40271b10:	697874 675f71 6e6961 64253d 74202c 716978     txiq_gain=%d, tx
-40271b20:	5f7169 616870 3d6573 0a6425 000000 2c3100     iq_phase=%d.....
-40271b30:	742c31 677261 5f7465 776f70 2c7265 2c6425     1,target_power,%
-40271b40:	202c64 655f70 6f7272 252c72 202c64 726f63     d, p_error,%d, c
-40271b50:	72726f 746365 2c765f 2c6425 726520 726f72     orrect_v,%d, err
-40271b60:	5f726f 636361 2c6d75 642520 74202c 5f746f     or_accum, %d, to
-40271b70:	705f74 64252c 63202c 74616f 252c74 202c64     t_p,%d, coatt,%d
-40271b80:	61202c 2c7474 2c6425 667220 2c675f 2c7825     , att,%d, rf_g,%
-40271b90:	202c78 717874 61725f 2c6574 2c6425 686320     x, txq_rate,%d, 
-40271ba0:	616863 252c6e 202c64 746172 615f65 2c7474     chan,%d, rate_at
-40271bb0:	252c74 000a64 000000 000000 000000 2c3200     t,%d............
-40271bc0:	742c32 677261 5f7465 776f70 2c7265 2c6425     2,target_power,%
-40271bd0:	202c64 655f70 6f7272 252c72 202c64 726f63     d, p_error,%d, c
-40271be0:	72726f 746365 2c765f 2c6425 726520 726f72     orrect_v,%d, err
-40271bf0:	5f726f 636361 2c6d75 642520 74202c 5f746f     or_accum, %d, to
-40271c00:	705f74 64252c 63202c 74616f 252c74 202c64     t_p,%d, coatt,%d
-40271c10:	61202c 2c7474 2c6425 667220 2c675f 2c7825     , att,%d, rf_g,%
-40271c20:	202c78 717874 61725f 2c6574 2c6425 686320     x, txq_rate,%d, 
-40271c30:	616863 252c6e 202c64 746172 615f65 2c7474     chan,%d, rate_at
-40271c40:	252c74 000a64 000000 000000 000000 756e00     t,%d............
-40271c50:	6d756e 3d6b5f 2c6425 6f7020 726577 756f5f     num_k=%d, power_
-40271c60:	74756f 64253d 00000a 000000 000000 657200     out=%d..........
-40271c70:	676572 3d695f 2c6425 6e6920 746164 253d61     reg_i=%d, indata
-40271c80:	64253d 00000a 000000 000000 000000 3d6900     =%d.............
-40271c90:	253d69 643230 612020 3d6363 333025 202064     i=%02d  acc=%03d
-40271ca0:	742020 3d7467 333025 202064 727265 30253d       tgt=%03d  err=
-40271cb0:	333025 202064 726573 30253d 206433 747461     %03d  ser=%03d a
-40271cc0:	3d7474 333025 000a64 000000 000000 787200     tt=%03d.........
-40271cd0:	697872 675f71 5f7465 73696d 74203a 61746f     rxiq_get_mis: to
-40271ce0:	6c6174 77705f 253d72 202c64 2d6425 2c6425     tal_pwr=%d, %d-%
-40271cf0:	202c64 f00d00                                 d, .
+402719a0:	2c6425 642520 00202c 000000 000000 642500     %d, %d, ........
+402719b0:	2c6425 642520 00202c 000000 000000 642500     %d, %d, ........
+402719c0:	2c6425 000020 000000 000000 000000 787200     %d, ............
+402719d0:	697872 725f71 3a6765 3d6920 2c6425 5f6120     rxiq_reg: i=%d, 
+402719e0:	6d5f61 3d7369 2c6425 5f7020 73696d 64253d     a_mis=%d, p_mis=
+402719f0:	0a6425 000000 000000 000000 000000 6f7400     %d..............
+40271a00:	746f74 5f6c61 727770 6c253d 202c64 78616d     total_pwr=%ld, m
+40271a10:	3d7861 646c25 0a202c 000000 000000 642500     ax=%ld, ........
+40271a20:	5f6425 5f6425 0a6425 000000 000000 657300     %d_%d_%d........
+40271a30:	746573 78725f 61675f 3a6e69 667220 3d7874     set_rx_gain: rft
+40271a40:	253d78 202c78 726672 783d78 2c7825 746120     x=%x, rfrx=x%x, 
+40271a50:	747461 64253d 74202c 626278 78303d 2c7825     att=%d, txbb=0x%
+40271a60:	202c78 726262 3d3178 257830 202c78 726262     x, bbrx1=0x%x, b
+40271a70:	787262 303d32 782578 74202c 3a6364 2c6425     brx2=0x%x, tdc:%
+40271a80:	252c64 000a64 000000 000000 000000 6e6900     d,%d............
+40271a90:	646e69 3a7865 642520 617620 65756c 30203a     index: %d value:
+40271aa0:	783020 207825 257830 302078 782578 783020      0x%x 0x%x 0x%x 
+40271ab0:	257830 000a78 000000 000000 000000 000a00     0x%x............
+40271ac0:	00000a 000000 000000 000000 000000 4b4200     ................
+40271ad0:	3a4b42 2c6425 2c6425 2c6425 2c6425 257830     BK:%d,%d,%d,%d,0
+40271ae0:	782578 00000a 000000 000000 000000 787400     x%x.............
+40271af0:	647874 253a63 252c64 000a64 000000 626400     txdc:%d,%d......
+40271b00:	706264 64253a 25202c 202c78 2c6425 642520     dbp:%d, %x, %d, 
+40271b10:	2c6425 642520 25202c 000a64 000000 332500     %d, %d, %d......
+40271b20:	643325 33252c 203b64 000000 000000 787400     %3d,%3d; .......
+40271b30:	697874 675f71 6e6961 64253d 74202c 716978     txiq_gain=%d, tx
+40271b40:	5f7169 616870 3d6573 0a6425 000000 2c3100     iq_phase=%d.....
+40271b50:	742c31 677261 5f7465 776f70 2c7265 2c6425     1,target_power,%
+40271b60:	202c64 655f70 6f7272 252c72 202c64 726f63     d, p_error,%d, c
+40271b70:	72726f 746365 2c765f 2c6425 726520 726f72     orrect_v,%d, err
+40271b80:	5f726f 636361 2c6d75 642520 74202c 5f746f     or_accum, %d, to
+40271b90:	705f74 64252c 63202c 74616f 252c74 202c64     t_p,%d, coatt,%d
+40271ba0:	61202c 2c7474 2c6425 667220 2c675f 2c7825     , att,%d, rf_g,%
+40271bb0:	202c78 717874 61725f 2c6574 2c6425 686320     x, txq_rate,%d, 
+40271bc0:	616863 252c6e 202c64 746172 615f65 2c7474     chan,%d, rate_at
+40271bd0:	252c74 000a64 000000 000000 000000 2c3200     t,%d............
+40271be0:	742c32 677261 5f7465 776f70 2c7265 2c6425     2,target_power,%
+40271bf0:	202c64 655f70 6f7272 252c72 202c64 726f63     d, p_error,%d, c
+40271c00:	72726f 746365 2c765f 2c6425 726520 726f72     orrect_v,%d, err
+40271c10:	5f726f 636361 2c6d75 642520 74202c 5f746f     or_accum, %d, to
+40271c20:	705f74 64252c 63202c 74616f 252c74 202c64     t_p,%d, coatt,%d
+40271c30:	61202c 2c7474 2c6425 667220 2c675f 2c7825     , att,%d, rf_g,%
+40271c40:	202c78 717874 61725f 2c6574 2c6425 686320     x, txq_rate,%d, 
+40271c50:	616863 252c6e 202c64 746172 615f65 2c7474     chan,%d, rate_at
+40271c60:	252c74 000a64 000000 000000 000000 756e00     t,%d............
+40271c70:	6d756e 3d6b5f 2c6425 6f7020 726577 756f5f     num_k=%d, power_
+40271c80:	74756f 64253d 00000a 000000 000000 657200     out=%d..........
+40271c90:	676572 3d695f 2c6425 6e6920 746164 253d61     reg_i=%d, indata
+40271ca0:	64253d 00000a 000000 000000 000000 3d6900     =%d.............
+40271cb0:	253d69 643230 612020 3d6363 333025 202064     i=%02d  acc=%03d
+40271cc0:	742020 3d7467 333025 202064 727265 30253d       tgt=%03d  err=
+40271cd0:	333025 202064 726573 30253d 206433 747461     %03d  ser=%03d a
+40271ce0:	3d7474 333025 000a64 000000 000000 787200     tt=%03d.........
+40271cf0:	697872 675f71 5f7465 73696d 74203a 61746f     rxiq_get_mis: to
+40271d00:	6c6174 77705f 253d72 202c64 2d6425 2c6425     tal_pwr=%d, %d-%
+40271d10:	202c64 f00d00                                 d, .
 
-40271cf4 <chip_v6_set_sense>:
-40271cf4:	f00d      	ret.n
+40271d14 <chip_v6_set_sense>:
+40271d14:	f00d      	ret.n
 	...
 
-40271cf8 <chip_v6_get_sense>:
-40271cf8:	f00d      	ret.n
+40271d18 <chip_v6_get_sense>:
+40271d18:	f00d      	ret.n
 	...
 
-40271cfc <chip_v6_unset_chanfreq>:
-40271cfc:	020c      	movi.n	a2, 0
-40271cfe:	f00d      	ret.n
-40271d00:	6c6564        	excw
-40271d03:	666920        	excw
-40271d06:	0a6425        	excw
-40271d09:	000000        	ill
-40271d0c:	000000        	ill
-40271d0f:	686300        	excw
-40271d12:	692067        	blt	a0, a6, 40271d7f <chip_v6_unset_chanfreq+0x83>
-40271d15:	642566        	bnei	a5, 2, 40271d7d <chip_v6_unset_chanfreq+0x81>
-40271d18:	000a      	add.n	a0, a0, a0
-40271d1a:	000000        	ill
-40271d1d:	000000        	ill
-40271d20:	646461        	l32r	a6, 4024aeb0 <txiq_cover+0x3c>
+40271d1c <chip_v6_unset_chanfreq>:
+40271d1c:	020c      	movi.n	a2, 0
+40271d1e:	f00d      	ret.n
+40271d20:	6c6564        	excw
 40271d23:	666920        	excw
 40271d26:	0a6425        	excw
 40271d29:	000000        	ill
 40271d2c:	000000        	ill
-40271d2f:	696100        	excw
-40271d32:	252064        	excw
-40271d35:	000a64        	excw
-40271d38:	6e6362        	s32i	a6, a3, 0x1b8
-40271d3b:	642520        	extui	a2, a2, 5, 7
-40271d3e:	000a      	add.n	a0, a0, a0
-40271d40:	746e63        	excw
-40271d43:	000a20        	excw
-40271d46:	750000        	extui	a0, a0, 16, 8
-40271d49:	6e          	.byte 0x6e
-40271d4a:	746e63        	excw
-40271d4d:	000a20        	excw
-40271d50:	207874        	excw
-40271d53:	737472        	excw
-40271d56:	726520        	excw
-40271d59:	726f72        	s32i	a7, a15, 0x1c8
-40271d5c:	783020        	excw
-40271d5f:	0a7825        	excw
+40271d2f:	686300        	excw
+40271d32:	692067        	blt	a0, a6, 40271d9f <chip_v6_unset_chanfreq+0x83>
+40271d35:	642566        	bnei	a5, 2, 40271d9d <chip_v6_unset_chanfreq+0x81>
+40271d38:	000a      	add.n	a0, a0, a0
+40271d3a:	000000        	ill
+40271d3d:	000000        	ill
+40271d40:	646461        	l32r	a6, 4024aed0 <txiq_cover+0x5c>
+40271d43:	666920        	excw
+40271d46:	0a6425        	excw
+40271d49:	000000        	ill
+40271d4c:	000000        	ill
+40271d4f:	696100        	excw
+40271d52:	252064        	excw
+40271d55:	000a64        	excw
+40271d58:	6e6362        	s32i	a6, a3, 0x1b8
+40271d5b:	642520        	extui	a2, a2, 5, 7
+40271d5e:	000a      	add.n	a0, a0, a0
+40271d60:	746e63        	excw
+40271d63:	000a20        	excw
+40271d66:	750000        	extui	a0, a0, 16, 8
+40271d69:	6e          	.byte 0x6e
+40271d6a:	746e63        	excw
+40271d6d:	000a20        	excw
+40271d70:	207874        	excw
+40271d73:	737472        	excw
+40271d76:	726520        	excw
+40271d79:	726f72        	s32i	a7, a15, 0x1c8
+40271d7c:	783020        	excw
+40271d7f:	0a7825        	excw
 	...
-40271d6e:	740000        	extui	a0, a0, 0, 8
-40271d71:	2078      	l32i.n	a7, a0, 8
-40271d73:	727265        	excw
-40271d76:	6f          	.byte 0x6f
-40271d77:	302072        	l32i	a7, a0, 192
-40271d7a:	2578      	l32i.n	a7, a5, 8
-40271d7c:	0a78      	l32i.n	a7, a10, 0
-40271d7e:	700000        	excw
-40271d81:	2e6d      	excw
-40271d83:	000063        	excw
+40271d8e:	740000        	extui	a0, a0, 0, 8
+40271d91:	2078      	l32i.n	a7, a0, 8
+40271d93:	727265        	excw
+40271d96:	6f          	.byte 0x6f
+40271d97:	302072        	l32i	a7, a0, 192
+40271d9a:	2578      	l32i.n	a7, a5, 8
+40271d9c:	0a78      	l32i.n	a7, a10, 0
+40271d9e:	700000        	excw
+40271da1:	2e6d      	excw
+40271da3:	000063        	excw
 	...
-40271d8e:	730000        	excw
-40271d91:	656c      	movi.n	a5, -26
-40271d93:	207065        	excw
-40271d96:	736964        	excw
-40271d99:	6c6261        	l32r	a6, 4024cf24 <pm_set_wakeup_btco+0x3c>
-40271d9c:	000065        	excw
-40271d9f:	6c7300        	excw
-40271da2:	706565        	excw
-40271da5:	6e6520        	excw
-40271da8:	6c6261        	l32r	a6, 4024cf30 <pm_set_wakeup_btco+0x48>
-40271dab:	000065        	excw
-40271dae:	2c0000        	excw
-40271db1:	707974        	excw
-40271db4:	203a65        	excw
-40271db7:	006425        	excw
-40271dba:	000000        	ill
-40271dbd:	000000        	ill
-40271dc0:	000a      	add.n	a0, a0, a0
+40271dae:	730000        	excw
+40271db1:	656c      	movi.n	a5, -26
+40271db3:	207065        	excw
+40271db6:	736964        	excw
+40271db9:	6c6261        	l32r	a6, 4024cf44 <pm_set_wakeup_btco+0x5c>
+40271dbc:	000065        	excw
+40271dbf:	6c7300        	excw
+40271dc2:	706565        	excw
+40271dc5:	6e6520        	excw
+40271dc8:	6c6261        	l32r	a6, 4024cf50 <pm_set_wakeup_btco+0x68>
+40271dcb:	000065        	excw
+40271dce:	2c0000        	excw
+40271dd1:	707974        	excw
+40271dd4:	203a65        	excw
+40271dd7:	006425        	excw
+40271dda:	000000        	ill
+40271ddd:	000000        	ill
+40271de0:	000a      	add.n	a0, a0, a0
 	...
-40271dce:	700000        	excw
-40271dd1:	206d      	excw
-40271dd3:	6b6177        	bbci	a1, 7, 40271e42 <chip_v6_unset_chanfreq+0x146>
-40271dd6:	707565        	excw
-40271dd9:	747320        	extui	a7, a2, 3, 8
-40271ddc:	203a      	add.n	a2, a0, a3
-40271dde:	2c6425        	excw
-40271de1:	616320        	excw
-40271de4:	657375        	excw
-40271de7:	203a      	add.n	a2, a0, a3
-40271de9:	0a6425        	excw
-40271dec:	000000        	ill
-40271def:	667200        	excw
-40271df2:	6c6320        	excw
-40271df5:	6f          	.byte 0x6f
-40271df6:	2c6573        	excw
-40271df9:	6e          	.byte 0x6e
-40271dfa:	6c6c75        	excw
-40271dfd:	746164        	excw
-40271e00:	745f61        	l32r	a6, 4024ef7c <pm_attach+0x80>
-40271e03:	657275        	excw
-	...
-40271e0e:	720000        	excw
-40271e11:	632066        	bnei	a0, 2, 40271e78 <chip_v6_unset_chanfreq+0x17c>
-40271e14:	6f6c      	movi.n	a15, -26
+40271dee:	700000        	excw
+40271df1:	206d      	excw
+40271df3:	6b6177        	bbci	a1, 7, 40271e62 <chip_v6_unset_chanfreq+0x146>
+40271df6:	707565        	excw
+40271df9:	747320        	extui	a7, a2, 3, 8
+40271dfc:	203a      	add.n	a2, a0, a3
+40271dfe:	2c6425        	excw
+40271e01:	616320        	excw
+40271e04:	657375        	excw
+40271e07:	203a      	add.n	a2, a0, a3
+40271e09:	0a6425        	excw
+40271e0c:	000000        	ill
+40271e0f:	667200        	excw
+40271e12:	6c6320        	excw
+40271e15:	6f          	.byte 0x6f
 40271e16:	2c6573        	excw
 40271e19:	6e          	.byte 0x6e
 40271e1a:	6c6c75        	excw
 40271e1d:	746164        	excw
-40271e20:	665f61        	l32r	a6, 4024b79c <tx_pwctrl_cal+0x17c>
-40271e23:	736c61        	l32r	a6, 4024ebd4 <LightSleepWakedCbSetFunc+0x2cc>
-40271e26:	000065        	excw
-40271e29:	000000        	ill
-40271e2c:	000000        	ill
-40271e2f:	6d7000        	excw
-40271e32:	6c6320        	excw
-40271e35:	6f          	.byte 0x6f
-40271e36:	206573        	excw
-40271e39:	0a6425        	excw
-40271e3c:	000000        	ill
-40271e3f:	6d7000        	excw
-40271e42:	706f20        	excw
-40271e45:	2c6e65        	excw
-40271e48:	707974        	excw
-40271e4b:	253a65        	excw
-40271e4e:	252064        	excw
-40271e51:	000a64        	excw
+40271e20:	745f61        	l32r	a6, 4024ef9c <pm_attach+0xa0>
+40271e23:	657275        	excw
 	...
-40271e60:	6e          	.byte 0x6e
-40271e61:	6f          	.byte 0x6f
-40271e62:	4d4954        	excw
-40271e65:	0a2121        	l32r	a2, 402346ec <_lit4_end+0x12e738>
+40271e2e:	720000        	excw
+40271e31:	632066        	bnei	a0, 2, 40271e98 <chip_v6_unset_chanfreq+0x17c>
+40271e34:	6f6c      	movi.n	a15, -26
+40271e36:	2c6573        	excw
+40271e39:	6e          	.byte 0x6e
+40271e3a:	6c6c75        	excw
+40271e3d:	746164        	excw
+40271e40:	665f61        	l32r	a6, 4024b7bc <tx_pwctrl_cal+0x19c>
+40271e43:	736c61        	l32r	a6, 4024ebf4 <LightSleepWakedCbSetFunc+0x2ec>
+40271e46:	000065        	excw
+40271e49:	000000        	ill
+40271e4c:	000000        	ill
+40271e4f:	6d7000        	excw
+40271e52:	6c6320        	excw
+40271e55:	6f          	.byte 0x6f
+40271e56:	206573        	excw
+40271e59:	0a6425        	excw
+40271e5c:	000000        	ill
+40271e5f:	6d7000        	excw
+40271e62:	706f20        	excw
+40271e65:	2c6e65        	excw
+40271e68:	707974        	excw
+40271e6b:	253a65        	excw
+40271e6e:	252064        	excw
+40271e71:	000a64        	excw
 	...
-40271e70:	696c      	movi.n	a9, -26
-40271e72:	5f7473        	excw
-40271e75:	6e          	.byte 0x6e
-40271e76:	6c6c75        	excw
-40271e79:	000a      	add.n	a0, a0, a0
-40271e7b:	000000        	ill
-40271e7e:	730000        	excw
-40271e81:	0a6c      	movi.n	a10, -32
-40271e83:	000000        	ill
-40271e86:	750000        	extui	a0, a0, 16, 8
-40271e89:	0a6c73        	excw
-40271e8c:	000000        	ill
-40271e8f:	6d7000        	excw
-40271e92:	5f          	.byte 0x5f
-40271e93:	726f66        	bnei	a15, 6, 40271f09 <chip_v6_unset_chanfreq+0x20d>
-40271e96:	5f          	.byte 0x5f
-40271e97:	6e6362        	s32i	a6, a3, 0x1b8
-40271e9a:	5f          	.byte 0x5f
-40271e9b:	6f          	.byte 0x6f
-40271e9c:	6e          	.byte 0x6e
-40271e9d:	796c      	movi.n	a9, -25
-40271e9f:	5f          	.byte 0x5f
-40271ea0:	6f6d      	excw
-40271ea2:	2e6564        	excw
-40271ea5:	000063        	excw
+40271e80:	6e          	.byte 0x6e
+40271e81:	6f          	.byte 0x6f
+40271e82:	4d4954        	excw
+40271e85:	0a2121        	l32r	a2, 4023470c <_lit4_end+0x12e758>
 	...
-40271eb0:	726f66        	bnei	a15, 6, 40271f26 <chip_v6_unset_chanfreq+0x22a>
-40271eb3:	206563        	excw
-40271eb6:	706c73        	excw
-40271eb9:	696420        	excw
-40271ebc:	626173        	excw
-40271ebf:	656c      	movi.n	a5, -26
+40271e90:	696c      	movi.n	a9, -26
+40271e92:	5f7473        	excw
+40271e95:	6e          	.byte 0x6e
+40271e96:	6c6c75        	excw
+40271e99:	000a      	add.n	a0, a0, a0
+40271e9b:	000000        	ill
+40271e9e:	730000        	excw
+40271ea1:	0a6c      	movi.n	a10, -32
+40271ea3:	000000        	ill
+40271ea6:	750000        	extui	a0, a0, 16, 8
+40271ea9:	0a6c73        	excw
+40271eac:	000000        	ill
+40271eaf:	6d7000        	excw
+40271eb2:	5f          	.byte 0x5f
+40271eb3:	726f66        	bnei	a15, 6, 40271f29 <chip_v6_unset_chanfreq+0x20d>
+40271eb6:	5f          	.byte 0x5f
+40271eb7:	6e6362        	s32i	a6, a3, 0x1b8
+40271eba:	5f          	.byte 0x5f
+40271ebb:	6f          	.byte 0x6f
+40271ebc:	6e          	.byte 0x6e
+40271ebd:	796c      	movi.n	a9, -25
+40271ebf:	5f          	.byte 0x5f
+40271ec0:	6f6d      	excw
+40271ec2:	2e6564        	excw
+40271ec5:	000063        	excw
 	...
-40271ecd:	000000        	ill
-40271ed0:	726f66        	bnei	a15, 6, 40271f46 <chip_v6_unset_chanfreq+0x24a>
+40271ed0:	726f66        	bnei	a15, 6, 40271f46 <chip_v6_unset_chanfreq+0x22a>
 40271ed3:	206563        	excw
 40271ed6:	706c73        	excw
-40271ed9:	6e6520        	excw
-40271edc:	6c6261        	l32r	a6, 4024d064 <pm_set_sleep_mode+0x64>
-40271edf:	000065        	excw
+40271ed9:	696420        	excw
+40271edc:	626173        	excw
+40271edf:	656c      	movi.n	a5, -26
 	...
-40271eee:	2c0000        	excw
-40271ef1:	707974        	excw
-40271ef4:	203a65        	excw
-40271ef7:	006425        	excw
-40271efa:	000000        	ill
-40271efd:	000000        	ill
-40271f00:	000a      	add.n	a0, a0, a0
+40271eed:	000000        	ill
+40271ef0:	726f66        	bnei	a15, 6, 40271f66 <chip_v6_unset_chanfreq+0x24a>
+40271ef3:	206563        	excw
+40271ef6:	706c73        	excw
+40271ef9:	6e6520        	excw
+40271efc:	6c6261        	l32r	a6, 4024d084 <pm_set_sleep_mode+0x84>
+40271eff:	000065        	excw
 	...
-40271f0e:	660000        	excw
-40271f11:	206d70        	or	a6, a13, a7
-40271f14:	6f6c63        	excw
-40271f17:	206573        	excw
-40271f1a:	206425        	excw
-40271f1d:	000a      	add.n	a0, a0, a0
-40271f1f:	706600        	excw
-40271f22:	206d      	excw
-40271f24:	6f          	.byte 0x6f
-40271f25:	6e6570        	excw
-40271f28:	742c      	movi.n	a4, 39
-40271f2a:	7079      	s32i.n	a7, a0, 28
-40271f2c:	253a65        	excw
-40271f2f:	252064        	excw
-40271f32:	000a64        	excw
+40271f0e:	2c0000        	excw
+40271f11:	707974        	excw
+40271f14:	203a65        	excw
+40271f17:	006425        	excw
+40271f1a:	000000        	ill
+40271f1d:	000000        	ill
+40271f20:	000a      	add.n	a0, a0, a0
 	...
-40271f3d:	000000        	ill
-40271f40:	696c      	movi.n	a9, -26
-40271f42:	5f7473        	excw
-40271f45:	6e          	.byte 0x6e
-40271f46:	6c6c75        	excw
-40271f49:	000a      	add.n	a0, a0, a0
-40271f4b:	000000        	ill
-40271f4e:	6e0000        	excw
-40271f51:	206c75        	excw
-40271f54:	6f6d      	excw
-40271f56:	2c6564        	excw
-40271f59:	706620        	excw
-40271f5c:	206d      	excw
-40271f5e:	747561        	l32r	a6, 4024f134 <pm_send_nullfunc+0x144>
-40271f61:	6f          	.byte 0x6f
-40271f62:	6c7320        	excw
-40271f65:	706565        	excw
-40271f68:	657320        	extui	a7, a2, 19, 7
-40271f6b:	003a74        	excw
-40271f6e:	640000        	extui	a0, a0, 0, 7
-40271f71:	7369      	s32i.n	a6, a3, 28
-40271f73:	626c61        	l32r	a6, 4024a924 <correct_rf_ana_gain+0xe0>
-40271f76:	000a65        	excw
-40271f79:	000000        	ill
-40271f7c:	000000        	ill
-40271f7f:	6e6500        	excw
-40271f82:	626c61        	l32r	a6, 4024a934 <correct_rf_ana_gain+0xf0>
-40271f85:	000a65        	excw
+40271f2e:	660000        	excw
+40271f31:	206d70        	or	a6, a13, a7
+40271f34:	6f6c63        	excw
+40271f37:	206573        	excw
+40271f3a:	206425        	excw
+40271f3d:	000a      	add.n	a0, a0, a0
+40271f3f:	706600        	excw
+40271f42:	206d      	excw
+40271f44:	6f          	.byte 0x6f
+40271f45:	6e6570        	excw
+40271f48:	742c      	movi.n	a4, 39
+40271f4a:	7079      	s32i.n	a7, a0, 28
+40271f4c:	253a65        	excw
+40271f4f:	252064        	excw
+40271f52:	000a64        	excw
 	...
-40271f90:	2e7070        	excw
-40271f93:	000063        	excw
+40271f5d:	000000        	ill
+40271f60:	696c      	movi.n	a9, -26
+40271f62:	5f7473        	excw
+40271f65:	6e          	.byte 0x6e
+40271f66:	6c6c75        	excw
+40271f69:	000a      	add.n	a0, a0, a0
+40271f6b:	000000        	ill
+40271f6e:	6e0000        	excw
+40271f71:	206c75        	excw
+40271f74:	6f6d      	excw
+40271f76:	2c6564        	excw
+40271f79:	706620        	excw
+40271f7c:	206d      	excw
+40271f7e:	747561        	l32r	a6, 4024f154 <pm_send_nullfunc+0x164>
+40271f81:	6f          	.byte 0x6f
+40271f82:	6c7320        	excw
+40271f85:	706565        	excw
+40271f88:	657320        	extui	a7, a2, 19, 7
+40271f8b:	003a74        	excw
+40271f8e:	640000        	extui	a0, a0, 0, 7
+40271f91:	7369      	s32i.n	a6, a3, 28
+40271f93:	626c61        	l32r	a6, 4024a944 <correct_rf_ana_gain+0x100>
+40271f96:	000a65        	excw
+40271f99:	000000        	ill
+40271f9c:	000000        	ill
+40271f9f:	6e6500        	excw
+40271fa2:	626c61        	l32r	a6, 4024a954 <get_sar_dout+0x8>
+40271fa5:	000a65        	excw
 	...
-40271f9e:	4c0000        	excw
-40271fa1:	616d      	excw
-40271fa3:	785263        	excw
-40271fa6:	6b6c42        	s32i	a4, a12, 0x1ac
-40271fa9:	253a      	add.n	a2, a5, a3
-40271fab:	000a64        	excw
-40271fae:	4c0000        	excw
-40271fb1:	616d      	excw
-40271fb3:	785463        	excw
-40271fb6:	6b6c42        	s32i	a4, a12, 0x1ac
-40271fb9:	253a      	add.n	a2, a5, a3
-40271fbb:	000a64        	excw
-40271fbe:	6d0000        	excw
-40271fc1:	207061        	l32r	a6, 4023a184 <_lit4_end+0x1341d0>
-40271fc4:	696166        	bnei	a1, 6, 40272031 <chip_v6_unset_chanfreq+0x335>
-40271fc7:	0a6c      	movi.n	a10, -32
-40271fc9:	000000        	ill
-40271fcc:	000000        	ill
-40271fcf:	686300        	excw
-40271fd2:	425f67        	bbc	a15, a6, 40272018 <chip_v6_unset_chanfreq+0x31c>
-40271fd5:	253a31        	l32r	a3, 4023b4c0 <_lit4_end+0x13550c>
-40271fd8:	000a64        	excw
-40271fdb:	000000        	ill
-40271fde:	630000        	excw
-40271fe1:	6768      	l32i.n	a6, a7, 24
-40271fe3:	5f          	.byte 0x5f
-40271fe4:	3a3242        	excw
-40271fe7:	0a6425        	excw
-40271fea:	000000        	ill
-40271fed:	000000        	ill
-40271ff0:	3d3d      	excw
-40271ff2:	0a6c64        	excw
+40271fb0:	2e7070        	excw
+40271fb3:	000063        	excw
 	...
-40271ffd:	000000        	ill
-40272000:	646461        	l32r	a6, 4024b190 <ram_rfcal_txiq+0x100>
-40272003:	696d20        	excw
-40272006:	616d73        	excw
-40272009:	686374        	excw
-4027200c:	000a      	add.n	a0, a0, a0
-4027200e:	610000        	excw
-40272011:	206464        	excw
-40272014:	0a6425        	excw
-40272017:	6d7200        	excw
-4027201a:	642520        	extui	a2, a2, 5, 7
-4027201d:	000a      	add.n	a0, a0, a0
-4027201f:	6d7200        	excw
-40272022:	696d20        	excw
-40272025:	000a73        	excw
-40272028:	656477        	bbci	a4, 7, 40272091 <ieee80211_opcap+0x41>
-4027202b:	632e76        	excw
-4027202e:	650000        	extui	a0, a0, 16, 7
-40272031:	5f6673        	excw
-40272034:	667562        	excw
-40272037:	2e          	.byte 0x2e
-40272038:	000063        	excw
-4027203b:	000000        	ill
-4027203e:	690000        	excw
-40272041:	656565        	excw
-40272044:	3038      	l32i.n	a3, a0, 12
-40272046:	313132        	excw
-40272049:	2e          	.byte 0x2e
-4027204a:	000063        	excw
-4027204d:	000000        	ill
+40271fbe:	4c0000        	excw
+40271fc1:	616d      	excw
+40271fc3:	785263        	excw
+40271fc6:	6b6c42        	s32i	a4, a12, 0x1ac
+40271fc9:	253a      	add.n	a2, a5, a3
+40271fcb:	000a64        	excw
+40271fce:	4c0000        	excw
+40271fd1:	616d      	excw
+40271fd3:	785463        	excw
+40271fd6:	6b6c42        	s32i	a4, a12, 0x1ac
+40271fd9:	253a      	add.n	a2, a5, a3
+40271fdb:	000a64        	excw
+40271fde:	6d0000        	excw
+40271fe1:	207061        	l32r	a6, 4023a1a4 <_lit4_end+0x1341f0>
+40271fe4:	696166        	bnei	a1, 6, 40272051 <chip_v6_unset_chanfreq+0x335>
+40271fe7:	0a6c      	movi.n	a10, -32
+40271fe9:	000000        	ill
+40271fec:	000000        	ill
+40271fef:	686300        	excw
+40271ff2:	425f67        	bbc	a15, a6, 40272038 <chip_v6_unset_chanfreq+0x31c>
+40271ff5:	253a31        	l32r	a3, 4023b4e0 <_lit4_end+0x13552c>
+40271ff8:	000a64        	excw
+40271ffb:	000000        	ill
+40271ffe:	630000        	excw
+40272001:	6768      	l32i.n	a6, a7, 24
+40272003:	5f          	.byte 0x5f
+40272004:	3a3242        	excw
+40272007:	0a6425        	excw
+4027200a:	000000        	ill
+4027200d:	000000        	ill
+40272010:	3d3d      	excw
+40272012:	0a6c64        	excw
+	...
+4027201d:	000000        	ill
+40272020:	646461        	l32r	a6, 4024b1b0 <ram_rfcal_txiq+0x120>
+40272023:	696d20        	excw
+40272026:	616d73        	excw
+40272029:	686374        	excw
+4027202c:	000a      	add.n	a0, a0, a0
+4027202e:	610000        	excw
+40272031:	206464        	excw
+40272034:	0a6425        	excw
+40272037:	6d7200        	excw
+4027203a:	642520        	extui	a2, a2, 5, 7
+4027203d:	000a      	add.n	a0, a0, a0
+4027203f:	6d7200        	excw
+40272042:	696d20        	excw
+40272045:	000a73        	excw
+40272048:	656477        	bbci	a4, 7, 402720b1 <ieee80211_opcap+0x41>
+4027204b:	632e76        	excw
+4027204e:	650000        	extui	a0, a0, 16, 7
+40272051:	5f6673        	excw
+40272054:	667562        	excw
+40272057:	2e          	.byte 0x2e
+40272058:	000063        	excw
+4027205b:	000000        	ill
+4027205e:	690000        	excw
+40272061:	656565        	excw
+40272064:	3038      	l32i.n	a3, a0, 12
+40272066:	313132        	excw
+40272069:	2e          	.byte 0x2e
+4027206a:	000063        	excw
+4027206d:	000000        	ill
 
-40272050 <ieee80211_opcap>:
-40272050:	000001 040000 6d0000 65646f 203a20 756e00     ........mode : .
-40272060:	6c756e 00006c 730000 006174 000000 252800     null....sta.....
-40272070:	302528 3a7832 323025 253a78 783230 30253a     (%02x:%02x:%02x:
-40272080:	323025 253a78 783230 30253a 297832 2b2000     %02x:%02x:%02x).
-40272090:	202b20 000000 730000 74666f 005041 252800      + .....softAP..
-402720a0:	302528 3a7832 323025 253a78 783230 30253a     (%02x:%02x:%02x:
-402720b0:	323025 253a78 783230 30253a 297832 000a00     %02x:%02x:%02x).
-402720c0:	00000a 000000 000000 000000 000000 656900     ................
-402720d0:	656569 303865 313132 6f685f 617473 632e70     ieee80211_hostap
-402720e0:	00632e 000000 000000 000000 000000 686300     .c..............
-402720f0:	676863 31415f 64253a 00000a 000000 686300     chg_A1:%d.......
-40272100:	676863 34415f 64253a 00000a 000000 686300     chg_A4:%d.......
-40272110:	676863 32415f 64253a 00000a 000000 686300     chg_A2:%d.......
-40272120:	676863 33415f 64253a 00000a 000000 6f6e00     chg_A3:%d.......
-40272130:	206f6e 667562 6f6620 612072 697463 206e6f     no buf for actio
-40272140:	66206e 6d6172 000a65 000000 000000 656900     n frame.........
-40272150:	656569 303865 313132 6e695f 747570 00632e     ieee80211_input.
-40272160:	000063 000000 000000 000000 000000 656900     c...............
-40272170:	656569 303865 313132 656d5f 5f6873 697571     ieee80211_mesh_q
-40272180:	636975 632e6b 000000 000000 000000 656900     uick.c..........
+40272070 <ieee80211_opcap>:
+40272070:	000001 040000 6d0000 65646f 203a20 756e00     ........mode : .
+40272080:	6c756e 00006c 730000 006174 000000 252800     null....sta.....
+40272090:	302528 3a7832 323025 253a78 783230 30253a     (%02x:%02x:%02x:
+402720a0:	323025 253a78 783230 30253a 297832 2b2000     %02x:%02x:%02x).
+402720b0:	202b20 000000 730000 74666f 005041 252800      + .....softAP..
+402720c0:	302528 3a7832 323025 253a78 783230 30253a     (%02x:%02x:%02x:
+402720d0:	323025 253a78 783230 30253a 297832 000a00     %02x:%02x:%02x).
+402720e0:	00000a 000000 000000 000000 000000 656900     ................
+402720f0:	656569 303865 313132 6f685f 617473 632e70     ieee80211_hostap
+40272100:	00632e 000000 000000 000000 000000 686300     .c..............
+40272110:	676863 31415f 64253a 00000a 000000 686300     chg_A1:%d.......
+40272120:	676863 34415f 64253a 00000a 000000 686300     chg_A4:%d.......
+40272130:	676863 32415f 64253a 00000a 000000 686300     chg_A2:%d.......
+40272140:	676863 33415f 64253a 00000a 000000 6f6e00     chg_A3:%d.......
+40272150:	206f6e 667562 6f6620 612072 697463 206e6f     no buf for actio
+40272160:	66206e 6d6172 000a65 000000 000000 656900     n frame.........
+40272170:	656569 303865 313132 6e695f 747570 00632e     ieee80211_input.
+40272180:	000063 000000 000000 000000 000000 656900     c...............
 40272190:	656569 303865 313132 656d5f 5f6873 697571     ieee80211_mesh_q
-402721a0:	636975 695f6b 74696e 6f6e20 656d20 0a206d     uick_init no mem
-402721b0:	000a20 000000 000000 000000 000000 6f6e00      ...............
-402721c0:	206f6e 667562 6f6620 702072 626f72 202c65     no buf for probe
-402721d0:	69202c 6c2065 206e65 0a6425 000000 656900     , ie len %d.....
-402721e0:	656569 303865 313132 68705f 632e79 000400     ieee80211_phy.c.
-402721f0:	000004 000000 000000 000000 000000 000000     ................
+402721a0:	636975 632e6b 000000 000000 000000 656900     uick.c..........
+402721b0:	656569 303865 313132 656d5f 5f6873 697571     ieee80211_mesh_q
+402721c0:	636975 695f6b 74696e 6f6e20 656d20 0a206d     uick_init no mem
+402721d0:	000a20 000000 000000 000000 000000 6f6e00      ...............
+402721e0:	206f6e 667562 6f6620 702072 626f72 202c65     no buf for probe
+402721f0:	69202c 6c2065 206e65 0a6425 000000 656900     , ie len %d.....
+40272200:	656569 303865 313132 68705f 632e79 000400     ieee80211_phy.c.
+40272210:	000004 000000 000000 000000 000000 000000     ................
 	...
-40272208:	00157c 020400 df018b 007f00 000000 2af800     |...............
-40272218:	002af8 030400 d50196 007500 000000 03e800     .*........u.....
-40272228:	0003e8 000000 3a0082 013a01 000000 07d000     ........:.:.....
-40272238:	0007d0 010400 020184 00a201 000000 000000     ................
+40272228:	00157c 020400 df018b 007f00 000000 2af800     |...............
+40272238:	002af8 030400 d50196 007500 000000 03e800     .*........u.....
+40272248:	0003e8 000000 3a0082 013a01 000000 07d000     ........:.:.....
+40272258:	0007d0 010400 020184 00a201 000000 000000     ................
 	...
-402722c4:	00000c 000000 000000 000000 000000 000000     ................
+402722e4:	00000c 000000 000000 000000 000000 000000     ................
 	...
-402722dc:	00157c 020400 df028b 007f00 000000 2af800     |...............
-402722ec:	002af8 030400 d50396 007500 000000 03e800     .*........u.....
-402722fc:	0003e8 000000 3a0082 013a01 000000 07d000     ........:.:.....
-4027230c:	0007d0 010400 020184 00a201 000001 177000     ................
-4027231c:	001770 0b0000 3c040c 003c00 000001 2ee000     p.......<.<.....
-4027232c:	002ee0 0a0000 300618 003000 000001 5dc000     ........0.0.....
-4027233c:	005dc0 090000 2c0830 002c00 000001 bb8000     .]....0.,.,.....
-4027234c:	00bb80 080000 2c0860 002c00 000001 d2f000     ......`.,.,.....
-4027235c:	00d2f0 0c0000 2c086c 002c00 000001 232800     ......l.,.,.....
-4027236c:	002328 0f0000 3c0412 003c00 000001 465000     (#......<.<.....
-4027237c:	004650 0e0000 300624 003000 000001 8ca000     PF....$.0.0.....
-4027238c:	008ca0 0d0000 2c0848 002c00 000000 000000     ......H.,.,.....
-4027239c:	000000 000200 040000 000000 00000b 001600     ................
-402723ac:	000016 000c00 180000 000000 000030 000000     ............0...
-402723bc:	000000 656900 386565 313230 735f31 6e6163     ....ieee80211_sc
-402723cc:	2e6e61 000063 000000 000000 000000 000000     an.c............
-402723dc:	000000 206600 38312d 202c30 000000 000000     ....f -180, ....
-402723ec:	000000 206600 202c30 000000 302066 00202c     ....f 0, ...f 0,
-402723fc:	000020 206600 642572 00202c 000000 000000      ...f r%d, .....
-4027240c:	000000 637300 646e61 656e6f 00000a 000000     ....scandone....
-4027241c:	000000 676200 00000a 000000 000000 000000     ....bg..........
-4027242c:	000000 6e4900 6c6176 206469 504557 656b20     ....Invalid WEP 
-4027243c:	79656b 732520 00000a 000000 000000 000000     key %s..........
-4027244c:	000000 706100 6f6c5f 0a7373 000000 000000     ....ap_loss.....
-4027245c:	000000 656900 386565 313230 735f31 2e6174     ....ieee80211_st
-4027246c:	632e61 747300 657461 25203a 2d2064 25203e     a.c.state: %d ->
-4027247c:	642520 252820 0a2978 000000 000000 000000      %d (%x)........
-4027248c:	000000 6c7700 6e635f 632e78 000000 000000     ....wl_cnx.c....
-4027249c:	000000 657200 6e6f63 63656e 000a74 000000     ....reconnect...
-402724ac:	000000 6f6e00 732520 6f6620 646e75 72202c     ....no %s found,
-402724bc:	657220 6e6f63 63656e 612074 657466 312072      reconnect after
-402724cc:	733120 00000a 000000 000000 000000 000000      1s.............
-402724dc:	000000 636200 745f6e 6f6d69 2c7475 5f7061     ....bcn_timout,a
-402724ec:	705f70 626f72 735f65 646e65 74735f 747261     p_probe_send_sta
-402724fc:	0a7472 706100 72705f 65626f 65735f 20646e     rt..ap_probe_sen
-4027250c:	6f2064 726576 72202c 747365 697720 206966     d over, rest wif
-4027251c:	732069 746174 207375 206f74 736964 737361     i status to disa
-4027252c:	6f7373 000a63 000000 000000 000000 000000     ssoc............
-4027253c:	000000 747300 697461 3a6e6f 302520 3a7832     ....station: %02
-4027254c:	253a78 783230 30253a 3a7832 323025 253a78     x:%02x:%02x:%02x
-4027255c:	30253a 3a7832 323025 6c2078 766165 202c65     :%02x:%02x leave
-4027256c:	41202c 204449 25203d 000a64 000000 000000     , AID = %d......
-4027257c:	000000 616d00 632078 6e6e6f 746365 6e6f69     ....max connecti
-4027258c:	216e6f 00000a 000000 000000 000000 000000     on!.............
+402722fc:	00157c 020400 df028b 007f00 000000 2af800     |...............
+4027230c:	002af8 030400 d50396 007500 000000 03e800     .*........u.....
+4027231c:	0003e8 000000 3a0082 013a01 000000 07d000     ........:.:.....
+4027232c:	0007d0 010400 020184 00a201 000001 177000     ................
+4027233c:	001770 0b0000 3c040c 003c00 000001 2ee000     p.......<.<.....
+4027234c:	002ee0 0a0000 300618 003000 000001 5dc000     ........0.0.....
+4027235c:	005dc0 090000 2c0830 002c00 000001 bb8000     .]....0.,.,.....
+4027236c:	00bb80 080000 2c0860 002c00 000001 d2f000     ......`.,.,.....
+4027237c:	00d2f0 0c0000 2c086c 002c00 000001 232800     ......l.,.,.....
+4027238c:	002328 0f0000 3c0412 003c00 000001 465000     (#......<.<.....
+4027239c:	004650 0e0000 300624 003000 000001 8ca000     PF....$.0.0.....
+402723ac:	008ca0 0d0000 2c0848 002c00 000000 000000     ......H.,.,.....
+402723bc:	000000 000200 040000 000000 00000b 001600     ................
+402723cc:	000016 000c00 180000 000000 000030 000000     ............0...
+402723dc:	000000 656900 386565 313230 735f31 6e6163     ....ieee80211_sc
+402723ec:	2e6e61 000063 000000 000000 000000 000000     an.c............
+402723fc:	000000 206600 38312d 202c30 000000 000000     ....f -180, ....
+4027240c:	000000 206600 202c30 000000 302066 00202c     ....f 0, ...f 0,
+4027241c:	000020 206600 642572 00202c 000000 000000      ...f r%d, .....
+4027242c:	000000 637300 646e61 656e6f 00000a 000000     ....scandone....
+4027243c:	000000 676200 00000a 000000 000000 000000     ....bg..........
+4027244c:	000000 6e4900 6c6176 206469 504557 656b20     ....Invalid WEP 
+4027245c:	79656b 732520 00000a 000000 000000 000000     key %s..........
+4027246c:	000000 706100 6f6c5f 0a7373 000000 000000     ....ap_loss.....
+4027247c:	000000 656900 386565 313230 735f31 2e6174     ....ieee80211_st
+4027248c:	632e61 747300 657461 25203a 2d2064 25203e     a.c.state: %d ->
+4027249c:	642520 252820 0a2978 000000 000000 000000      %d (%x)........
+402724ac:	000000 6c7700 6e635f 632e78 000000 000000     ....wl_cnx.c....
+402724bc:	000000 657200 6e6f63 63656e 000a74 000000     ....reconnect...
+402724cc:	000000 6f6e00 732520 6f6620 646e75 72202c     ....no %s found,
+402724dc:	657220 6e6f63 63656e 612074 657466 312072      reconnect after
+402724ec:	733120 00000a 000000 000000 000000 000000      1s.............
+402724fc:	000000 636200 745f6e 6f6d69 2c7475 5f7061     ....bcn_timout,a
+4027250c:	705f70 626f72 735f65 646e65 74735f 747261     p_probe_send_sta
+4027251c:	0a7472 706100 72705f 65626f 65735f 20646e     rt..ap_probe_sen
+4027252c:	6f2064 726576 72202c 747365 697720 206966     d over, rest wif
+4027253c:	732069 746174 207375 206f74 736964 737361     i status to disa
+4027254c:	6f7373 000a63 000000 000000 000000 000000     ssoc............
+4027255c:	000000 747300 697461 3a6e6f 302520 3a7832     ....station: %02
+4027256c:	253a78 783230 30253a 3a7832 323025 253a78     x:%02x:%02x:%02x
+4027257c:	30253a 3a7832 323025 6c2078 766165 202c65     :%02x:%02x leave
+4027258c:	41202c 204449 25203d 000a64 000000 000000     , AID = %d......
 4027259c:	000000 616d00 632078 6e6e6f 746365 6e6f69     ....max connecti
 402725ac:	216e6f 00000a 000000 000000 000000 000000     on!.............
-402725bc:	000000 726500 612072 65726c 796461 736120     ....err already 
-402725cc:	737361 69636f 216465 00000a 000000 000000     associed!.......
-402725dc:	000000 747300 697461 3a6e6f 302520 3a7832     ....station: %02
-402725ec:	253a78 783230 30253a 3a7832 323025 253a78     x:%02x:%02x:%02x
-402725fc:	30253a 3a7832 323025 6a2078 6e696f 41202c     :%02x:%02x join,
-4027260c:	494120 3d2044 642520 00000a 000000 000000      AID = %d.......
-4027261c:	000000 455600 4f444e 412052 495443 3a4e4f     ....VENDOR ACTIO
-4027262c:	203a4e 6e656c 726520 726f72 000000 000000     N: len error....
+402725bc:	000000 616d00 632078 6e6e6f 746365 6e6f69     ....max connecti
+402725cc:	216e6f 00000a 000000 000000 000000 000000     on!.............
+402725dc:	000000 726500 612072 65726c 796461 736120     ....err already 
+402725ec:	737361 69636f 216465 00000a 000000 000000     associed!.......
+402725fc:	000000 747300 697461 3a6e6f 302520 3a7832     ....station: %02
+4027260c:	253a78 783230 30253a 3a7832 323025 253a78     x:%02x:%02x:%02x
+4027261c:	30253a 3a7832 323025 6a2078 6e696f 41202c     :%02x:%02x join,
+4027262c:	494120 3d2044 642520 00000a 000000 000000      AID = %d.......
 4027263c:	000000 455600 4f444e 412052 495443 3a4e4f     ....VENDOR ACTIO
-4027264c:	203a4e 6e656c 726520 726f72 642520 000000     N: len error %d.
-4027265c:	000000 656900 386565 313230 615f31 697463     ....ieee80211_ac
-4027266c:	6f6974 765f6e 646e65 5f726f 657073 615f63     tion_vendor_spec
-4027267c:	74615f 636174 722068 696765 657473 722072     _attach register
-4027268c:	657220 207663 6c6163 62206c 6b6361 726520      recv call back 
-4027269c:	727265 0a726f 030000                          error...
+4027264c:	203a4e 6e656c 726520 726f72 000000 000000     N: len error....
+4027265c:	000000 455600 4f444e 412052 495443 3a4e4f     ....VENDOR ACTIO
+4027266c:	203a4e 6e656c 726520 726f72 642520 000000     N: len error %d.
+4027267c:	000000 656900 386565 313230 615f31 697463     ....ieee80211_ac
+4027268c:	6f6974 765f6e 646e65 5f726f 657073 615f63     tion_vendor_spec
+4027269c:	74615f 636174 722068 696765 657473 722072     _attach register
+402726ac:	657220 207663 6c6163 62206c 6b6361 726520      recv call back 
+402726bc:	727265 0a726f 030000                          error...
 
-402726a4 <ccmp>:
-402726a4:	000003 000800 080000 000000 000000 c4e800     ................
-402726b4:	25c4e8 c56440 004025 000000 636864 632e70     ..%@d.%@....dhcp
-402726c4:	00632e 000000 000000 000000 434844 742050     .c..........DHCP
-402726d4:	697420 6f656d 0a7475 000000 538263 000063      timeout....c.Sc
+402726c4 <ccmp>:
+402726c4:	000003 000800 080000 000000 000000 c4e800     ................
+402726d4:	25c4e8 c56440 004025 000000 636864 632e70     ..%@d.%@....dhcp
+402726e4:	00632e 000000 000000 000000 434844 742050     .c..........DHCP
+402726f4:	697420 6f656d 0a7475 000000 538263 000063      timeout....c.Sc
 	...
-402726f0:	636864 657370 657672 632e72 000000 686400     dhcpserver.c....
-40272700:	636864 5f7370 617473 287472 203a29 756f63     dhcps_start(): c
-40272710:	6c756f 6e2064 20746f 74626f 6e6961 637020     ould not obtain 
-40272720:	626370 00000a 640000 2e736e 000063 736500     pcb.....dns.c...
-40272730:	707365 6e6f63 632e6e 000000 000000 736500     espconn.c.......
-40272740:	707365 6e6f63 745f6e 2e7063 000063 655200     espconn_tcp.c...
-40272750:	636552 6f4876 2c646c 794220 657020 637073     RecvHold, By pes
-40272760:	6f6370 2c6e6e 6e6966 632064 6e6e6f 736d5f     pconn,find conn_
-40272770:	67736d 616620 0a6c69 000000 000000 655200     msg fail........
-40272780:	636552 6f4876 2c646c 794220 657020 637073     RecvHold, By pes
-40272790:	6f6370 2c6e6e 6e6966 632064 6e6e6f 736d5f     pconn,find conn_
-402727a0:	67736d 616620 0a6c69 000000 000000 726500     msg fail........
-402727b0:	727265 6e6920 6f6820 207473 6e6f63 63656e     err in host conn
-402727c0:	746365 206465 732528 000a29 000000 736500     ected (%s)......
-402727d0:	707365 6e6f63 745f6e 5f7063 6c6564 657465     espconn_tcp_dele
-402727e0:	206574 2c6425 642520 00000a 000000 736500     te %d, %d.......
-402727f0:	707365 6e6f63 755f6e 2e7064 000063 746500     espconn_udp.c...
-40272800:	687465 707261 00632e 000000 000000 676900     etharp.c........
-40272810:	6d6769 632e70 5d0000 702002 c11204 040cf0     igmp.c..]. p....
-40272820:	42040c 070051 a60c62 1b0913 330b52 000262     ..BQ..b.....R.3b
-40272830:	620002 6d0141 23a603 020c1f 30831b 80b383     ..bA.m..#.....0.
-40272840:	8180b3 c33221 1592fe 552b00 e6292a f0f223     ...!2.....+U*).#
-40272850:	38f0f2 363011 0046c0 020c00 0513a6 000542     ..8.06.F.......B
-40272860:	420005 520041 120011 2a10c1 402025 3020f4     ..BA.R.....*% @.
-40272870:	f53020 40434a 4af540 223a33 114280 743820      0.JC@@.J3:".B. 
-40272880:	407438 702033 209323 0df420 0000f0 c11200     8t@3 p#.  ......
+40272710:	636864 657370 657672 632e72 000000 686400     dhcpserver.c....
+40272720:	636864 5f7370 617473 287472 203a29 756f63     dhcps_start(): c
+40272730:	6c756f 6e2064 20746f 74626f 6e6961 637020     ould not obtain 
+40272740:	626370 00000a 640000 2e736e 000063 736500     pcb.....dns.c...
+40272750:	707365 6e6f63 632e6e 000000 000000 736500     espconn.c.......
+40272760:	707365 6e6f63 745f6e 2e7063 000063 655200     espconn_tcp.c...
+40272770:	636552 6f4876 2c646c 794220 657020 637073     RecvHold, By pes
+40272780:	6f6370 2c6e6e 6e6966 632064 6e6e6f 736d5f     pconn,find conn_
+40272790:	67736d 616620 0a6c69 000000 000000 655200     msg fail........
+402727a0:	636552 6f4876 2c646c 794220 657020 637073     RecvHold, By pes
+402727b0:	6f6370 2c6e6e 6e6966 632064 6e6e6f 736d5f     pconn,find conn_
+402727c0:	67736d 616620 0a6c69 000000 000000 726500     msg fail........
+402727d0:	727265 6e6920 6f6820 207473 6e6f63 63656e     err in host conn
+402727e0:	746365 206465 732528 000a29 000000 736500     ected (%s)......
+402727f0:	707365 6e6f63 745f6e 5f7063 6c6564 657465     espconn_tcp_dele
+40272800:	206574 2c6425 642520 00000a 000000 736500     te %d, %d.......
+40272810:	707365 6e6f63 755f6e 2e7064 000063 746500     espconn_udp.c...
+40272820:	687465 707261 00632e 000000 000000 676900     etharp.c........
+40272830:	6d6769 632e70 5d0000 702002 c11204 040cf0     igmp.c..]. p....
+40272840:	42040c 070051 a60c62 1b0913 330b52 000262     ..BQ..b.....R.3b
+40272850:	620002 6d0141 23a603 020c1f 30831b 80b383     ..bA.m..#.....0.
+40272860:	8180b3 c33221 1592fe 552b00 e6292a f0f223     ...!2.....+U*).#
+40272870:	38f0f2 363011 0046c0 020c00 0513a6 000542     ..8.06.F.......B
+40272880:	420005 520041 120011 2a10c1 402025 3020f4     ..BA.R.....*% @.
+40272890:	f53020 40434a 4af540 223a33 114280 743820      0.JC@@.J3:".B. 
+402728a0:	407438 702033 209323 0df420 0000f0 c11200     8t@3 p#.  ......
 
-40272890 <inet_chksum_pseudo>:
-40272890:	e0c112        	addi	a1, a1, -32
-40272893:	0109      	s32i.n	a0, a1, 0
-40272895:	31e9      	s32i.n	a14, a1, 12
-40272897:	11c9      	s32i.n	a12, a1, 4
-40272899:	21d9      	s32i.n	a13, a1, 8
-4027289b:	02cd      	mov.n	a12, a2
-4027289d:	062d      	mov.n	a2, a6
-4027289f:	047c16        	beqz	a12, 402728ea <inet_chksum_pseudo+0x5a>
-402728a2:	0d0c      	movi.n	a13, 0
-402728a4:	0e0c      	movi.n	a14, 0
-402728a6:	4139      	s32i.n	a3, a1, 16
-402728a8:	5149      	s32i.n	a4, a1, 20
-402728aa:	6159      	s32i.n	a5, a1, 24
-402728ac:	7169      	s32i.n	a6, a1, 28
-402728ae:	1c28      	l32i.n	a2, a12, 4
-402728b0:	051c32        	l16ui	a3, a12, 10
-402728b3:	fff645        	call0	40272818 <ccmp+0x174>
-402728b6:	d2da      	add.n	a13, a2, a13
-402728b8:	051c22        	l16ui	a2, a12, 10
-402728bb:	f500d0        	extui	a0, a13, 16, 16
-402728be:	0cc8      	l32i.n	a12, a12, 0
-402728c0:	f4d0d0        	extui	a13, a13, 0, 16
-402728c3:	dd0a      	add.n	a13, a13, a0
-402728c5:	136207        	bbci	a2, 0, 402728dc <inet_chksum_pseudo+0x4c>
-402728c8:	110d80        	slli	a0, a13, 8
-402728cb:	74d8d0        	extui	a13, a13, 8, 8
-402728ce:	20dd00        	or	a13, a13, a0
-402728d1:	f4d0d0        	extui	a13, a13, 0, 16
-402728d4:	100c      	movi.n	a0, 1
-402728d6:	c0e0e0        	sub	a14, a0, a14
-402728d9:	74e0e0        	extui	a14, a14, 0, 8
-402728dc:	fcec56        	bnez	a12, 402728ae <inet_chksum_pseudo+0x1e>
-402728df:	7128      	l32i.n	a2, a1, 28
-402728e1:	6158      	l32i.n	a5, a1, 24
-402728e3:	5148      	l32i.n	a4, a1, 20
-402728e5:	4138      	l32i.n	a3, a1, 16
-402728e7:	0000c6        	j	402728ee <inet_chksum_pseudo+0x5e>
-402728ea:	0d0c      	movi.n	a13, 0
-402728ec:	0e0c      	movi.n	a14, 0
-402728ee:	0108      	l32i.n	a0, a1, 0
-402728f0:	11c8      	l32i.n	a12, a1, 4
-402728f2:	749820        	extui	a9, a2, 8, 8
-402728f5:	117280        	slli	a7, a2, 8
-402728f8:	11bd80        	slli	a11, a13, 8
-402728fb:	0388      	l32i.n	a8, a3, 0
-402728fd:	74a8d0        	extui	a10, a13, 8, 8
-40272900:	f56080        	extui	a6, a8, 16, 16
-40272903:	20aab0        	or	a10, a10, a11
-40272906:	207790        	or	a7, a7, a9
-40272909:	f47070        	extui	a7, a7, 0, 16
-4027290c:	f4a0a0        	extui	a10, a10, 0, 16
-4027290f:	93dae0        	movnez	a13, a10, a14
-40272912:	f42080        	extui	a2, a8, 0, 16
-40272915:	31e8      	l32i.n	a14, a1, 12
-40272917:	226a      	add.n	a2, a2, a6
-40272919:	118580        	slli	a8, a5, 8
-4027291c:	0468      	l32i.n	a6, a4, 0
-4027291e:	2d2a      	add.n	a2, a13, a2
-40272920:	f48080        	extui	a8, a8, 0, 16
-40272923:	21d8      	l32i.n	a13, a1, 8
-40272925:	778a      	add.n	a7, a7, a8
-40272927:	20c112        	addi	a1, a1, 32
-4027292a:	f58060        	extui	a8, a6, 16, 16
-4027292d:	f46060        	extui	a6, a6, 0, 16
-40272930:	668a      	add.n	a6, a6, a8
-40272932:	667a      	add.n	a6, a6, a7
-40272934:	226a      	add.n	a2, a2, a6
-40272936:	f47020        	extui	a7, a2, 0, 16
-40272939:	f56020        	extui	a6, a2, 16, 16
-4027293c:	262a      	add.n	a2, a6, a2
-4027293e:	667a      	add.n	a6, a6, a7
-40272940:	f56060        	extui	a6, a6, 16, 16
-40272943:	226a      	add.n	a2, a2, a6
-40272945:	f67c      	movi.n	a6, -1
-40272947:	302260        	xor	a2, a2, a6
-4027294a:	f42020        	extui	a2, a2, 0, 16
-4027294d:	f00d      	ret.n
-	...
-
-40272950 <inet_chksum_pseudo_partial>:
-40272950:	d0c112        	addi	a1, a1, -48
-40272953:	81f9      	s32i.n	a15, a1, 32
-40272955:	4109      	s32i.n	a0, a1, 16
-40272957:	3139      	s32i.n	a3, a1, 12
-40272959:	2149      	s32i.n	a4, a1, 8
-4027295b:	1159      	s32i.n	a5, a1, 4
-4027295d:	71e9      	s32i.n	a14, a1, 28
-4027295f:	61d9      	s32i.n	a13, a1, 24
-40272961:	51c9      	s32i.n	a12, a1, 20
-40272963:	07dd      	mov.n	a13, a7
-40272965:	02cd      	mov.n	a12, a2
-40272967:	0e0c      	movi.n	a14, 0
-40272969:	062d      	mov.n	a2, a6
-4027296b:	0129      	s32i.n	a2, a1, 0
-4027296d:	060c      	movi.n	a6, 0
-4027296f:	9169      	s32i.n	a6, a1, 36
-40272971:	047c16        	beqz	a12, 402729bc <inet_chksum_pseudo_partial+0x6c>
-40272974:	044d16        	beqz	a13, 402729bc <inet_chksum_pseudo_partial+0x6c>
-40272977:	051c02        	l16ui	a0, a12, 10
-4027297a:	01bd07        	bgeu	a13, a0, 4027297f <inet_chksum_pseudo_partial+0x2f>
-4027297d:	0d0d      	mov.n	a0, a13
-4027297f:	1c28      	l32i.n	a2, a12, 4
-40272981:	f4f000        	extui	a15, a0, 0, 16
-40272984:	0f3d      	mov.n	a3, a15
-40272986:	ffe905        	call0	40272818 <ccmp+0x174>
-40272989:	051c72        	l16ui	a7, a12, 10
-4027298c:	e2ea      	add.n	a14, a2, a14
-4027298e:	c0ddf0        	sub	a13, a13, a15
-40272991:	f4d0d0        	extui	a13, a13, 0, 16
-40272994:	f500e0        	extui	a0, a14, 16, 16
-40272997:	0cc8      	l32i.n	a12, a12, 0
-40272999:	f4e0e0        	extui	a14, a14, 0, 16
-4027299c:	ee0a      	add.n	a14, a14, a0
-4027299e:	176707        	bbci	a7, 0, 402729b9 <inet_chksum_pseudo_partial+0x69>
-402729a1:	11fe80        	slli	a15, a14, 8
-402729a4:	100c      	movi.n	a0, 1
-402729a6:	74e8e0        	extui	a14, a14, 8, 8
-402729a9:	20eef0        	or	a14, a14, a15
-402729ac:	91f8      	l32i.n	a15, a1, 36
-402729ae:	f4e0e0        	extui	a14, a14, 0, 16
-402729b1:	c000f0        	sub	a0, a0, a15
-402729b4:	74f000        	extui	a15, a0, 0, 8
-402729b7:	91f9      	s32i.n	a15, a1, 36
-402729b9:	ffed06        	j	40272971 <inet_chksum_pseudo_partial+0x21>
-402729bc:	4108      	l32i.n	a0, a1, 16
-402729be:	51c8      	l32i.n	a12, a1, 20
-402729c0:	61d8      	l32i.n	a13, a1, 24
-402729c2:	81f8      	l32i.n	a15, a1, 32
-402729c4:	3128      	l32i.n	a2, a1, 12
-402729c6:	114e80        	slli	a4, a14, 8
-402729c9:	7438e0        	extui	a3, a14, 8, 8
-402729cc:	203340        	or	a3, a3, a4
-402729cf:	0228      	l32i.n	a2, a2, 0
-402729d1:	9148      	l32i.n	a4, a1, 36
-402729d3:	f43030        	extui	a3, a3, 0, 16
-402729d6:	93e340        	movnez	a14, a3, a4
-402729d9:	f53020        	extui	a3, a2, 16, 16
-402729dc:	0148      	l32i.n	a4, a1, 0
-402729de:	f42020        	extui	a2, a2, 0, 16
-402729e1:	223a      	add.n	a2, a2, a3
-402729e3:	745840        	extui	a5, a4, 8, 8
-402729e6:	2138      	l32i.n	a3, a1, 8
-402729e8:	2e2a      	add.n	a2, a14, a2
-402729ea:	114480        	slli	a4, a4, 8
-402729ed:	71e8      	l32i.n	a14, a1, 28
-402729ef:	204450        	or	a4, a4, a5
-402729f2:	f44040        	extui	a4, a4, 0, 16
-402729f5:	1158      	l32i.n	a5, a1, 4
-402729f7:	0338      	l32i.n	a3, a3, 0
-402729f9:	115580        	slli	a5, a5, 8
-402729fc:	f45050        	extui	a5, a5, 0, 16
-402729ff:	30c112        	addi	a1, a1, 48
-40272a02:	445a      	add.n	a4, a4, a5
-40272a04:	f55030        	extui	a5, a3, 16, 16
-40272a07:	f43030        	extui	a3, a3, 0, 16
-40272a0a:	335a      	add.n	a3, a3, a5
-40272a0c:	334a      	add.n	a3, a3, a4
-40272a0e:	223a      	add.n	a2, a2, a3
-40272a10:	f44020        	extui	a4, a2, 0, 16
-40272a13:	f53020        	extui	a3, a2, 16, 16
-40272a16:	232a      	add.n	a2, a3, a2
-40272a18:	334a      	add.n	a3, a3, a4
-40272a1a:	f53030        	extui	a3, a3, 16, 16
-40272a1d:	223a      	add.n	a2, a2, a3
-40272a1f:	f37c      	movi.n	a3, -1
-40272a21:	302230        	xor	a2, a2, a3
-40272a24:	f42020        	extui	a2, a2, 0, 16
-40272a27:	f00d      	ret.n
-40272a29:	000000        	ill
-
-40272a2c <inet_chksum>:
-40272a2c:	f0c112        	addi	a1, a1, -16
-40272a2f:	0109      	s32i.n	a0, a1, 0
-40272a31:	ffde45        	call0	40272818 <ccmp+0x174>
-40272a34:	0108      	l32i.n	a0, a1, 0
-40272a36:	f37c      	movi.n	a3, -1
-40272a38:	10c112        	addi	a1, a1, 16
-40272a3b:	302230        	xor	a2, a2, a3
-40272a3e:	f42020        	extui	a2, a2, 0, 16
-40272a41:	f00d      	ret.n
+402728b0 <inet_chksum_pseudo>:
+402728b0:	e0c112        	addi	a1, a1, -32
+402728b3:	0109      	s32i.n	a0, a1, 0
+402728b5:	31e9      	s32i.n	a14, a1, 12
+402728b7:	11c9      	s32i.n	a12, a1, 4
+402728b9:	21d9      	s32i.n	a13, a1, 8
+402728bb:	02cd      	mov.n	a12, a2
+402728bd:	062d      	mov.n	a2, a6
+402728bf:	047c16        	beqz	a12, 4027290a <inet_chksum_pseudo+0x5a>
+402728c2:	0d0c      	movi.n	a13, 0
+402728c4:	0e0c      	movi.n	a14, 0
+402728c6:	4139      	s32i.n	a3, a1, 16
+402728c8:	5149      	s32i.n	a4, a1, 20
+402728ca:	6159      	s32i.n	a5, a1, 24
+402728cc:	7169      	s32i.n	a6, a1, 28
+402728ce:	1c28      	l32i.n	a2, a12, 4
+402728d0:	051c32        	l16ui	a3, a12, 10
+402728d3:	fff645        	call0	40272838 <ccmp+0x174>
+402728d6:	d2da      	add.n	a13, a2, a13
+402728d8:	051c22        	l16ui	a2, a12, 10
+402728db:	f500d0        	extui	a0, a13, 16, 16
+402728de:	0cc8      	l32i.n	a12, a12, 0
+402728e0:	f4d0d0        	extui	a13, a13, 0, 16
+402728e3:	dd0a      	add.n	a13, a13, a0
+402728e5:	136207        	bbci	a2, 0, 402728fc <inet_chksum_pseudo+0x4c>
+402728e8:	110d80        	slli	a0, a13, 8
+402728eb:	74d8d0        	extui	a13, a13, 8, 8
+402728ee:	20dd00        	or	a13, a13, a0
+402728f1:	f4d0d0        	extui	a13, a13, 0, 16
+402728f4:	100c      	movi.n	a0, 1
+402728f6:	c0e0e0        	sub	a14, a0, a14
+402728f9:	74e0e0        	extui	a14, a14, 0, 8
+402728fc:	fcec56        	bnez	a12, 402728ce <inet_chksum_pseudo+0x1e>
+402728ff:	7128      	l32i.n	a2, a1, 28
+40272901:	6158      	l32i.n	a5, a1, 24
+40272903:	5148      	l32i.n	a4, a1, 20
+40272905:	4138      	l32i.n	a3, a1, 16
+40272907:	0000c6        	j	4027290e <inet_chksum_pseudo+0x5e>
+4027290a:	0d0c      	movi.n	a13, 0
+4027290c:	0e0c      	movi.n	a14, 0
+4027290e:	0108      	l32i.n	a0, a1, 0
+40272910:	11c8      	l32i.n	a12, a1, 4
+40272912:	749820        	extui	a9, a2, 8, 8
+40272915:	117280        	slli	a7, a2, 8
+40272918:	11bd80        	slli	a11, a13, 8
+4027291b:	0388      	l32i.n	a8, a3, 0
+4027291d:	74a8d0        	extui	a10, a13, 8, 8
+40272920:	f56080        	extui	a6, a8, 16, 16
+40272923:	20aab0        	or	a10, a10, a11
+40272926:	207790        	or	a7, a7, a9
+40272929:	f47070        	extui	a7, a7, 0, 16
+4027292c:	f4a0a0        	extui	a10, a10, 0, 16
+4027292f:	93dae0        	movnez	a13, a10, a14
+40272932:	f42080        	extui	a2, a8, 0, 16
+40272935:	31e8      	l32i.n	a14, a1, 12
+40272937:	226a      	add.n	a2, a2, a6
+40272939:	118580        	slli	a8, a5, 8
+4027293c:	0468      	l32i.n	a6, a4, 0
+4027293e:	2d2a      	add.n	a2, a13, a2
+40272940:	f48080        	extui	a8, a8, 0, 16
+40272943:	21d8      	l32i.n	a13, a1, 8
+40272945:	778a      	add.n	a7, a7, a8
+40272947:	20c112        	addi	a1, a1, 32
+4027294a:	f58060        	extui	a8, a6, 16, 16
+4027294d:	f46060        	extui	a6, a6, 0, 16
+40272950:	668a      	add.n	a6, a6, a8
+40272952:	667a      	add.n	a6, a6, a7
+40272954:	226a      	add.n	a2, a2, a6
+40272956:	f47020        	extui	a7, a2, 0, 16
+40272959:	f56020        	extui	a6, a2, 16, 16
+4027295c:	262a      	add.n	a2, a6, a2
+4027295e:	667a      	add.n	a6, a6, a7
+40272960:	f56060        	extui	a6, a6, 16, 16
+40272963:	226a      	add.n	a2, a2, a6
+40272965:	f67c      	movi.n	a6, -1
+40272967:	302260        	xor	a2, a2, a6
+4027296a:	f42020        	extui	a2, a2, 0, 16
+4027296d:	f00d      	ret.n
 	...
 
-40272a44 <inet_chksum_pbuf>:
-40272a44:	f0c112        	addi	a1, a1, -16
-40272a47:	0109      	s32i.n	a0, a1, 0
-40272a49:	31e9      	s32i.n	a14, a1, 12
-40272a4b:	11c9      	s32i.n	a12, a1, 4
-40272a4d:	21d9      	s32i.n	a13, a1, 8
-40272a4f:	02cd      	mov.n	a12, a2
-40272a51:	62bc      	beqz.n	a2, 40272a8b <inet_chksum_pbuf+0x47>
-40272a53:	0d0c      	movi.n	a13, 0
-40272a55:	0e0c      	movi.n	a14, 0
-40272a57:	1c28      	l32i.n	a2, a12, 4
-40272a59:	051c32        	l16ui	a3, a12, 10
-40272a5c:	ffdb85        	call0	40272818 <ccmp+0x174>
-40272a5f:	d2da      	add.n	a13, a2, a13
-40272a61:	051c22        	l16ui	a2, a12, 10
-40272a64:	f500d0        	extui	a0, a13, 16, 16
-40272a67:	0cc8      	l32i.n	a12, a12, 0
-40272a69:	f4d0d0        	extui	a13, a13, 0, 16
-40272a6c:	dd0a      	add.n	a13, a13, a0
-40272a6e:	136207        	bbci	a2, 0, 40272a85 <inet_chksum_pbuf+0x41>
-40272a71:	110d80        	slli	a0, a13, 8
-40272a74:	74d8d0        	extui	a13, a13, 8, 8
-40272a77:	20dd00        	or	a13, a13, a0
-40272a7a:	f4d0d0        	extui	a13, a13, 0, 16
-40272a7d:	100c      	movi.n	a0, 1
-40272a7f:	c0e0e0        	sub	a14, a0, a14
-40272a82:	74e0e0        	extui	a14, a14, 0, 8
-40272a85:	fcec56        	bnez	a12, 40272a57 <inet_chksum_pbuf+0x13>
-40272a88:	0000c6        	j	40272a8f <inet_chksum_pbuf+0x4b>
-40272a8b:	0d0c      	movi.n	a13, 0
-40272a8d:	0e0c      	movi.n	a14, 0
-40272a8f:	0108      	l32i.n	a0, a1, 0
-40272a91:	11c8      	l32i.n	a12, a1, 4
-40272a93:	f27c      	movi.n	a2, -1
-40272a95:	114d80        	slli	a4, a13, 8
-40272a98:	7438d0        	extui	a3, a13, 8, 8
-40272a9b:	203340        	or	a3, a3, a4
-40272a9e:	93d3e0        	movnez	a13, a3, a14
-40272aa1:	302d20        	xor	a2, a13, a2
-40272aa4:	31e8      	l32i.n	a14, a1, 12
-40272aa6:	21d8      	l32i.n	a13, a1, 8
-40272aa8:	f42020        	extui	a2, a2, 0, 16
-40272aab:	10c112        	addi	a1, a1, 16
-40272aae:	f00d      	ret.n
+40272970 <inet_chksum_pseudo_partial>:
+40272970:	d0c112        	addi	a1, a1, -48
+40272973:	81f9      	s32i.n	a15, a1, 32
+40272975:	4109      	s32i.n	a0, a1, 16
+40272977:	3139      	s32i.n	a3, a1, 12
+40272979:	2149      	s32i.n	a4, a1, 8
+4027297b:	1159      	s32i.n	a5, a1, 4
+4027297d:	71e9      	s32i.n	a14, a1, 28
+4027297f:	61d9      	s32i.n	a13, a1, 24
+40272981:	51c9      	s32i.n	a12, a1, 20
+40272983:	07dd      	mov.n	a13, a7
+40272985:	02cd      	mov.n	a12, a2
+40272987:	0e0c      	movi.n	a14, 0
+40272989:	062d      	mov.n	a2, a6
+4027298b:	0129      	s32i.n	a2, a1, 0
+4027298d:	060c      	movi.n	a6, 0
+4027298f:	9169      	s32i.n	a6, a1, 36
+40272991:	047c16        	beqz	a12, 402729dc <inet_chksum_pseudo_partial+0x6c>
+40272994:	044d16        	beqz	a13, 402729dc <inet_chksum_pseudo_partial+0x6c>
+40272997:	051c02        	l16ui	a0, a12, 10
+4027299a:	01bd07        	bgeu	a13, a0, 4027299f <inet_chksum_pseudo_partial+0x2f>
+4027299d:	0d0d      	mov.n	a0, a13
+4027299f:	1c28      	l32i.n	a2, a12, 4
+402729a1:	f4f000        	extui	a15, a0, 0, 16
+402729a4:	0f3d      	mov.n	a3, a15
+402729a6:	ffe905        	call0	40272838 <ccmp+0x174>
+402729a9:	051c72        	l16ui	a7, a12, 10
+402729ac:	e2ea      	add.n	a14, a2, a14
+402729ae:	c0ddf0        	sub	a13, a13, a15
+402729b1:	f4d0d0        	extui	a13, a13, 0, 16
+402729b4:	f500e0        	extui	a0, a14, 16, 16
+402729b7:	0cc8      	l32i.n	a12, a12, 0
+402729b9:	f4e0e0        	extui	a14, a14, 0, 16
+402729bc:	ee0a      	add.n	a14, a14, a0
+402729be:	176707        	bbci	a7, 0, 402729d9 <inet_chksum_pseudo_partial+0x69>
+402729c1:	11fe80        	slli	a15, a14, 8
+402729c4:	100c      	movi.n	a0, 1
+402729c6:	74e8e0        	extui	a14, a14, 8, 8
+402729c9:	20eef0        	or	a14, a14, a15
+402729cc:	91f8      	l32i.n	a15, a1, 36
+402729ce:	f4e0e0        	extui	a14, a14, 0, 16
+402729d1:	c000f0        	sub	a0, a0, a15
+402729d4:	74f000        	extui	a15, a0, 0, 8
+402729d7:	91f9      	s32i.n	a15, a1, 36
+402729d9:	ffed06        	j	40272991 <inet_chksum_pseudo_partial+0x21>
+402729dc:	4108      	l32i.n	a0, a1, 16
+402729de:	51c8      	l32i.n	a12, a1, 20
+402729e0:	61d8      	l32i.n	a13, a1, 24
+402729e2:	81f8      	l32i.n	a15, a1, 32
+402729e4:	3128      	l32i.n	a2, a1, 12
+402729e6:	114e80        	slli	a4, a14, 8
+402729e9:	7438e0        	extui	a3, a14, 8, 8
+402729ec:	203340        	or	a3, a3, a4
+402729ef:	0228      	l32i.n	a2, a2, 0
+402729f1:	9148      	l32i.n	a4, a1, 36
+402729f3:	f43030        	extui	a3, a3, 0, 16
+402729f6:	93e340        	movnez	a14, a3, a4
+402729f9:	f53020        	extui	a3, a2, 16, 16
+402729fc:	0148      	l32i.n	a4, a1, 0
+402729fe:	f42020        	extui	a2, a2, 0, 16
+40272a01:	223a      	add.n	a2, a2, a3
+40272a03:	745840        	extui	a5, a4, 8, 8
+40272a06:	2138      	l32i.n	a3, a1, 8
+40272a08:	2e2a      	add.n	a2, a14, a2
+40272a0a:	114480        	slli	a4, a4, 8
+40272a0d:	71e8      	l32i.n	a14, a1, 28
+40272a0f:	204450        	or	a4, a4, a5
+40272a12:	f44040        	extui	a4, a4, 0, 16
+40272a15:	1158      	l32i.n	a5, a1, 4
+40272a17:	0338      	l32i.n	a3, a3, 0
+40272a19:	115580        	slli	a5, a5, 8
+40272a1c:	f45050        	extui	a5, a5, 0, 16
+40272a1f:	30c112        	addi	a1, a1, 48
+40272a22:	445a      	add.n	a4, a4, a5
+40272a24:	f55030        	extui	a5, a3, 16, 16
+40272a27:	f43030        	extui	a3, a3, 0, 16
+40272a2a:	335a      	add.n	a3, a3, a5
+40272a2c:	334a      	add.n	a3, a3, a4
+40272a2e:	223a      	add.n	a2, a2, a3
+40272a30:	f44020        	extui	a4, a2, 0, 16
+40272a33:	f53020        	extui	a3, a2, 16, 16
+40272a36:	232a      	add.n	a2, a3, a2
+40272a38:	334a      	add.n	a3, a3, a4
+40272a3a:	f53030        	extui	a3, a3, 16, 16
+40272a3d:	223a      	add.n	a2, a2, a3
+40272a3f:	f37c      	movi.n	a3, -1
+40272a41:	302230        	xor	a2, a2, a3
+40272a44:	f42020        	extui	a2, a2, 0, 16
+40272a47:	f00d      	ret.n
+40272a49:	000000        	ill
 
-40272ab0 <ip_addr_any>:
-40272ab0:	0000 0000                                   ....
-
-40272ab4 <ip_addr_broadcast>:
-40272ab4:	ffff ffff 0000 0000 0000 0000 7069 725f     ............ip_r
-40272ac4:	756f 6574 2072 6425 2520 0a70 0000 0000     outer %d %p.....
+40272a4c <inet_chksum>:
+40272a4c:	f0c112        	addi	a1, a1, -16
+40272a4f:	0109      	s32i.n	a0, a1, 0
+40272a51:	ffde45        	call0	40272838 <ccmp+0x174>
+40272a54:	0108      	l32i.n	a0, a1, 0
+40272a56:	f37c      	movi.n	a3, -1
+40272a58:	10c112        	addi	a1, a1, 16
+40272a5b:	302230        	xor	a2, a2, a3
+40272a5e:	f42020        	extui	a2, a2, 0, 16
+40272a61:	f00d      	ret.n
 	...
 
-40272ae0 <memp_sizes>:
-40272ae0:	001c 0000 0024 0000 00b0 0000 0024 0000     ....$.......$...
-40272af0:	0014 0000 0008 0000 0014 0000 0010 0000     ................
-40272b00:	0014 0000 0600 0000 6270 6675 632e 0000     ........pbuf.c..
-40272b10:	6172 2e77 0063 0000 0000 0000 0000 0000     raw.c...........
-40272b20:	6374 5f70 6e69 632e 0000 0000 0000 0000     tcp_in.c........
-40272b30:	6374 2e70 0063 0000 0000 0000 0000 0000     tcp.c...........
+40272a64 <inet_chksum_pbuf>:
+40272a64:	f0c112        	addi	a1, a1, -16
+40272a67:	0109      	s32i.n	a0, a1, 0
+40272a69:	31e9      	s32i.n	a14, a1, 12
+40272a6b:	11c9      	s32i.n	a12, a1, 4
+40272a6d:	21d9      	s32i.n	a13, a1, 8
+40272a6f:	02cd      	mov.n	a12, a2
+40272a71:	62bc      	beqz.n	a2, 40272aab <inet_chksum_pbuf+0x47>
+40272a73:	0d0c      	movi.n	a13, 0
+40272a75:	0e0c      	movi.n	a14, 0
+40272a77:	1c28      	l32i.n	a2, a12, 4
+40272a79:	051c32        	l16ui	a3, a12, 10
+40272a7c:	ffdb85        	call0	40272838 <ccmp+0x174>
+40272a7f:	d2da      	add.n	a13, a2, a13
+40272a81:	051c22        	l16ui	a2, a12, 10
+40272a84:	f500d0        	extui	a0, a13, 16, 16
+40272a87:	0cc8      	l32i.n	a12, a12, 0
+40272a89:	f4d0d0        	extui	a13, a13, 0, 16
+40272a8c:	dd0a      	add.n	a13, a13, a0
+40272a8e:	136207        	bbci	a2, 0, 40272aa5 <inet_chksum_pbuf+0x41>
+40272a91:	110d80        	slli	a0, a13, 8
+40272a94:	74d8d0        	extui	a13, a13, 8, 8
+40272a97:	20dd00        	or	a13, a13, a0
+40272a9a:	f4d0d0        	extui	a13, a13, 0, 16
+40272a9d:	100c      	movi.n	a0, 1
+40272a9f:	c0e0e0        	sub	a14, a0, a14
+40272aa2:	74e0e0        	extui	a14, a14, 0, 8
+40272aa5:	fcec56        	bnez	a12, 40272a77 <inet_chksum_pbuf+0x13>
+40272aa8:	0000c6        	j	40272aaf <inet_chksum_pbuf+0x4b>
+40272aab:	0d0c      	movi.n	a13, 0
+40272aad:	0e0c      	movi.n	a14, 0
+40272aaf:	0108      	l32i.n	a0, a1, 0
+40272ab1:	11c8      	l32i.n	a12, a1, 4
+40272ab3:	f27c      	movi.n	a2, -1
+40272ab5:	114d80        	slli	a4, a13, 8
+40272ab8:	7438d0        	extui	a3, a13, 8, 8
+40272abb:	203340        	or	a3, a3, a4
+40272abe:	93d3e0        	movnez	a13, a3, a14
+40272ac1:	302d20        	xor	a2, a13, a2
+40272ac4:	31e8      	l32i.n	a14, a1, 12
+40272ac6:	21d8      	l32i.n	a13, a1, 8
+40272ac8:	f42020        	extui	a2, a2, 0, 16
+40272acb:	10c112        	addi	a1, a1, 16
+40272ace:	f00d      	ret.n
 
-40272b40 <tcp_pcb_lists>:
-40272b40:	e44c 3ffe e448 3ffe e43c 3ffe e444 3ffe     L..?H..?<..?D..?
+40272ad0 <ip_addr_any>:
+40272ad0:	0000 0000                                   ....
 
-40272b50 <tcp_persist_backoff>:
-40272b50:	0603 180c 6030 0078 0000 0000 0000 0000     ....0`x.........
+40272ad4 <ip_addr_broadcast>:
+40272ad4:	ffff ffff 0000 0000 0000 0000 7069 725f     ............ip_r
+40272ae4:	756f 6574 2072 6425 2520 0a70 0000 0000     outer %d %p.....
+	...
 
-40272b60 <tcp_backoff>:
-40272b60:	0201 0403 0605 0707 0707 0707 0007 0000     ................
-40272b70:	6374 5f70 756f 2e74 0063 0000 0000 0000     tcp_out.c.......
-40272b80:	6974 656d 7372 632e 0000 0000 0000 0000     timers.c........
-40272b90:	6475 2e70 0063 0000 0000 0000 0000 0000     udp.c...........
-40272ba0:	7061 635f 6e6f 6966 2e67 0063 0000 0000     ap_config.c.....
-40272bb0:	6f63 6d6d 6e6f 632e 0000 0000 0000 0000     common.c........
-40272bc0:	736f 785f 6574 736e 2e61 0063 0000 0000     os_xtensa.c.....
-40272bd0:	7077 5f61 7561 6874 632e 0000 0000 0000     wpa_auth.c......
-40272be0:	0064 0000 01f4 0000 03e8 0000 0004 0000     d...............
-40272bf0:	0004 0000 0000 0000 0000 0000 0000 0000     ................
-40272c00:	6e49 7469 4320 756f 746e 7265 0000 0000     Init Counter....
-40272c10:	6150 7269 6977 6573 6b20 7965 6520 7078     Pairwise key exp
-40272c20:	6e61 6973 6e6f 0000 0000 0000 0000 0000     ansion..........
-40272c30:	7247 756f 2070 656b 2079 7865 6170 736e     Group key expans
-40272c40:	6f69 006e 0000 0000 0000 0000 0000 0000     ion.............
-40272c50:	7077 5f61 7561 6874 695f 2e65 0063 0000     wpa_auth_ie.c...
-40272c60:	6150 7269 6977 6573 6b20 7965 6520 7078     Pairwise key exp
-40272c70:	6e61 6973 6e6f 0000 0000 0000 0000 0000     ansion..........
-40272c80:	4d50 204b 614e 656d 0000 0000 0000 0000     PMK Name........
-40272c90:	0008 0000 0006 0000 0006 0000 0000 0000     ................
-40272ca0:	7077 5f61 616d 6e69 632e 0000 0000 0000     wpa_main.c......
-40272cb0:	630a 6e6f 656e 7463 6465 7720 7469 2068     .connected with 
-40272cc0:	7325 202c 6863 6e61 656e 206c 6425 000a     %s, channel %d..
-40272cd0:	6864 7063 6320 696c 6e65 2074 7473 7261     dhcp client star
-40272ce0:	2e74 2e2e 000a 0000 0000 0000 0000 0000     t...............
-40272cf0:	6863 6365 206b 6f79 7275 7320 6174 6974     check your stati
-40272d00:	2063 7069 0a21 0000 0000 0000 0000 0000     c ip!...........
-40272d10:	6561 2d73 6e69 6574 6e72 6c61 652d 636e     aes-internal-enc
-40272d20:	632e 0000 0000 0000 0000 0000 0000 0000     .c..............
-40272d30:	6373 735f 696e 6666 7265 632e 0000 0000     sc_sniffer.c....
-40272d40:	6373 6d3a 6c61 6f6c 2063 7265 3a72 7325     sc:malloc err:%s
-40272d50:	252c 0a64 000d 0000 0000 0000 0000 0000     ,%d.............
-40272d60:	6d73 7261 6374 6e6f 6966 2067 6572 7473     smartconfig rest
-40272d70:	7261 0a74 000d 0000 0000 0000 0000 0000     art.............
-40272d80:	6373 703a 6361 656b 2074 6e63 3a74 6425     sc:packet cnt:%d
-40272d90:	000a 0000 0000 0000 0000 0000 0000 0000     ................
-40272da0:	6373 6d3a 6c61 6f6c 2063 7265 2072 7325     sc:malloc err %s
-40272db0:	2520 0a64 000d 0000 0000 0000 0000 0000      %d.............
+40272b00 <memp_sizes>:
+40272b00:	001c 0000 0024 0000 00b0 0000 0024 0000     ....$.......$...
+40272b10:	0014 0000 0008 0000 0014 0000 0010 0000     ................
+40272b20:	0014 0000 0600 0000 6270 6675 632e 0000     ........pbuf.c..
+40272b30:	6172 2e77 0063 0000 0000 0000 0000 0000     raw.c...........
+40272b40:	6374 5f70 6e69 632e 0000 0000 0000 0000     tcp_in.c........
+40272b50:	6374 2e70 0063 0000 0000 0000 0000 0000     tcp.c...........
+
+40272b60 <tcp_pcb_lists>:
+40272b60:	e44c 3ffe e448 3ffe e43c 3ffe e444 3ffe     L..?H..?<..?D..?
+
+40272b70 <tcp_persist_backoff>:
+40272b70:	0603 180c 6030 0078 0000 0000 0000 0000     ....0`x.........
+
+40272b80 <tcp_backoff>:
+40272b80:	0201 0403 0605 0707 0707 0707 0007 0000     ................
+40272b90:	6374 5f70 756f 2e74 0063 0000 0000 0000     tcp_out.c.......
+40272ba0:	6974 656d 7372 632e 0000 0000 0000 0000     timers.c........
+40272bb0:	6475 2e70 0063 0000 0000 0000 0000 0000     udp.c...........
+40272bc0:	7061 635f 6e6f 6966 2e67 0063 0000 0000     ap_config.c.....
+40272bd0:	6f63 6d6d 6e6f 632e 0000 0000 0000 0000     common.c........
+40272be0:	736f 785f 6574 736e 2e61 0063 0000 0000     os_xtensa.c.....
+40272bf0:	7077 5f61 7561 6874 632e 0000 0000 0000     wpa_auth.c......
+40272c00:	0064 0000 01f4 0000 03e8 0000 0004 0000     d...............
+40272c10:	0004 0000 0000 0000 0000 0000 0000 0000     ................
+40272c20:	6e49 7469 4320 756f 746e 7265 0000 0000     Init Counter....
+40272c30:	6150 7269 6977 6573 6b20 7965 6520 7078     Pairwise key exp
+40272c40:	6e61 6973 6e6f 0000 0000 0000 0000 0000     ansion..........
+40272c50:	7247 756f 2070 656b 2079 7865 6170 736e     Group key expans
+40272c60:	6f69 006e 0000 0000 0000 0000 0000 0000     ion.............
+40272c70:	7077 5f61 7561 6874 695f 2e65 0063 0000     wpa_auth_ie.c...
+40272c80:	6150 7269 6977 6573 6b20 7965 6520 7078     Pairwise key exp
+40272c90:	6e61 6973 6e6f 0000 0000 0000 0000 0000     ansion..........
+40272ca0:	4d50 204b 614e 656d 0000 0000 0000 0000     PMK Name........
+40272cb0:	0008 0000 0006 0000 0006 0000 0000 0000     ................
+40272cc0:	7077 5f61 616d 6e69 632e 0000 0000 0000     wpa_main.c......
+40272cd0:	630a 6e6f 656e 7463 6465 7720 7469 2068     .connected with 
+40272ce0:	7325 202c 6863 6e61 656e 206c 6425 000a     %s, channel %d..
+40272cf0:	6864 7063 6320 696c 6e65 2074 7473 7261     dhcp client star
+40272d00:	2e74 2e2e 000a 0000 0000 0000 0000 0000     t...............
+40272d10:	6863 6365 206b 6f79 7275 7320 6174 6974     check your stati
+40272d20:	2063 7069 0a21 0000 0000 0000 0000 0000     c ip!...........
+40272d30:	6561 2d73 6e69 6574 6e72 6c61 652d 636e     aes-internal-enc
+40272d40:	632e 0000 0000 0000 0000 0000 0000 0000     .c..............
+40272d50:	6373 735f 696e 6666 7265 632e 0000 0000     sc_sniffer.c....
+40272d60:	6373 6d3a 6c61 6f6c 2063 7265 3a72 7325     sc:malloc err:%s
+40272d70:	252c 0a64 000d 0000 0000 0000 0000 0000     ,%d.............
+40272d80:	6d73 7261 6374 6e6f 6966 2067 6572 7473     smartconfig rest
+40272d90:	7261 0a74 000d 0000 0000 0000 0000 0000     art.............
+40272da0:	6373 703a 6361 656b 2074 6e63 3a74 6425     sc:packet cnt:%d
+40272db0:	000a 0000 0000 0000 0000 0000 0000 0000     ................
 40272dc0:	6373 6d3a 6c61 6f6c 2063 7265 2072 7325     sc:malloc err %s
-40272dd0:	2520 0a73 000d 0000 0000 0000 0000 0000      %s.............
-40272de0:	6373 6d3a 6c61 6f6c 2063 7245 2072 7325     sc:malloc Err %s
+40272dd0:	2520 0a64 000d 0000 0000 0000 0000 0000      %d.............
+40272de0:	6373 6d3a 6c61 6f6c 2063 7265 2072 7325     sc:malloc err %s
 40272df0:	2520 0a73 000d 0000 0000 0000 0000 0000      %s.............
-40272e00:	7265 2c72 6373 6e61 7320 6174 7574 2073     err,scan status 
-40272e10:	6425 000a 0000 0000 0000 0000 0000 0000     %d..............
-40272e20:	6d73 7261 6374 6e6f 6966 3a67 7973 2073     smartconfig:sys 
-40272e30:	6f6d 6564 6920 6e73 7427 5320 4154 4954     mode isn't STATI
-40272e40:	4e4f 4d5f 444f 3a45 6425 0d0a 0000 0000     ON_MODE:%d......
-40272e50:	6d73 7261 6374 6e6f 6966 2067 7562 7973     smartconfig busy
-40272e60:	0d0a 0000 0000 0000 0000 0000 0000 0000     ................
-40272e70:	4353 733a 6174 6974 6e6f 6420 6368 2070     SC:station dhcp 
-40272e80:	7473 706f 000a 0000 0000 0000 0000 0000     stop............
-40272e90:	4353 7620 7265 6973 6e6f 203a 7325 0a0d     SC version: %s..
+40272e00:	6373 6d3a 6c61 6f6c 2063 7245 2072 7325     sc:malloc Err %s
+40272e10:	2520 0a73 000d 0000 0000 0000 0000 0000      %s.............
+40272e20:	7265 2c72 6373 6e61 7320 6174 7574 2073     err,scan status 
+40272e30:	6425 000a 0000 0000 0000 0000 0000 0000     %d..............
+40272e40:	6d73 7261 6374 6e6f 6966 3a67 7973 2073     smartconfig:sys 
+40272e50:	6f6d 6564 6920 6e73 7427 5320 4154 4954     mode isn't STATI
+40272e60:	4e4f 4d5f 444f 3a45 6425 0d0a 0000 0000     ON_MODE:%d......
+40272e70:	6d73 7261 6374 6e6f 6966 2067 7562 7973     smartconfig busy
+40272e80:	0d0a 0000 0000 0000 0000 0000 0000 0000     ................
+40272e90:	4353 733a 6174 6974 6e6f 6420 6368 2070     SC:station dhcp 
+40272ea0:	7473 706f 000a 0000 0000 0000 0000 0000     stop............
+40272eb0:	4353 7620 7265 6973 6e6f 203a 7325 0a0d     SC version: %s..
 	...
-40272eb0:	7266 6565 6820 6165 3a70 6425 000a 0000     free heap:%d....
-40272ec0:	4353 7320 6174 7574 2073 7265 6f72 2172     SC status error!
-40272ed0:	0a0d 0000 0000 0000 0000 0000 0000 0000     ................
-40272ee0:	6d73 7261 6374 6e6f 6966 2067 7562 7973     smartconfig busy
-40272ef0:	0d0a 0000 0000 0000 0000 0000 0000 0000     ................
+40272ed0:	7266 6565 6820 6165 3a70 6425 000a 0000     free heap:%d....
+40272ee0:	4353 7320 6174 7574 2073 7265 6f72 2172     SC status error!
+40272ef0:	0a0d 0000 0000 0000 0000 0000 0000 0000     ................
 40272f00:	6d73 7261 6374 6e6f 6966 2067 7562 7973     smartconfig busy
 40272f10:	0d0a 0000 0000 0000 0000 0000 0000 0000     ................
-40272f20:	6d73 7261 6374 6e6f 6966 2067 7974 6570     smartconfig type
-40272f30:	6920 706e 7475 6520 7272 0d0a 0000 0000      input err......
-40272f40:	6373 615f 7269 696b 7373 632e 0000 0000     sc_airkiss.c....
-40272f50:	6373 703a 4b41 7547 6469 4765 6f6c 2062     sc:pAKGuideGlob 
-40272f60:	6f6e 2074 756e 6c6c 0d0a 0000 0000 0000     not null........
+40272f20:	6d73 7261 6374 6e6f 6966 2067 7562 7973     smartconfig busy
+40272f30:	0d0a 0000 0000 0000 0000 0000 0000 0000     ................
+40272f40:	6d73 7261 6374 6e6f 6966 2067 7974 6570     smartconfig type
+40272f50:	6920 706e 7475 6520 7272 0d0a 0000 0000      input err......
+40272f60:	6373 615f 7269 696b 7373 632e 0000 0000     sc_airkiss.c....
 40272f70:	6373 703a 4b41 7547 6469 4765 6f6c 2062     sc:pAKGuideGlob 
-40272f80:	616d 6c6c 636f 6520 7272 253a 2c73 6425     malloc err:%s,%d
-40272f90:	0d0a 0000 0000 0000 0000 0000 0000 0000     ................
-40272fa0:	6373 703a 696b 7373 6820 6165 2064 6f6e     sc:pkiss head no
-40272fb0:	2074 756e 6c6c 0d0a 0000 0000 0000 0000     t null..........
-40272fc0:	6373 693a 696e 2074 5f70 696c 7473 6e65     sc:init p_listen
-40272fd0:	6d20 6c61 6f6c 2063 7265 2072 7325 2520      malloc err %s %
-40272fe0:	0a73 000d 0000 0000 0000 0000 0000 0000     s...............
-40272ff0:	6373 703a 696b 7373 6820 6165 2064 6f6e     sc:pkiss head no
-40273000:	2074 756e 6c6c 0d0a 0000 0000 0000 0000     t null..........
-40273010:	6373 693a 696e 2074 5f70 696c 7473 6e65     sc:init p_listen
-40273020:	6d20 6c61 6f6c 2063 7265 2072 7325 2520      malloc err %s %
-40273030:	0a73 000d 0000 0000 0000 0000 0000 0000     s...............
-40273040:	6972 7467 2c74 7372 6973 253a 2064 0000     rigtt,rssi:%d ..
-40273050:	3025 7832 003a 0000 000a 0000 0000 0000     %02x:...........
-40273060:	5f70 696b 7373 4e20 4e20 4c55 0a4c 0000     p_kiss N NULL...
-40273070:	7c54 6944 6572 7463 7220 6365 6576 0a64     T|Direct recved.
+40272f80:	6f6e 2074 756e 6c6c 0d0a 0000 0000 0000     not null........
+40272f90:	6373 703a 4b41 7547 6469 4765 6f6c 2062     sc:pAKGuideGlob 
+40272fa0:	616d 6c6c 636f 6520 7272 253a 2c73 6425     malloc err:%s,%d
+40272fb0:	0d0a 0000 0000 0000 0000 0000 0000 0000     ................
+40272fc0:	6373 703a 696b 7373 6820 6165 2064 6f6e     sc:pkiss head no
+40272fd0:	2074 756e 6c6c 0d0a 0000 0000 0000 0000     t null..........
+40272fe0:	6373 693a 696e 2074 5f70 696c 7473 6e65     sc:init p_listen
+40272ff0:	6d20 6c61 6f6c 2063 7265 2072 7325 2520      malloc err %s %
+40273000:	0a73 000d 0000 0000 0000 0000 0000 0000     s...............
+40273010:	6373 703a 696b 7373 6820 6165 2064 6f6e     sc:pkiss head no
+40273020:	2074 756e 6c6c 0d0a 0000 0000 0000 0000     t null..........
+40273030:	6373 693a 696e 2074 5f70 696c 7473 6e65     sc:init p_listen
+40273040:	6d20 6c61 6f6c 2063 7265 2072 7325 2520      malloc err %s %
+40273050:	0a73 000d 0000 0000 0000 0000 0000 0000     s...............
+40273060:	6972 7467 2c74 7372 6973 253a 2064 0000     rigtt,rssi:%d ..
+40273070:	3025 7832 003a 0000 000a 0000 0000 0000     %02x:...........
+40273080:	5f70 696b 7373 4e20 4e20 4c55 0a4c 0000     p_kiss N NULL...
+40273090:	7c54 6944 6572 7463 7220 6365 6576 0a64     T|Direct recved.
 	...
-40273090:	5954 4550 203a 4941 4b52 5349 0a53 000d     TYPE: AIRKISS...
-402730a0:	7c54 5041 4d20 4341 003a 0000 0000 0000     T|AP MAC:.......
-402730b0:	2520 3230 0078 0000 000a 0000 0000 0000      %02x...........
-402730c0:	7c54 6548 6461 4c20 6e65 3a20 2520 0a64     T|Head Len : %d.
-402730d0:	000d 0000 0000 0000 0000 0000 0000 0000     ................
-402730e0:	7c54 6e73 6669 6566 2072 6e6f 6320 3a68     T|sniffer on ch:
-402730f0:	6425 000a 0000 0000 0000 0000 0000 0000     %d..............
-40273100:	7c54 2121 0a21 000d 0000 0000 0000 0000     T|!!!...........
-40273110:	7362 6973 2064 206e 6173 656d 722c 6769     bssid n same,rig
-40273120:	7468 003a 0000 0000 0000 0000 0000 0000     ht:.............
-40273130:	3025 7832 003a 0000 0000 0000 0000 0000     %02x:...........
-40273140:	7220 7373 3a69 6425 000a 0000 0000 0000      rssi:%d........
-40273150:	4269 7373 6469 0020 3025 7832 003a 0000     iBssid .%02x:...
-40273160:	000a 0000 0000 0000 7562 2066 0000 0000     ........buf ....
-40273170:	3025 7832 003a 0000 000a 0000 0000 0000     %02x:...........
-40273180:	4369 2068 6f6c 6b63 000a 0000 0000 0000     iCh lock........
-40273190:	7c54 2121 0a21 000d 0000 0000 0000 0000     T|!!!...........
-402731a0:	5f70 696b 7373 4e20 4e20 4c55 0a4c 0000     p_kiss N NULL...
-402731b0:	7c54 7254 6e61 2073 6572 7663 6465 632c     T|Trans recved,c
-402731c0:	2568 0a64 0000 0000 0000 0000 0000 0000     h%d.............
-402731d0:	5954 4550 203a 4941 4b52 5349 0a53 000d     TYPE: AIRKISS...
-402731e0:	7c54 4850 4e4f 2045 414d 3a43 0000 0000     T|PHONE MAC:....
-402731f0:	2520 3230 0078 0000 0000 0000 0000 0000      %02x...........
-40273200:	540a 417c 2050 414d 2043 2020 003a 0000     .T|AP MAC   :...
-40273210:	2520 3230 0078 0000 0d0a 0000 0000 0000      %02x...........
-40273220:	7c54 6548 6461 4c20 6e65 3a20 2520 0a64     T|Head Len : %d.
-40273230:	000d 0000 0000 0000 0000 0000 0000 0000     ................
-40273240:	7c54 6e73 6669 6566 2072 6e6f 6320 3a68     T|sniffer on ch:
-40273250:	6425 0a0a 000d 0000 0000 0000 0000 0000     %d..............
-40273260:	7c54 6572 6174 6e69 6420 7461 3a61 2520     T|retain data: %
-40273270:	0a64 000d 0000 0000 0000 0000 0000 0000     d...............
-40273280:	7c54 6c61 206c 6164 6174 203a 6425 0d0a     T|all data: %d..
-40273290:	0d0a 0000 0000 0000 0000 0000 0000 0000     ................
-402732a0:	7c54 7373 6469 6c20 6e65 2520 0a64 000d     T|ssid len %d...
-402732b0:	7c54 7362 6973 2064 6173 656d 000a 0000     T|bssid same....
-402732c0:	7c54 7362 6973 2064 6173 656d 000a 0000     T|bssid same....
-402732d0:	7c54 5353 4449 203a 7325 0d0a 0000 0000     T|SSID: %s......
-402732e0:	7c54 4353 4e41 4320 4352 5320 4953 3a44     T|SCAN CRC SSID:
-402732f0:	2520 0a64 000d 0000 0000 0000 0000 0000      %d.............
-40273300:	7c54 6e69 6564 3a78 6425 202c 6572 616d     T|index:%d, rema
-40273310:	6e69 253a 0a64 000d 0000 0000 0000 0000     in:%d...........
-40273320:	7c54 6170 7373 6f77 6472 6c20 6e65 203a     T|password len: 
-40273330:	6425 000a 0000 0000 0000 0000 0000 0000     %d..............
-40273340:	7c54 5243 2043 7265 0a72 000d 0000 0000     T|CRC err.......
-40273350:	7c54 6573 3a71 6425 0d0a 0000 0000 0000     T|seq:%d........
-40273360:	7c54 5243 5f43 7265 6f72 0a72 000d 0000     T|CRC_error.....
-40273370:	7c54 5243 5f43 7265 6f72 0a72 000d 0000     T|CRC_error.....
-40273380:	7c54 6573 3a71 6425 0d0a 0000 0000 0000     T|seq:%d........
-40273390:	7c54 5243 5f43 7265 6f72 0a72 0000 0000     T|CRC_error.....
-402733a0:	7c54 5243 5f43 7265 6f72 0a72 000d 0000     T|CRC_error.....
-402733b0:	7c54 6573 3a71 6425 0d0a 0000 0000 0000     T|seq:%d........
-402733c0:	7c54 5243 5f43 7265 6f72 0a72 0000 0000     T|CRC_error.....
-402733d0:	7c54 5243 5f43 7265 6f72 0a72 0000 0000     T|CRC_error.....
-402733e0:	7c54 6573 3a71 6425 0d0a 0000 0000 0000     T|seq:%d........
-402733f0:	7c54 7370 6477 3a20 0020 0000 0000 0000     T|pswd : .......
-40273400:	6325 0000 0000 0000 0000 0000 0000 0000     %c..............
-40273410:	0d0a 7c54 7373 6469 3a20 0020 0000 0000     ..T|ssid : .....
-40273420:	6325 0000 0d0a 0000 0000 0000 0000 0000     %c..............
-40273430:	4353 6d20 6c61 6520 7272 0d0a 0000 0000     SC mal err......
-40273440:	7c54 6c41 4c6c 6e69 216b 000a 0000 0000     T|AllLink!......
-40273450:	6373 655f 7073 6f74 6375 2e68 0063 0000     sc_esptouch.c...
-40273460:	6373 703a 5445 7547 6469 4765 6f6c 2062     sc:pETGuideGlob 
-40273470:	6f6e 2074 756e 6c6c 0d0a 0000 0000 0000     not null........
+402730b0:	5954 4550 203a 4941 4b52 5349 0a53 000d     TYPE: AIRKISS...
+402730c0:	7c54 5041 4d20 4341 003a 0000 0000 0000     T|AP MAC:.......
+402730d0:	2520 3230 0078 0000 000a 0000 0000 0000      %02x...........
+402730e0:	7c54 6548 6461 4c20 6e65 3a20 2520 0a64     T|Head Len : %d.
+402730f0:	000d 0000 0000 0000 0000 0000 0000 0000     ................
+40273100:	7c54 6e73 6669 6566 2072 6e6f 6320 3a68     T|sniffer on ch:
+40273110:	6425 000a 0000 0000 0000 0000 0000 0000     %d..............
+40273120:	7c54 2121 0a21 000d 0000 0000 0000 0000     T|!!!...........
+40273130:	7362 6973 2064 206e 6173 656d 722c 6769     bssid n same,rig
+40273140:	7468 003a 0000 0000 0000 0000 0000 0000     ht:.............
+40273150:	3025 7832 003a 0000 0000 0000 0000 0000     %02x:...........
+40273160:	7220 7373 3a69 6425 000a 0000 0000 0000      rssi:%d........
+40273170:	4269 7373 6469 0020 3025 7832 003a 0000     iBssid .%02x:...
+40273180:	000a 0000 0000 0000 7562 2066 0000 0000     ........buf ....
+40273190:	3025 7832 003a 0000 000a 0000 0000 0000     %02x:...........
+402731a0:	4369 2068 6f6c 6b63 000a 0000 0000 0000     iCh lock........
+402731b0:	7c54 2121 0a21 000d 0000 0000 0000 0000     T|!!!...........
+402731c0:	5f70 696b 7373 4e20 4e20 4c55 0a4c 0000     p_kiss N NULL...
+402731d0:	7c54 7254 6e61 2073 6572 7663 6465 632c     T|Trans recved,c
+402731e0:	2568 0a64 0000 0000 0000 0000 0000 0000     h%d.............
+402731f0:	5954 4550 203a 4941 4b52 5349 0a53 000d     TYPE: AIRKISS...
+40273200:	7c54 4850 4e4f 2045 414d 3a43 0000 0000     T|PHONE MAC:....
+40273210:	2520 3230 0078 0000 0000 0000 0000 0000      %02x...........
+40273220:	540a 417c 2050 414d 2043 2020 003a 0000     .T|AP MAC   :...
+40273230:	2520 3230 0078 0000 0d0a 0000 0000 0000      %02x...........
+40273240:	7c54 6548 6461 4c20 6e65 3a20 2520 0a64     T|Head Len : %d.
+40273250:	000d 0000 0000 0000 0000 0000 0000 0000     ................
+40273260:	7c54 6e73 6669 6566 2072 6e6f 6320 3a68     T|sniffer on ch:
+40273270:	6425 0a0a 000d 0000 0000 0000 0000 0000     %d..............
+40273280:	7c54 6572 6174 6e69 6420 7461 3a61 2520     T|retain data: %
+40273290:	0a64 000d 0000 0000 0000 0000 0000 0000     d...............
+402732a0:	7c54 6c61 206c 6164 6174 203a 6425 0d0a     T|all data: %d..
+402732b0:	0d0a 0000 0000 0000 0000 0000 0000 0000     ................
+402732c0:	7c54 7373 6469 6c20 6e65 2520 0a64 000d     T|ssid len %d...
+402732d0:	7c54 7362 6973 2064 6173 656d 000a 0000     T|bssid same....
+402732e0:	7c54 7362 6973 2064 6173 656d 000a 0000     T|bssid same....
+402732f0:	7c54 5353 4449 203a 7325 0d0a 0000 0000     T|SSID: %s......
+40273300:	7c54 4353 4e41 4320 4352 5320 4953 3a44     T|SCAN CRC SSID:
+40273310:	2520 0a64 000d 0000 0000 0000 0000 0000      %d.............
+40273320:	7c54 6e69 6564 3a78 6425 202c 6572 616d     T|index:%d, rema
+40273330:	6e69 253a 0a64 000d 0000 0000 0000 0000     in:%d...........
+40273340:	7c54 6170 7373 6f77 6472 6c20 6e65 203a     T|password len: 
+40273350:	6425 000a 0000 0000 0000 0000 0000 0000     %d..............
+40273360:	7c54 5243 2043 7265 0a72 000d 0000 0000     T|CRC err.......
+40273370:	7c54 6573 3a71 6425 0d0a 0000 0000 0000     T|seq:%d........
+40273380:	7c54 5243 5f43 7265 6f72 0a72 000d 0000     T|CRC_error.....
+40273390:	7c54 5243 5f43 7265 6f72 0a72 000d 0000     T|CRC_error.....
+402733a0:	7c54 6573 3a71 6425 0d0a 0000 0000 0000     T|seq:%d........
+402733b0:	7c54 5243 5f43 7265 6f72 0a72 0000 0000     T|CRC_error.....
+402733c0:	7c54 5243 5f43 7265 6f72 0a72 000d 0000     T|CRC_error.....
+402733d0:	7c54 6573 3a71 6425 0d0a 0000 0000 0000     T|seq:%d........
+402733e0:	7c54 5243 5f43 7265 6f72 0a72 0000 0000     T|CRC_error.....
+402733f0:	7c54 5243 5f43 7265 6f72 0a72 0000 0000     T|CRC_error.....
+40273400:	7c54 6573 3a71 6425 0d0a 0000 0000 0000     T|seq:%d........
+40273410:	7c54 7370 6477 3a20 0020 0000 0000 0000     T|pswd : .......
+40273420:	6325 0000 0000 0000 0000 0000 0000 0000     %c..............
+40273430:	0d0a 7c54 7373 6469 3a20 0020 0000 0000     ..T|ssid : .....
+40273440:	6325 0000 0d0a 0000 0000 0000 0000 0000     %c..............
+40273450:	4353 6d20 6c61 6520 7272 0d0a 0000 0000     SC mal err......
+40273460:	7c54 6c41 4c6c 6e69 216b 000a 0000 0000     T|AllLink!......
+40273470:	6373 655f 7073 6f74 6375 2e68 0063 0000     sc_esptouch.c...
 40273480:	6373 703a 5445 7547 6469 4765 6f6c 2062     sc:pETGuideGlob 
-40273490:	616d 6c6c 636f 6520 7272 253a 2c73 6425     malloc err:%s,%d
-402734a0:	0d0a 0000 0000 0000 0000 0000 0000 0000     ................
-402734b0:	6373 703a 4843 694c 7473 6548 6461 2120     sc:pCHListHead !
-402734c0:	6e20 6c75 0a6c 000d 0000 0000 0000 0000      null...........
-402734d0:	6373 703a 4843 694c 7473 6548 6461 6d20     sc:pCHListHead m
-402734e0:	6c61 6f6c 2063 7265 3a72 7325 252c 0a64     alloc err:%s,%d.
-402734f0:	000d 0000 0000 0000 0000 0000 0000 0000     ................
-40273500:	6373 703a 696b 7373 6820 6165 2064 6f6e     sc:pkiss head no
-40273510:	2074 756e 6c6c 0d0a 0000 0000 0000 0000     t null..........
-40273520:	6373 693a 696e 2074 5470 554f 4843 475f     sc:init pTOUCH_G
-40273530:	6f6c 2062 616d 6c6c 636f 6520 7272 2520     lob malloc err %
-40273540:	2073 7325 0d0a 0000 0000 0000 0000 0000     s %s............
-40273550:	6972 7467 2c74 7372 6973 253a 2064 0000     rigtt,rssi:%d ..
-40273560:	3025 7832 003a 0000 000a 0000 0000 0000     %02x:...........
-40273570:	0d0a 5954 4550 203a 5345 5450 554f 4843     ..TYPE: ESPTOUCH
-40273580:	0d0a 0000 0000 0000 0000 0000 0000 0000     ................
-40273590:	7c54 6e73 6669 6566 2072 6e6f 6320 3a68     T|sniffer on ch:
-402735a0:	6425 000a 0000 0000 0000 0000 0000 0000     %d..............
-402735b0:	7c54 5041 4d20 4341 003a 0000 0000 0000     T|AP MAC:.......
-402735c0:	2520 3230 0078 0000 000a 0000 0000 0000      %02x...........
-402735d0:	7c54 6548 6461 4c20 6e65 3a20 2520 0a64     T|Head Len : %d.
-402735e0:	000d 0000 0000 0000 0000 0000 0000 0000     ................
-402735f0:	7c54 5953 434e 5320 4154 5554 0a53 000d     T|SYNC STATUS...
-40273600:	3025 7832 003a 0000 2520 0a64 0000 0000     %02x:... %d.....
-40273610:	7c54 6e6f 6563 2520 2064 6425 000a 0000     T|once %d %d....
-40273620:	7c54 2121 0a21 000d 0000 0000 0000 0000     T|!!!...........
-40273630:	7362 6973 2064 6f6e 2074 6173 656d 202c     bssid not same, 
-40273640:	6972 6867 2074 003a 0000 0000 0000 0000     right :.........
-40273650:	3025 7832 003a 0000 0000 0000 0000 0000     %02x:...........
-40273660:	7220 7373 3a69 6425 000a 0000 0000 0000      rssi:%d........
-40273670:	4269 7373 6469 0020 3025 7832 003a 0000     iBssid .%02x:...
-40273680:	000a 0000 0000 0000 7562 2066 0000 0000     ........buf ....
-40273690:	3025 7832 003a 0000 000a 0000 0000 0000     %02x:...........
-402736a0:	6373 6d3a 6c61 6f6c 2063 7265 2072 7325     sc:malloc err %s
-402736b0:	2520 0a64 000d 0000 0000 0000 0000 0000      %d.............
-402736c0:	6173 6576 202c 7372 6973 253a 2064 0000     save, rssi:%d ..
-402736d0:	3025 7832 003a 0000 000a 0000 0000 0000     %02x:...........
-402736e0:	4369 2068 6f6c 6b63 000a 0000 0000 0000     iCh lock........
-402736f0:	7c54 2121 0a21 000d 0000 0000 0000 0000     T|!!!...........
-40273700:	0d0a 5954 4550 203a 5345 5450 554f 4843     ..TYPE: ESPTOUCH
-40273710:	0d0a 0000 0000 0000 0000 0000 0000 0000     ................
-40273720:	7c54 6e73 6669 6566 2072 6e6f 6320 3a68     T|sniffer on ch:
-40273730:	6425 000a 0000 0000 0000 0000 0000 0000     %d..............
-40273740:	7c54 4850 4e4f 2045 414d 3a43 0000 0000     T|PHONE MAC:....
-40273750:	2520 3230 0078 0000 0000 0000 0000 0000      %02x...........
-40273760:	540a 417c 2050 414d 2043 2020 003a 0000     .T|AP MAC   :...
-40273770:	2520 3230 0078 0000 0d0a 0000 0000 0000      %02x...........
-40273780:	7c54 6548 6461 4c20 6e65 3a20 2520 0a64     T|Head Len : %d.
-40273790:	000d 0000 0000 0000 0000 0000 0000 0000     ................
-402737a0:	7c54 5953 434e 5320 4154 5554 0a53 000d     T|SYNC STATUS...
-402737b0:	7c54 6425 252d 0a64 000d 0000 0000 0000     T|%d-%d.........
-402737c0:	7c54 6325 252d 0a64 000d 0000 0000 0000     T|%c-%d.........
-402737d0:	7c54 4353 4e41 5320 4953 3a44 2520 0a73     T|SCAN SSID: %s.
-402737e0:	000d 0000 0000 0000 0000 0000 0000 0000     ................
+40273490:	6f6e 2074 756e 6c6c 0d0a 0000 0000 0000     not null........
+402734a0:	6373 703a 5445 7547 6469 4765 6f6c 2062     sc:pETGuideGlob 
+402734b0:	616d 6c6c 636f 6520 7272 253a 2c73 6425     malloc err:%s,%d
+402734c0:	0d0a 0000 0000 0000 0000 0000 0000 0000     ................
+402734d0:	6373 703a 4843 694c 7473 6548 6461 2120     sc:pCHListHead !
+402734e0:	6e20 6c75 0a6c 000d 0000 0000 0000 0000      null...........
+402734f0:	6373 703a 4843 694c 7473 6548 6461 6d20     sc:pCHListHead m
+40273500:	6c61 6f6c 2063 7265 3a72 7325 252c 0a64     alloc err:%s,%d.
+40273510:	000d 0000 0000 0000 0000 0000 0000 0000     ................
+40273520:	6373 703a 696b 7373 6820 6165 2064 6f6e     sc:pkiss head no
+40273530:	2074 756e 6c6c 0d0a 0000 0000 0000 0000     t null..........
+40273540:	6373 693a 696e 2074 5470 554f 4843 475f     sc:init pTOUCH_G
+40273550:	6f6c 2062 616d 6c6c 636f 6520 7272 2520     lob malloc err %
+40273560:	2073 7325 0d0a 0000 0000 0000 0000 0000     s %s............
+40273570:	6972 7467 2c74 7372 6973 253a 2064 0000     rigtt,rssi:%d ..
+40273580:	3025 7832 003a 0000 000a 0000 0000 0000     %02x:...........
+40273590:	0d0a 5954 4550 203a 5345 5450 554f 4843     ..TYPE: ESPTOUCH
+402735a0:	0d0a 0000 0000 0000 0000 0000 0000 0000     ................
+402735b0:	7c54 6e73 6669 6566 2072 6e6f 6320 3a68     T|sniffer on ch:
+402735c0:	6425 000a 0000 0000 0000 0000 0000 0000     %d..............
+402735d0:	7c54 5041 4d20 4341 003a 0000 0000 0000     T|AP MAC:.......
+402735e0:	2520 3230 0078 0000 000a 0000 0000 0000      %02x...........
+402735f0:	7c54 6548 6461 4c20 6e65 3a20 2520 0a64     T|Head Len : %d.
+40273600:	000d 0000 0000 0000 0000 0000 0000 0000     ................
+40273610:	7c54 5953 434e 5320 4154 5554 0a53 000d     T|SYNC STATUS...
+40273620:	3025 7832 003a 0000 2520 0a64 0000 0000     %02x:... %d.....
+40273630:	7c54 6e6f 6563 2520 2064 6425 000a 0000     T|once %d %d....
+40273640:	7c54 2121 0a21 000d 0000 0000 0000 0000     T|!!!...........
+40273650:	7362 6973 2064 6f6e 2074 6173 656d 202c     bssid not same, 
+40273660:	6972 6867 2074 003a 0000 0000 0000 0000     right :.........
+40273670:	3025 7832 003a 0000 0000 0000 0000 0000     %02x:...........
+40273680:	7220 7373 3a69 6425 000a 0000 0000 0000      rssi:%d........
+40273690:	4269 7373 6469 0020 3025 7832 003a 0000     iBssid .%02x:...
+402736a0:	000a 0000 0000 0000 7562 2066 0000 0000     ........buf ....
+402736b0:	3025 7832 003a 0000 000a 0000 0000 0000     %02x:...........
+402736c0:	6373 6d3a 6c61 6f6c 2063 7265 2072 7325     sc:malloc err %s
+402736d0:	2520 0a64 000d 0000 0000 0000 0000 0000      %d.............
+402736e0:	6173 6576 202c 7372 6973 253a 2064 0000     save, rssi:%d ..
+402736f0:	3025 7832 003a 0000 000a 0000 0000 0000     %02x:...........
+40273700:	4369 2068 6f6c 6b63 000a 0000 0000 0000     iCh lock........
+40273710:	7c54 2121 0a21 000d 0000 0000 0000 0000     T|!!!...........
+40273720:	0d0a 5954 4550 203a 5345 5450 554f 4843     ..TYPE: ESPTOUCH
+40273730:	0d0a 0000 0000 0000 0000 0000 0000 0000     ................
+40273740:	7c54 6e73 6669 6566 2072 6e6f 6320 3a68     T|sniffer on ch:
+40273750:	6425 000a 0000 0000 0000 0000 0000 0000     %d..............
+40273760:	7c54 4850 4e4f 2045 414d 3a43 0000 0000     T|PHONE MAC:....
+40273770:	2520 3230 0078 0000 0000 0000 0000 0000      %02x...........
+40273780:	540a 417c 2050 414d 2043 2020 003a 0000     .T|AP MAC   :...
+40273790:	2520 3230 0078 0000 0d0a 0000 0000 0000      %02x...........
+402737a0:	7c54 6548 6461 4c20 6e65 3a20 2520 0a64     T|Head Len : %d.
+402737b0:	000d 0000 0000 0000 0000 0000 0000 0000     ................
+402737c0:	7c54 5953 434e 5320 4154 5554 0a53 000d     T|SYNC STATUS...
+402737d0:	7c54 6425 252d 0a64 000d 0000 0000 0000     T|%d-%d.........
+402737e0:	7c54 6325 252d 0a64 000d 0000 0000 0000     T|%c-%d.........
 402737f0:	7c54 4353 4e41 5320 4953 3a44 2520 0a73     T|SCAN SSID: %s.
 40273800:	000d 0000 0000 0000 0000 0000 0000 0000     ................
-40273810:	7c54 6c61 206c 656c 746e 3a68 2520 2c64     T|all lenth: %d,
-40273820:	7370 6477 6c20 6e65 6874 203a 6425 0d0a     pswd lenth: %d..
+40273810:	7c54 4353 4e41 5320 4953 3a44 2520 0a73     T|SCAN SSID: %s.
+40273820:	000d 0000 0000 0000 0000 0000 0000 0000     ................
+40273830:	7c54 6c61 206c 656c 746e 3a68 2520 2c64     T|all lenth: %d,
+40273840:	7370 6477 6c20 6e65 6874 203a 6425 0d0a     pswd lenth: %d..
 	...
-40273840:	7c54 4353 4e41 4320 4352 5320 4953 3a44     T|SCAN CRC SSID:
-40273850:	2520 0a64 000d 0000 0000 0000 0000 0000      %d.............
-40273860:	7c54 4f58 0a52 0000 0000 0000 0000 0000     T|XOR...........
-40273870:	7c54 6425 252d 2d64 6425 0d0a 0000 0000     T|%d-%d-%d......
-40273880:	7c54 6425 252d 2d63 6425 0d0a 0000 0000     T|%d-%c-%d......
-40273890:	7c54 7370 6477 203a 7325 0d0a 0000 0000     T|pswd: %s......
-402738a0:	7c54 7373 6469 203a 7325 0d0a 0000 0000     T|ssid: %s......
-402738b0:	7c54 7362 6973 3a64 0020 0000 0000 0000     T|bssid: .......
-402738c0:	3025 7832 0020 0000 0d0a 0000 0000 0000     %02x ...........
-402738d0:	460a 727c 7373 2069 756f 2174 000a 0000     .F|rssi out!....
-402738e0:	5954 4550 203a 5345 5450 554f 4843 0d0a     TYPE: ESPTOUCH..
+40273860:	7c54 4353 4e41 4320 4352 5320 4953 3a44     T|SCAN CRC SSID:
+40273870:	2520 0a64 000d 0000 0000 0000 0000 0000      %d.............
+40273880:	7c54 4f58 0a52 0000 0000 0000 0000 0000     T|XOR...........
+40273890:	7c54 6425 252d 2d64 6425 0d0a 0000 0000     T|%d-%d-%d......
+402738a0:	7c54 6425 252d 2d63 6425 0d0a 0000 0000     T|%d-%c-%d......
+402738b0:	7c54 7370 6477 203a 7325 0d0a 0000 0000     T|pswd: %s......
+402738c0:	7c54 7373 6469 203a 7325 0d0a 0000 0000     T|ssid: %s......
+402738d0:	7c54 7362 6973 3a64 0020 0000 0000 0000     T|bssid: .......
+402738e0:	3025 7832 0020 0000 0d0a 0000 0000 0000     %02x ...........
+402738f0:	460a 727c 7373 2069 756f 2174 000a 0000     .F|rssi out!....
+40273900:	5954 4550 203a 5345 5450 554f 4843 0d0a     TYPE: ESPTOUCH..
 	...
-40273900:	0d0a 7c46 6e73 6669 6566 2072 6e6f 6320     ..F|sniffer on c
-40273910:	3a68 6425 000a 0000 0000 0000 0000 0000     h:%d............
-40273920:	7c46 7372 6973 253a 2c64 6320 3a68 6425     F|rssi:%d, ch:%d
-40273930:	0d0a 7c46 6568 6461 253a 0a64 0a0d 000d     ..F|head:%d.....
-40273940:	7c46 6425 252d 0a64 000d 0000 0000 0000     F|%d-%d.........
-40273950:	7c46 6325 252d 0a64 000d 0000 0000 0000     F|%c-%d.........
-40273960:	7c46 6572 6573 2074 6863 2520 0d64 000a     F|reset ch %d...
-40273970:	7c46 4353 4e41 5320 4953 3a44 2520 0a73     F|SCAN SSID: %s.
-40273980:	000d 0000 0000 0000 0000 0000 0000 0000     ................
-40273990:	7c46 6968 6564 7220 7365 7465 6320 2068     F|hide reset ch 
-402739a0:	6425 0a0d 0000 0000 0000 0000 0000 0000     %d..............
-402739b0:	7c46 6c61 206c 656c 746e 3a68 2520 2c64     F|all lenth: %d,
-402739c0:	7370 6477 6c20 6e65 6874 203a 6425 0d0a     pswd lenth: %d..
+40273920:	0d0a 7c46 6e73 6669 6566 2072 6e6f 6320     ..F|sniffer on c
+40273930:	3a68 6425 000a 0000 0000 0000 0000 0000     h:%d............
+40273940:	7c46 7372 6973 253a 2c64 6320 3a68 6425     F|rssi:%d, ch:%d
+40273950:	0d0a 7c46 6568 6461 253a 0a64 0a0d 000d     ..F|head:%d.....
+40273960:	7c46 6425 252d 0a64 000d 0000 0000 0000     F|%d-%d.........
+40273970:	7c46 6325 252d 0a64 000d 0000 0000 0000     F|%c-%d.........
+40273980:	7c46 6572 6573 2074 6863 2520 0d64 000a     F|reset ch %d...
+40273990:	7c46 4353 4e41 5320 4953 3a44 2520 0a73     F|SCAN SSID: %s.
+402739a0:	000d 0000 0000 0000 0000 0000 0000 0000     ................
+402739b0:	7c46 6968 6564 7220 7365 7465 6320 2068     F|hide reset ch 
+402739c0:	6425 0a0d 0000 0000 0000 0000 0000 0000     %d..............
+402739d0:	7c46 6c61 206c 656c 746e 3a68 2520 2c64     F|all lenth: %d,
+402739e0:	7370 6477 6c20 6e65 6874 203a 6425 0d0a     pswd lenth: %d..
 	...
-402739e0:	7c46 4353 4e41 4320 4352 5320 4953 3a44     F|SCAN CRC SSID:
-402739f0:	2520 0a64 000d 0000 0000 0000 0000 0000      %d.............
-40273a00:	7c46 4f58 0a52 0000 0000 0000 0000 0000     F|XOR...........
-40273a10:	7c46 6425 252d 2d64 6425 0d0a 0000 0000     F|%d-%d-%d......
-40273a20:	7c46 6425 252d 2d63 6425 0d0a 0000 0000     F|%d-%c-%d......
-40273a30:	7c46 6946 646e 4220 5353 4449 2520 0a64     F|Find BSSID %d.
+40273a00:	7c46 4353 4e41 4320 4352 5320 4953 3a44     F|SCAN CRC SSID:
+40273a10:	2520 0a64 000d 0000 0000 0000 0000 0000      %d.............
+40273a20:	7c46 4f58 0a52 0000 0000 0000 0000 0000     F|XOR...........
+40273a30:	7c46 6425 252d 2d64 6425 0d0a 0000 0000     F|%d-%d-%d......
+40273a40:	7c46 6425 252d 2d63 6425 0d0a 0000 0000     F|%d-%c-%d......
+40273a50:	7c46 6946 646e 4220 5353 4449 2520 0a64     F|Find BSSID %d.
 	...
-40273a50:	7c46 7370 6477 203a 7325 0d0a 0000 0000     F|pswd: %s......
-40273a60:	7c46 7373 6469 203a 7325 0d0a 0000 0000     F|ssid: %s......
-40273a70:	7c46 7362 6973 3a64 0020 0000 0000 0000     F|bssid: .......
-40273a80:	3025 7832 0020 0000 0d0a 0000 0000 0000     %02x ...........
-40273a90:	4353 616d 6c6c 636f 6520 7272 0d0a 0000     SCmalloc err....
+40273a70:	7c46 7370 6477 203a 7325 0d0a 0000 0000     F|pswd: %s......
+40273a80:	7c46 7373 6469 203a 7325 0d0a 0000 0000     F|ssid: %s......
+40273a90:	7c46 7362 6973 3a64 0020 0000 0000 0000     F|bssid: .......
+40273aa0:	3025 7832 0020 0000 0d0a 0000 0000 0000     %02x ...........
+40273ab0:	4353 616d 6c6c 636f 6520 7272 0d0a 0000     SCmalloc err....
 
-40273aa0 <tkip>:
-40273aa0:	0002 0000 0008 0000 000c 0000 0008 0000     ................
-40273ab0:	0b54 4027 0be8 4027                         T.'@..'@
+40273ac0 <tkip>:
+40273ac0:	0002 0000 0008 0000 000c 0000 0008 0000     ................
+40273ad0:	0b54 4027 0be8 4027                         T.'@..'@
 
-40273ab8 <wep>:
-40273ab8:	0001 0000 0004 0000 0004 0000 0000 0000     ................
-40273ac8:	0cdc 4027 0d34 4027                         ..'@4.'@
+40273ad8 <wep>:
+40273ad8:	0001 0000 0004 0000 0004 0000 0000 0000     ................
+40273ae8:	0cdc 4027 0d34 4027                         ..'@4.'@
